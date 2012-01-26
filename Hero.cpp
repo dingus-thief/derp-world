@@ -2,6 +2,9 @@
 #include <iostream>
 #define ch 16
 
+const float MAXVEL = 4.0f;
+const float ACCEL = 1.f/19.f;
+
 Hero::Hero() : vely(0), falling(true),  speed(1),  dir(DIR::IDLE), walking(false)
 {
     sprite.SetTexture(rm.getImage("char.png"));
@@ -66,11 +69,12 @@ void Hero::update(int frameTime, Level* level)
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
-        if(vely < 4.f) //apply acceleration
-            vely += 1.f/19.f;
-        else vely = 4.f;
+        if(vely < MAXVEL) //apply acceleration
+            vely += ACCEL;
+        else vely = MAXVEL;
 
-        if(tryMove(level, 0, 2/3 + vely))//always apply gravity
+        //Gravity
+        if(tryMove(level, 0, 2/3 + vely))
             falling = true;
         else
         {
@@ -81,10 +85,15 @@ void Hero::update(int frameTime, Level* level)
             }
             vely = 0;
         }
+
+        //Sprinting
         if(sf::Keyboard::IsKeyPressed(sf::Keyboard::LShift))
             speed = 1.5;
         else
             speed = 1.0;
+
+
+        //KEYBOARD INPUT
         if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !falling)
         {
             vely = -3.f;
