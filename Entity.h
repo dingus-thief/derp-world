@@ -11,7 +11,9 @@ class Entity
         ~Entity();
         void update(const std::vector<Tile>& tiles);
         void draw(sf::RenderWindow* window);
+        void kill();
         sf::Sprite sprite;
+        bool dead;
 
     private:
         DIR previousDir;

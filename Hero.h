@@ -14,6 +14,7 @@ class Hero
         void draw(sf::RenderWindow* window);
         void update(int frameTime, Level* level);
         void handle(const sf::Event& event);
+        bool tryMove(Level* level, float x, float y);
         sf::Sprite sprite;
         bool jumping;
         bool falling;

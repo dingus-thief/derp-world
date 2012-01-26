@@ -227,41 +227,6 @@ void Level::handle(const sf::Event& event)
 
 }
 
-bool Level::tryMove(sf::Sprite& sprite, float x, float y)
-{
-    //out of screen? (=end/start of level)
-    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top+y, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height);
-    if(rect1.Left < 0 || rect1.Left + rect1.Width > width*TILESIZE)
-        return false;
-    sf::FloatRect intersection;
-    //check collision with tiles
-    for(int j = 0; j < tiles.size(); j++)
-    {
-        if(tiles[j].solid)
-        {
-            sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
-            if(rect1.Intersects(rect2, intersection))
-            {
-                if(!tiles[j].jumpThrough)
-                {
-                    return false;
-                }
-                else //it's a jumpthrough tile
-                {
-                    if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
-                    {
-                        return false;
-                    }
-                }
-
-            }
-        }
-    }
-    sprite.Move(x, y);
-    return true;
-}
-
-
 void Level::update(int frameTime)
 {
     accumulator += frameTime;

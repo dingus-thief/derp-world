@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
 #include "tinyxml/tinyxml.h"
+#include "Entity.h"
 
 class Object{
     public:
@@ -17,7 +18,6 @@ class Object{
         std::map <std::string, std::string> properties;//All properties of the object. Values are stored as strings and mapped by strings(names provided in editor).
 };
 
-class Entity;
 class Tile;
 
 class Level
@@ -29,14 +29,13 @@ class Level
         void handle(const sf::Event& event);
         int accumulator;
         virtual ~Level();
-        bool tryMove(sf::Sprite& sprite, float x, float y);
         void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
-
-    private:
         int width;
         int height;
         std::vector<Entity*> entities;
         std::vector<Tile> tiles;
+
+    private:
         int firstTileID;
         sf::Rect <float> drawingBounds;
         sf::Texture tilesetImage;
