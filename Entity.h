@@ -7,7 +7,7 @@
 class Entity
 {
     public:
-        Entity(const std::string& name, int x, int y);
+        Entity(const sf::Sprite& sprite);
         ~Entity();
         void update(const std::vector<Tile>& tiles);
         void draw(sf::RenderWindow* window);
@@ -18,10 +18,9 @@ class Entity
         int accumulator;
         int aniAccu;
         float speed;
+        float x;
         float vely;
         DIR dir;
-
-
 };
 
 #endif // ENTITY_H

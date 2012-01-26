@@ -6,8 +6,6 @@
 
 Level::Level(const std::string& filename) : accumulator(0)
 {
-    Entity* testMonster = new Entity("monster.png", 70, 100);
-    entities.push_back(testMonster);
     background.SetTexture(rm.getImage("backgroundGame.png"));
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
     class propSet
@@ -161,7 +159,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     }
 
     //Objects
-    /*TiXmlElement *objectGroupElement;
+    TiXmlElement *objectGroupElement;
     if (map->FirstChildElement("objectgroup") != NULL)//Check that there is atleast one object layer
     {
         objectGroupElement = map->FirstChildElement("objectgroup");
@@ -183,27 +181,10 @@ Level::Level(const std::string& filename) : accumulator(0)
                 }
                 int x = atoi(objectElement->Attribute("x"));
                 int y = atoi(objectElement->Attribute("y"));
-                int width = atoi(objectElement->Attribute("width"));
-                int height = atoi(objectElement->Attribute("height"));
+                int GID = atoi(objectElement->Attribute("gid"));
+                int subRectToUse = GID - firstTileID;
 
-                Object object;
-                object.name = objectName;
-                object.type = objectType;
-
-                sf::Rect <int> objectRect;
-                objectRect.Top = y;
-                objectRect.Left = x;
-                objectRect.Width = width;
-                objectRect.Height = height;
-
-                if (objectType == "solid")
-                {
-                    solidObjects.push_back(objectRect);
-                }
-
-                object.rect = objectRect;
-
-                TiXmlElement *properties;
+                /*TiXmlElement *properties;
                 properties = objectElement->FirstChildElement("properties");
                 if (properties != NULL)
                 {
@@ -221,9 +202,13 @@ Level::Level(const std::string& filename) : accumulator(0)
                             prop = prop->NextSiblingElement("property");
                         }
                     }
-                }
+                }*/
 
-                objects.push_back(object);
+                sf::Sprite sprite;
+                sprite.SetTexture(tilesetImage);
+                sprite.SetTextureRect(subRects[subRectToUse]);
+                sprite.SetPosition(x, HEIGHT - height*(TILESIZE+1) + y - 2);
+                entities.push_back(new Entity(sprite));
 
                 objectElement = objectElement->NextSiblingElement("object");
             }
@@ -233,7 +218,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     else
     {
         std::cout << "No object layers found..." << std::endl;
-    }*/
+    }
     return;
 }
 
@@ -276,64 +261,6 @@ bool Level::tryMove(sf::Sprite& sprite, float x, float y)
     return true;
 }
 
-/*
-bool Level::tryMove(sf::Sprite& sprite, float x, float y)
-{
-    //out of screen? (=end/start of level)
-    sf::FloatRect rect1(sprite.GetGlobalBounds().Left, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height);
-    if(rect1.Left < 0 || rect1.Left + rect1.Width > width*TILESIZE)
-        return false;
-    sf::FloatRect intersection;
-    //check collision with tiles
-    for(int j = 0; j < tiles.size(); j++)
-    {
-        if(tiles[j].solid)
-        {
-            sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
-            if(rect1.Intersects(rect2, intersection))
-            {
-                if(!tiles[j].jumpThrough)
-                {
-                    if(x > 0 && rect2.Left > rect1.Left + rect1.Width) //we were going right
-                        sprite.Move(rect2.Left - rect1.Left - rect1.Width, 0.f);
-                    else if(x < 0 && rect1.Left > rect2.Left + rect2.Width) //we were going left
-                        sprite.Move(rect2.Left + rect2.Width - rect1.Left, 0.f);
-                    else if((y > 0 && rect1.Top + rect1.Height < rect2.Top)) //we were going down
-                        sprite.Move(0.f, rect2.Top - rect1.Top - rect1.Height);
-                    return false;
-                }
-                else //it's a jumpthrough tile
-                {
-                    if((y > 0 && rect1.Top + rect1.Height <= rect2.Top)) //we were going down
-                    {
-                        sprite.Move(0, rect2.Top - rect1.Top - rect1.Height);
-                        return false;
-                    }
-                }
-
-            }
-        }
-    }
-    //check collision with entities
-    for(int i = 0; i < entities.size(); i++)
-    {
-        sf::FloatRect rect2(entities[i]->sprite.GetGlobalBounds());
-        if(rect2.Top != rect1.Top && rect2.Left != rect1.Left)
-            if(rect1.Intersects(rect2, intersection))
-            {
-                if(x > 0 && rect2.Left > rect1.Left + rect1.Width) //we were going right
-                    sprite.Move(rect2.Left - rect1.Left - rect1.Width, 0);
-                else if(x < 0 && rect1.Left > rect2.Left + rect2.Width) //we were going left
-                    sprite.Move(rect2.Left + rect2.Width - rect1.Left, 0);
-                else if((y > 0 && rect1.Top + rect1.Height < rect2.Top)) //we were going down
-                    sprite.Move(0, rect2.Top - rect1.Top - rect1.Height);
-                return false;
-            }
-
-    }
-    sprite.Move(x, y);
-    return true;
-}*/
 
 void Level::update(int frameTime)
 {
