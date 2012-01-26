@@ -7,7 +7,7 @@ GameState::GameState(sf::RenderWindow* window) : Window(window)
     sf::View view_(center, halfsize);
     view = view_;
     hero = new Hero;
-    level = new Level("map4.tmx");
+    level = new Level("map5.tmx");
     currentLvl = 0;
 }
 
