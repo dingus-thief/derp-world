@@ -14,6 +14,53 @@ Hero::~Hero()
     //dtor
 }
 
+bool Hero::tryMove(Level* level, float x, float y)
+{
+    //out of screen? (=end/start of level)
+    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top+y, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height);
+    if(rect1.Left < 0 || rect1.Left + rect1.Width > level->width*TILESIZE)
+        return false;
+    sf::FloatRect intersection;
+    //check collision with level->tiles
+    for(int j = 0; j < level->tiles.size(); j++)
+    {
+        if(level->tiles[j].solid)
+        {
+            sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
+            if(rect1.Intersects(rect2, intersection))
+            {
+                if(!level->tiles[j].jumpThrough)
+                {
+                    return false;
+                }
+                else //it's a jumpthrough tile
+                {
+                    if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
+                    {
+                        return false;
+                    }
+                }
+
+            }
+        }
+    }
+    for(int i = 0; i < level->entities.size(); i++)
+    {
+        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
+        if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
+        {
+            if(rect1.Top + rect1.Height - y < rect2.Top) //we were going down
+            {
+                level->entities[i]->kill();
+                vely = -1.5;
+            }
+            //else we're dead
+        }
+    }
+    sprite.Move(x, y);
+    return true;
+}
+
 void Hero::update(int frameTime, Level* level)
 {
     accumulator += frameTime;
@@ -23,7 +70,7 @@ void Hero::update(int frameTime, Level* level)
             vely += 1.f/19.f;
         else vely = 4.f;
 
-        if(level->tryMove(sprite, 0, 2/3 + vely))//always apply gravity
+        if(tryMove(level, 0, 2/3 + vely))//always apply gravity
             falling = true;
         else
         {
@@ -46,14 +93,14 @@ void Hero::update(int frameTime, Level* level)
         dir = DIR::IDLE;
         if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
         {
-            level->tryMove(sprite, -0.5*speed, 0);
+            tryMove(level, -0.5*speed, 0);
             dir = DIR::LEFT;
             if(!jumping && !falling)
                 walking = true;
         }
         else if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Right))
         {
-            level->tryMove(sprite, 0.5*speed, 0);
+            tryMove(level, 0.5*speed, 0);
             dir = DIR::RIGHT;
             if(!jumping && !falling)
                 walking = true;

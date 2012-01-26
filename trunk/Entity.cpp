@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), x(0.3)
+Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), x(0.3), dead(false)
 {
     dir = LEFT;
     previousDir = LEFT;
@@ -10,6 +10,11 @@ Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), x(0.3)
 Entity::~Entity()
 {
     //dtor
+}
+
+void Entity::kill()
+{
+    dead = true;
 }
 
 void Entity::update(const std::vector<Tile>& tiles)
@@ -55,5 +60,6 @@ void Entity::update(const std::vector<Tile>& tiles)
 
 void Entity::draw(sf::RenderWindow* window)
 {
-    window->Draw(sprite);
+    if(!dead)
+        window->Draw(sprite);
 }
