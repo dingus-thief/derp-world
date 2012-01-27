@@ -25,7 +25,7 @@ void Entity::update(const std::vector<Tile>& tiles)
     //check collision with tiles
     for(int j = 0; j < tiles.size(); j++) // check for the sides
     {
-        if(tiles[j].solid)
+        if(tiles[j].transparent)
         {
             sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))
@@ -42,7 +42,7 @@ void Entity::update(const std::vector<Tile>& tiles)
     bool willFall = true;
     for(int j = 0; j < tiles.size(); j++) // check for the sides
     {
-        if(tiles[j].solid)
+        if(tiles[j].transparent)
         {
             sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))

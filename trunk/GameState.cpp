@@ -7,15 +7,16 @@ GameState::GameState(sf::RenderWindow* window) : Window(window)
     sf::View view_(center, halfsize);
     view = view_;
     hero = new Hero;
-    level = new Level("map6.tmx");
+    level = new Level("Data/Levels/demo.tmx");
     currentLvl = 0;
 }
 
 
 void GameState::update()
 {
-    hero->update(Window->GetFrameTime(), level);
-    level->update(Window->GetFrameTime());
+    int frameTime = Clock.Restart().AsMilliseconds();
+    hero->update(frameTime, level);
+    level->update(frameTime);
 }
 
 void GameState::reset()

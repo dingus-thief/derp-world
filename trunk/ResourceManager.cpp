@@ -39,7 +39,7 @@ Tile& ResourceManager::getTile(const std::string& tileID)
     std::ifstream file;
     file.open(fileName.c_str());
     std::string name;
-    bool solid;
+    bool transparent;
     std::string buffer;
     int texAmount;
     file >> texAmount;
@@ -47,10 +47,10 @@ Tile& ResourceManager::getTile(const std::string& tileID)
     for(int i = 0; i < texAmount; i++)
     {
         file >> name;
-        file >> solid;
-        std::cout<<name<<" "<<solid<<"\n";
+        file >> transparent;
+        std::cout<<name<<" "<<transparent<<"\n";
         getline(file, buffer);
-        tiles[boost::lexical_cast<std::string>(i+1)] = new Tile(getImage(name), solid);
+        tiles[boost::lexical_cast<std::string>(i+1)] = new Tile(getImage(name), transparent);
     }
 }*/
 

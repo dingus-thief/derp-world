@@ -5,6 +5,7 @@
 ResourceManager rm;
 SoundManager sm;
 thor::FrameAnimation::Ptr explosion(new thor::FrameAnimation);
+sf::Clock Clock;
 
 
 //std::mt19937 rng;

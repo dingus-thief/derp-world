@@ -1,7 +1,7 @@
 #include "Tile.h"
 #include "Globals.h"
 
-Tile::Tile(const sf::Sprite& sprite, bool solid, bool jumpThrough) : solid(solid), sprite(sprite), jumpThrough(jumpThrough)
+Tile::Tile(const sf::Sprite& sprite, bool transparent, bool platform) : transparent(transparent), sprite(sprite), platform(platform)
 {
 
 }
