@@ -15,6 +15,7 @@ const float G = 0.05;
 //extern std::mt19937 rng;
 
 extern thor::FrameAnimation::Ptr explosion;
+extern sf::Clock Clock;
 
 extern int points;
 extern int lives;

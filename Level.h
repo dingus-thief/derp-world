@@ -40,7 +40,7 @@ class Level
         sf::Rect <float> drawingBounds;
         sf::Texture tilesetImage;
         sf::Sprite background;
-        //std::vector <sf::Rect <int> > solidObjects;
+        //std::vector <sf::Rect <int> > transparentObjects;
         //std::vector <Object> objects;
 };
 

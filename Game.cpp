@@ -27,7 +27,7 @@ Game::~Game()
 
 void Game::run()
 {
-    while(Window.IsOpened())
+    while(Window.IsOpen())
     {
         states[currentState]->handle();
         states[currentState]->update();

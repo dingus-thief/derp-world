@@ -5,12 +5,12 @@
 class Tile
 {
     public:
-        Tile(const sf::Sprite& sprite, bool solid, bool jumpThrough);
+        Tile(const sf::Sprite& sprite, bool transparent, bool platform);
         ~Tile();
         void draw(sf::RenderWindow* window);
         sf::Sprite sprite;
-        bool solid;
-        bool jumpThrough;
+        bool transparent;
+        bool platform;
         Tile* clone();
 
     private:

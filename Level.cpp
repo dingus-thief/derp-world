@@ -11,9 +11,9 @@ Level::Level(const std::string& filename) : accumulator(0)
     class propSet
     {
     public:
-        propSet(bool solid = true, bool jumpthrough = false) : solid(solid), jumpThrough(jumpthrough) {};
-        bool solid;
-        bool jumpThrough;
+        propSet(bool transparent = true, bool platform = false) : transparent(transparent), platform(platform) {};
+        bool transparent;
+        bool platform;
     };
     std::map<int, propSet> pMap;
 
@@ -47,13 +47,13 @@ Level::Level(const std::string& filename) : accumulator(0)
         TiXmlElement* prop = properties->FirstChildElement("property");
         while(prop != NULL)
         {
-            bool solid = true, jumpthrough = false;
+            bool transparent = true, platform = false;
             std::string name = prop->Attribute("name");
-            if(name == "jumpThrough")
-                jumpthrough = true;
-            else if(name == "solid")
-                solid = false;
-            pMap[id] = propSet(solid, jumpthrough);
+            if(name == "platform")
+                platform = true;
+            else if(name == "transparent")
+                transparent = false;
+            pMap[id] = propSet(transparent, platform);
             prop = prop->NextSiblingElement("property");
         }
         tile = tile->NextSiblingElement("tile");
@@ -135,7 +135,7 @@ Level::Level(const std::string& filename) : accumulator(0)
 
                     //add tile to layer
                     if(pMap.find(subRectToUse) != pMap.end())
-                        tiles.push_back(Tile(sprite, pMap[subRectToUse].solid, pMap[subRectToUse].jumpThrough));
+                        tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform));
                     else
                         tiles.push_back(Tile(sprite, true, false));
                 }

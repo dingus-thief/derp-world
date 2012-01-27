@@ -27,16 +27,16 @@ bool Hero::tryMove(Level* level, float x, float y)
     //check collision with level->tiles
     for(int j = 0; j < level->tiles.size(); j++)
     {
-        if(level->tiles[j].solid)
+        if(level->tiles[j].transparent)
         {
             sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))
             {
-                if(!level->tiles[j].jumpThrough)
+                if(!level->tiles[j].platform)
                 {
                     return false;
                 }
-                else //it's a jumpthrough tile
+                else //it's a platform tile
                 {
                     if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
                     {
