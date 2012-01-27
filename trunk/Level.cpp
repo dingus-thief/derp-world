@@ -11,7 +11,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     class propSet
     {
     public:
-        propSet(bool transparent = true, bool platform = false) : transparent(transparent), platform(platform) {};
+        propSet(bool transparent = false, bool platform = false) : transparent(transparent), platform(platform) {};
         bool transparent;
         bool platform;
     };
@@ -43,19 +43,19 @@ Level::Level(const std::string& filename) : accumulator(0)
     while(tile != NULL)
     {
         int id = atoi(tile->Attribute("id"));
+        bool transparent = false, platform = false;
         TiXmlElement* properties = tile->FirstChildElement("properties");
         TiXmlElement* prop = properties->FirstChildElement("property");
         while(prop != NULL)
         {
-            bool transparent = true, platform = false;
             std::string name = prop->Attribute("name");
             if(name == "platform")
                 platform = true;
             else if(name == "transparent")
-                transparent = false;
-            pMap[id] = propSet(transparent, platform);
+                transparent = true;
             prop = prop->NextSiblingElement("property");
         }
+        pMap[id] = propSet(transparent, platform);
         tile = tile->NextSiblingElement("tile");
     }
 
@@ -137,7 +137,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                     if(pMap.find(subRectToUse) != pMap.end())
                         tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform));
                     else
-                        tiles.push_back(Tile(sprite, true, false));
+                        tiles.push_back(Tile(sprite, false, false));
                 }
             }
 

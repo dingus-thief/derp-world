@@ -27,7 +27,7 @@ bool Hero::tryMove(Level* level, float x, float y)
     //check collision with level->tiles
     for(int j = 0; j < level->tiles.size(); j++)
     {
-        if(level->tiles[j].transparent)
+        if(!level->tiles[j].transparent)
         {
             sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))
