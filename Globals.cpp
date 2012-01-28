@@ -28,7 +28,7 @@ std::string to_string(int number)
 void setCenter(sf::Text& txt, int y)
 {
     sf::FloatRect rect = txt.GetGlobalBounds();
-    txt.SetPosition((WIDTH+200)/2 - rect.Width/2 , y);
+    txt.SetPosition((WIDTH)/2 - rect.Width/2 , y);
 }
 
 float abso(float i)
