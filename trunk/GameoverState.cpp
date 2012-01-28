@@ -2,12 +2,12 @@
 
 GameoverState::GameoverState(sf::RenderWindow* window) : window(window)
 {
-    gameoverText = rm.getText("Game Over", 25);
-    setCenter(gameoverText, 200);
-    scoreText = rm.getText("Your score: " + to_string(points), 25);
-    setCenter(scoreText, 250);
-    playAgainButton = new Button("Play again", 0, 360);
-    quitButton = new Button("Quit", 0, 440);
+    gameoverText = rm.getText("Game Over", 20);
+    setCenter(gameoverText, 60);
+    scoreText = rm.getText("Your score: " + to_string(points), 20);
+    setCenter(scoreText, 100);
+    playAgainButton = new Button("Play again", 0, 150);
+    quitButton = new Button("Quit", 0, 210);
 }
 
 void GameoverState::run()
@@ -69,6 +69,7 @@ void GameoverState::handle()
 
 void GameoverState::render()
 {
+    window->SetView(window->GetDefaultView());
     window->Clear(sf::Color(0, 0, 0));
     window->Draw(gameoverText);
     window->Draw(scoreText);

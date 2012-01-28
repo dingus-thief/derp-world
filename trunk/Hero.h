@@ -28,6 +28,8 @@ class Hero
 
     private:
         void handleAnimation(int frameTime);
+        void reset(Level* level);
+
 
 };
 

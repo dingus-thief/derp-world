@@ -17,6 +17,12 @@ Hero::~Hero()
     //dtor
 }
 
+void Hero::reset(Level* level)
+{
+    level->reset();
+    sprite.SetPosition(20, 50);
+}
+
 bool Hero::tryMove(Level* level, float x, float y)
 {
     //out of screen? (=end/start of level)
@@ -24,6 +30,25 @@ bool Hero::tryMove(Level* level, float x, float y)
     if(rect1.Left < 0 || rect1.Left + rect1.Width > level->width*TILESIZE)
         return false;
     sf::FloatRect intersection;
+
+    for(int i = 0; i < level->entities.size(); i++)
+    {
+        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
+        if(rect1.Intersects(rect2) && !level->entities[i]->dead)
+        {
+            if(rect1.Top + rect1.Height - y < rect2.Top) //we were going down
+            {
+                level->entities[i]->kill();
+                vely = -1.5;
+            }
+            else
+            {
+                reset(level);
+                currentState = 2;
+            }
+        }
+    }
+
     //check collision with level->tiles
     for(int j = 0; j < level->tiles.size(); j++)
     {
@@ -45,19 +70,6 @@ bool Hero::tryMove(Level* level, float x, float y)
                 }
 
             }
-        }
-    }
-    for(int i = 0; i < level->entities.size(); i++)
-    {
-        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
-        if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
-        {
-            if(rect1.Top + rect1.Height - y < rect2.Top) //we were going down
-            {
-                level->entities[i]->kill();
-                vely = -1.5;
-            }
-            //else we're dead
         }
     }
     sprite.Move(x, y);
@@ -114,12 +126,14 @@ void Hero::update(int frameTime, Level* level)
             if(!jumping && !falling)
                 walking = true;
         }
+
         accumulator -= timeStep;
     }
 
     //handle animation
     handleAnimation(frameTime);
 }
+
 
 void Hero::handle(const sf::Event& event)
 {

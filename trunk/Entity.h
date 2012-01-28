@@ -16,6 +16,7 @@ class Entity
         bool dead;
 
     private:
+        void handleAnimation();
         DIR previousDir;
         int accumulator;
         int aniAccu;

@@ -3,10 +3,10 @@
 MenuState::MenuState(sf::RenderWindow* window)
 {
     Window = window;
-    //background.SetTexture(rm.getImage("menu.png"));
-    playButton = new Button("Play", 0, 100);
-    optionsButton = new Button("Options", 0, 180);
-    quitButton = new Button("Quit", 0, 260);
+    background.SetTexture(rm.getImage("menuBackground.png"));
+    playButton = new Button("Play", 0, 50);
+    optionsButton = new Button("Options", 0, 110);
+    quitButton = new Button("Quit", 0, 170);
     matrix.OpenFromFile("Data/Audio/matrixintro.ogg");
     //matrix.Play();
 }
@@ -57,7 +57,7 @@ void MenuState::render()
 {
     Window->SetView(Window->GetDefaultView());
     Window->Clear(sf::Color::White);
-    //Window->Draw(background);
+    Window->Draw(background);
     playButton->draw(Window);
     optionsButton->draw(Window);
     quitButton->draw(Window);

@@ -27,6 +27,7 @@ class Level
         void draw(sf::RenderWindow* window);
         void update(int frameTime);
         void handle(const sf::Event& event);
+        void reset();
         int accumulator;
         virtual ~Level();
         void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);

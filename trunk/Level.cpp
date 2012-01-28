@@ -227,6 +227,13 @@ void Level::handle(const sf::Event& event)
 
 }
 
+void Level::reset()
+{
+    for(int i = 0; i < entities.size(); i++)
+        entities[i]->dead = false;
+    background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
+}
+
 void Level::update(int frameTime)
 {
     accumulator += frameTime;
@@ -240,7 +247,6 @@ void Level::update(int frameTime)
     }
 }
 
-
 Level::~Level()
 {
     //dtor
@@ -250,7 +256,7 @@ void Level::draw(sf::RenderWindow* window)
 {
     window->Draw(background);
     sf::View view = window->GetView();
-    sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize())); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
+    sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize()) + sf::Vector2f(16, 0)); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
     for(unsigned i = 0; i < tiles.size(); i++)
     {
         if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top))
