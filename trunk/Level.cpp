@@ -232,7 +232,7 @@ void Level::update(int frameTime)
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
-        for(int i = 0; i < entities.size(); i++)
+        for(unsigned i = 0; i < entities.size(); i++)
         {
             entities[i]->update(tiles);
         }
@@ -249,11 +249,14 @@ Level::~Level()
 void Level::draw(sf::RenderWindow* window)
 {
     window->Draw(background);
-    for(int i = 0; i < tiles.size(); i++)
+    sf::View view = window->GetView();
+    sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize())); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
+    for(unsigned i = 0; i < tiles.size(); i++)
     {
-        tiles[i].draw(window);
+        if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top))
+            tiles[i].draw(window);
     }
-    for(int i = 0; i < entities.size(); i++)
+    for(unsigned i = 0; i < entities.size(); i++)
     {
         entities[i]->draw(window);
     }
