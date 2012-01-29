@@ -7,6 +7,8 @@
 
 class Cannon
 {
+    friend class Hero;
+
     public:
         Cannon(const sf::Sprite& sprite);
         ~Cannon();
