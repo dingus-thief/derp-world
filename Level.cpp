@@ -240,10 +240,11 @@ void Level::reset()
 {
     for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->dead = false;
-
-    std::list<Bullet*>::iterator itr = bullets.begin();
-    while(itr != bullets.end())
-        bullets.erase(itr++);
+    bullets.clear();
+    for(unsigned i = 0; i < cannons.size(); i++)
+    {
+        cannons[i]->reset();
+    }
 
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
 }

@@ -24,3 +24,8 @@ void Cannon::update(std::list<Bullet*>& bullets)
         bulletClock.Restart();
     }
 }
+
+void Cannon::reset()
+{
+    bulletClock.Restart();
+}

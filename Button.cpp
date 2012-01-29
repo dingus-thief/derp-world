@@ -5,7 +5,7 @@ Button::Button(const std::string& txt, int x, int y)
     buttonSprite.SetTexture(rm.getImage("button.png"));
     buttonSprite.SetPosition((WIDTH)/2 - buttonSprite.GetGlobalBounds().Width/2, y);
     highlighted = false;
-    text = rm.getText(txt, 15);
+    text = rm.getText(txt, 13);
     sf::FloatRect rect = text.GetGlobalBounds();
     text.SetPosition((WIDTH)/2 - rect.Width/2 , y + buttonSprite.GetGlobalBounds().Height/2 - rect.Height/2);
 }
