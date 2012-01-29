@@ -21,6 +21,7 @@ void Hero::reset(Level* level)
 {
     level->reset();
     sprite.SetPosition(20, 50);
+    currentState = 2;
 }
 
 bool Hero::tryMove(Level* level, float x, float y)
@@ -31,7 +32,7 @@ bool Hero::tryMove(Level* level, float x, float y)
         return false;
     sf::FloatRect intersection;
 
-    for(int i = 0; i < level->entities.size(); i++)
+    for(unsigned i = 0; i < level->entities.size(); i++)
     {
         sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
         if(rect1.Intersects(rect2) && !level->entities[i]->dead)
@@ -44,19 +45,22 @@ bool Hero::tryMove(Level* level, float x, float y)
             else
             {
                 reset(level);
-                currentState = 2;
             }
         }
     }
 
     //check collision with level->tiles
-    for(int j = 0; j < level->tiles.size(); j++)
+    for(unsigned j = 0; j < level->tiles.size(); j++)
     {
         if(!level->tiles[j].transparent)
         {
             sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))
             {
+                if(level->tiles[j].kill) //killing tile
+                {
+                    reset(level);
+                }
                 if(!level->tiles[j].platform)
                 {
                     return false;
@@ -147,6 +151,7 @@ void Hero::handle(const sf::Event& event)
             }
             break;
         }
+        default: break;
     }
 }
 

@@ -6,17 +6,7 @@
 #include "Globals.h"
 #include "tinyxml/tinyxml.h"
 #include "Entity.h"
-
-class Object{
-    public:
-        int GetPropertyInt(std::string name);
-        float GetPropertyFloat(std::string name);
-        std::string GetPropertyString(std::string name);
-        std::string name;
-        std::string type;
-        sf::Rect <int> rect;
-        std::map <std::string, std::string> properties;//All properties of the object. Values are stored as strings and mapped by strings(names provided in editor).
-};
+#include "Cannon.h"
 
 class Tile;
 
@@ -28,15 +18,17 @@ class Level
         void update(int frameTime);
         void handle(const sf::Event& event);
         void reset();
-        int accumulator;
+
         virtual ~Level();
         void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
         int width;
         int height;
+        std::vector<Object*> objects;
         std::vector<Entity*> entities;
         std::vector<Tile> tiles;
 
     private:
+        int accumulator;
         int firstTileID;
         sf::Rect <float> drawingBounds;
         sf::Texture tilesetImage;
