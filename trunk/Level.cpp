@@ -11,9 +11,10 @@ Level::Level(const std::string& filename) : accumulator(0)
     class propSet
     {
     public:
-        propSet(bool transparent = false, bool platform = false) : transparent(transparent), platform(platform) {};
+        propSet(bool transparent = false, bool platform = false, bool kill = false) : transparent(transparent), platform(platform), kill(kill) {};
         bool transparent;
         bool platform;
+        bool kill;
     };
     std::map<int, propSet> pMap;
 
@@ -43,7 +44,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     while(tile != NULL)
     {
         int id = atoi(tile->Attribute("id"));
-        bool transparent = false, platform = false;
+        bool transparent = false, platform = false, kill = false;
         TiXmlElement* properties = tile->FirstChildElement("properties");
         TiXmlElement* prop = properties->FirstChildElement("property");
         while(prop != NULL)
@@ -53,9 +54,11 @@ Level::Level(const std::string& filename) : accumulator(0)
                 platform = true;
             else if(name == "transparent")
                 transparent = true;
+            else if(name == "kill")
+                kill = true;
             prop = prop->NextSiblingElement("property");
         }
-        pMap[id] = propSet(transparent, platform);
+        pMap[id] = propSet(transparent, platform, kill);
         tile = tile->NextSiblingElement("tile");
     }
 
@@ -135,9 +138,9 @@ Level::Level(const std::string& filename) : accumulator(0)
 
                     //add tile to layer
                     if(pMap.find(subRectToUse) != pMap.end())
-                        tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform));
+                        tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform, pMap[subRectToUse].kill));
                     else
-                        tiles.push_back(Tile(sprite, false, false));
+                        tiles.push_back(Tile(sprite, false, false, false));
                 }
             }
 
@@ -184,7 +187,9 @@ Level::Level(const std::string& filename) : accumulator(0)
                 int GID = atoi(objectElement->Attribute("gid"));
                 int subRectToUse = GID - firstTileID;
 
-                /*TiXmlElement *properties;
+                bool monster = false, cannon = false;
+
+                TiXmlElement *properties;
                 properties = objectElement->FirstChildElement("properties");
                 if (properties != NULL)
                 {
@@ -194,21 +199,25 @@ Level::Level(const std::string& filename) : accumulator(0)
                     {
                         while(prop)
                         {
-                            std::string propertyName = prop->Attribute("name");
-                            std::string propertyValue = prop->Attribute("value");
-
-                            object.properties[propertyName] = propertyValue;
+                            std::string name = prop->Attribute("name");
+                            if(name == "monster")
+                                monster = true;
+                            else if(name == "cannon")
+                                cannon = true;
 
                             prop = prop->NextSiblingElement("property");
                         }
                     }
-                }*/
+                }
 
                 sf::Sprite sprite;
                 sprite.SetTexture(tilesetImage);
                 sprite.SetTextureRect(subRects[subRectToUse]);
                 sprite.SetPosition(x, HEIGHT - height*(TILESIZE+1) + y - 2);
-                entities.push_back(new Entity(sprite));
+                if(monster)
+                    entities.push_back(new Entity(sprite));
+                else if(cannon)
+                    objects.push_back(new Cannon(sprite));
 
                 objectElement = objectElement->NextSiblingElement("object");
             }
@@ -229,7 +238,7 @@ void Level::handle(const sf::Event& event)
 
 void Level::reset()
 {
-    for(int i = 0; i < entities.size(); i++)
+    for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->dead = false;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
 }
@@ -242,6 +251,10 @@ void Level::update(int frameTime)
         for(unsigned i = 0; i < entities.size(); i++)
         {
             entities[i]->update(tiles);
+        }
+        for(unsigned i = 0; i < objects.size(); i++)
+        {
+            objects[i]->update();
         }
         accumulator -= timeStep;
     }
@@ -265,6 +278,10 @@ void Level::draw(sf::RenderWindow* window)
     for(unsigned i = 0; i < entities.size(); i++)
     {
         entities[i]->draw(window);
+    }
+    for(unsigned i = 0; i < objects.size(); i++)
+    {
+        objects[i]->draw(window);
     }
 }
 
