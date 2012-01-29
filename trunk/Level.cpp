@@ -217,7 +217,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                 if(monster)
                     entities.push_back(new Entity(sprite));
                 else if(cannon)
-                    objects.push_back(new Cannon(sprite));
+                    cannons.push_back(new Cannon(sprite));
 
                 objectElement = objectElement->NextSiblingElement("object");
             }
@@ -240,6 +240,11 @@ void Level::reset()
 {
     for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->dead = false;
+
+    std::list<Bullet*>::iterator itr = bullets.begin();
+    while(itr != bullets.end())
+        bullets.erase(itr++);
+
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
 }
 
@@ -252,9 +257,22 @@ void Level::update(int frameTime)
         {
             entities[i]->update(tiles);
         }
-        for(unsigned i = 0; i < objects.size(); i++)
+        for(unsigned i = 0; i < cannons.size(); i++)
         {
-            objects[i]->update();
+            cannons[i]->update(bullets);
+        }
+        std::list<Bullet*>::iterator itr = bullets.begin();
+        while(itr != bullets.end())
+        {
+            if((*itr)->dead)
+            {
+                bullets.erase(itr++);
+                continue;
+            }
+            else
+                (*itr)->update();
+
+            itr++;
         }
         accumulator -= timeStep;
     }
@@ -279,10 +297,16 @@ void Level::draw(sf::RenderWindow* window)
     {
         entities[i]->draw(window);
     }
-    for(unsigned i = 0; i < objects.size(); i++)
+    for(unsigned i = 0; i < cannons.size(); i++)
     {
-        objects[i]->draw(window);
+        cannons[i]->draw(window);
     }
+        std::list<Bullet*>::iterator itr = bullets.begin();
+        while(itr != bullets.end())
+        {
+            (*itr)->draw(window);
+            itr++;
+        }
 }
 
 void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) //rect = hero sprite
