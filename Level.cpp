@@ -11,10 +11,11 @@ Level::Level(const std::string& filename) : accumulator(0)
     class propSet
     {
     public:
-        propSet(bool transparent = false, bool platform = false, bool kill = false) : transparent(transparent), platform(platform), kill(kill) {};
+        propSet(bool transparent = false, bool platform = false, bool kill = false, bool coin = false) : transparent(transparent), platform(platform), kill(kill), coin(coin) {};
         bool transparent;
         bool platform;
         bool kill;
+        bool coin;
     };
     std::map<int, propSet> pMap;
 
@@ -44,7 +45,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     while(tile != NULL)
     {
         int id = atoi(tile->Attribute("id"));
-        bool transparent = false, platform = false, kill = false;
+        bool transparent = false, platform = false, kill = false, coin = false;
         TiXmlElement* properties = tile->FirstChildElement("properties");
         TiXmlElement* prop = properties->FirstChildElement("property");
         while(prop != NULL)
@@ -56,9 +57,11 @@ Level::Level(const std::string& filename) : accumulator(0)
                 transparent = true;
             else if(name == "kill")
                 kill = true;
+            else if(name == "coin")
+                coin = true;
             prop = prop->NextSiblingElement("property");
         }
-        pMap[id] = propSet(transparent, platform, kill);
+        pMap[id] = propSet(transparent, platform, kill, coin);
         tile = tile->NextSiblingElement("tile");
     }
 
@@ -138,7 +141,12 @@ Level::Level(const std::string& filename) : accumulator(0)
 
                     //add tile to layer
                     if(pMap.find(subRectToUse) != pMap.end())
-                        tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform, pMap[subRectToUse].kill));
+                    {
+                        if(!pMap[subRectToUse].coin)
+                            tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform, pMap[subRectToUse].kill));
+                        else
+                            coins.push_back(new Coin(sprite));
+                    }
                     else
                         tiles.push_back(Tile(sprite, false, false, false));
                 }
@@ -245,12 +253,18 @@ void Level::reset()
     {
         cannons[i]->reset();
     }
-
+    for(unsigned i = 0; i < coins.size(); i++)
+    {
+        coins[i]->taken = false;
+    }
+    hud.reset();
+    points = 0;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
 }
 
 void Level::update(int frameTime)
 {
+    hud.update();
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
@@ -289,6 +303,7 @@ void Level::draw(sf::RenderWindow* window)
     window->Draw(background);
     sf::View view = window->GetView();
     sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize()) + sf::Vector2f(16, 0)); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
+    hud.draw(window, viewport);
     for(unsigned i = 0; i < tiles.size(); i++)
     {
         if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top))
@@ -302,12 +317,16 @@ void Level::draw(sf::RenderWindow* window)
     {
         cannons[i]->draw(window);
     }
-        std::list<Bullet*>::iterator itr = bullets.begin();
-        while(itr != bullets.end())
-        {
-            (*itr)->draw(window);
-            itr++;
-        }
+    for(unsigned i = 0; i < coins.size(); i++)
+    {
+        coins[i]->draw(window);
+    }
+    std::list<Bullet*>::iterator itr = bullets.begin();
+    while(itr != bullets.end())
+    {
+        (*itr)->draw(window);
+        itr++;
+    }
 }
 
 void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) //rect = hero sprite

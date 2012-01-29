@@ -43,8 +43,12 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Bullet.cpp" />
+		<Unit filename="Bullet.h" />
 		<Unit filename="Button.cpp" />
 		<Unit filename="Button.h" />
+		<Unit filename="Cannon.cpp" />
+		<Unit filename="Cannon.h" />
 		<Unit filename="Entity.cpp" />
 		<Unit filename="Entity.h" />
 		<Unit filename="Game.cpp" />

@@ -31,6 +31,21 @@ bool Hero::tryMove(Level* level, float x, float y)
     if(rect1.Left < 0 || rect1.Left + rect1.Width > level->width*TILESIZE)
         return false;
     sf::FloatRect intersection;
+    if(rect1.Top > HEIGHT)
+        reset(level);
+
+    for(unsigned i = 0; i < level->coins.size(); i++)
+    {
+        if(!level->coins[i]->taken)
+        {
+            sf::FloatRect rect2 = level->coins[i]->sprite.GetGlobalBounds();
+            if(rect1.Intersects(rect2) && !level->coins[i]->taken)
+            {
+                level->coins[i]->taken = true;
+                points++;
+            }
+        }
+    }
 
     for(unsigned i = 0; i < level->entities.size(); i++)
     {
@@ -52,7 +67,7 @@ bool Hero::tryMove(Level* level, float x, float y)
     for(std::list<Bullet*>::iterator itr = level->bullets.begin(); itr != level->bullets.end(); itr++)
     {
         sf::FloatRect rect2((*itr)->sprite.GetGlobalBounds());
-        if(rect1.Intersects(rect2, intersection))
+        if(rect1.Intersects(rect2, intersection) && !(*itr)->dead)
         {
             if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
             {
@@ -65,6 +80,13 @@ bool Hero::tryMove(Level* level, float x, float y)
                 return false;
             }
         }
+    }
+
+    for(unsigned i = 0; i < level->cannons.size(); i++)
+    {
+        sf::FloatRect rect2(level->cannons[i]->sprite.GetGlobalBounds());
+        if(rect1.Intersects(rect2))
+            return false;
     }
 
     //check collision with level->tiles
