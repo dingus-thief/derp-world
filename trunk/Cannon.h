@@ -13,6 +13,7 @@ class Cannon
 
         void update(std::list<Bullet*>& bullets);
         void draw(sf::RenderWindow* window);
+        void reset();
 
     private:
         sf::Clock bulletClock;

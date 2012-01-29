@@ -49,6 +49,24 @@ bool Hero::tryMove(Level* level, float x, float y)
         }
     }
 
+    for(std::list<Bullet*>::iterator itr = level->bullets.begin(); itr != level->bullets.end(); itr++)
+    {
+        sf::FloatRect rect2((*itr)->sprite.GetGlobalBounds());
+        if(rect1.Intersects(rect2, intersection))
+        {
+            if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
+            {
+                vely = -1.5;
+                (*itr)->dead = true;
+            }
+            else
+            {
+                reset(level);
+                return false;
+            }
+        }
+    }
+
     //check collision with level->tiles
     for(unsigned j = 0; j < level->tiles.size(); j++)
     {
@@ -76,6 +94,8 @@ bool Hero::tryMove(Level* level, float x, float y)
             }
         }
     }
+
+
     sprite.Move(x, y);
     return true;
 }

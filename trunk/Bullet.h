@@ -12,9 +12,10 @@ class Bullet
         void update();
         float distance;
         bool dead;
+        sf::Sprite sprite;
 
     private:
-        sf::Sprite sprite;
+
 };
 
 #endif // BULLET_H
