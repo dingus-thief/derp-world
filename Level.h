@@ -7,6 +7,7 @@
 #include "tinyxml/tinyxml.h"
 #include "Entity.h"
 #include "Cannon.h"
+#include "Bullet.h"
 
 class Tile;
 
@@ -23,8 +24,9 @@ class Level
         void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
         int width;
         int height;
-        std::vector<Object*> objects;
+        std::vector<Cannon*> cannons;
         std::vector<Entity*> entities;
+        std::list<Bullet*> bullets;
         std::vector<Tile> tiles;
 
     private:
