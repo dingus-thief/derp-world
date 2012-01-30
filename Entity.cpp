@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), x(0.3), dead(false)
+Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), dead(false), x(0.3)
 {
     dir = LEFT;
     previousDir = LEFT;

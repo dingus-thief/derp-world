@@ -2,23 +2,26 @@
 #define MENUSTATE_H
 #include <SFML/Audio.hpp>
 #include "Globals.h"
-#include "State.h"
+#include "GameState.h"
 #include "Button.h"
 
 class MenuState : public State
 {
     public:
-        MenuState(sf::RenderWindow* window);
-
         void handle();
         void update();
         void render();
 
+        void pause(){};
+        void resume(){};
+
+        MenuState(sf::RenderWindow* window, Game* game);
+
     private:
+
         void clicked(float x, float y);
         void checkButtons(float x, float y);
 
-        sf::RenderWindow* Window;
         sf::Sprite background;
         Button* playButton;
         Button* optionsButton;

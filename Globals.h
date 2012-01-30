@@ -4,23 +4,23 @@
 #include "SoundManager.h"
 #include <SFML/Audio.hpp>
 #include <Thor/Animation/FrameAnimation.hpp>
+#include <Thor/Time/StopWatch.hpp>
 #include <random>
 
 const int WIDTH = 400;
 const int HEIGHT = 300;
 const int TILESIZE = 16;
 const int timeStep = 5;
-const float G = 0.05;
 
 //extern std::mt19937 rng;
 
-extern thor::FrameAnimation::Ptr explosion;
-extern sf::Clock Clock;
+extern thor::StopWatch Clock;
 
 extern int points;
 extern int lives;
 extern int currentState;
 
+extern bool gameover;
 extern bool dead;
 extern bool Pause;
 extern bool colliding[4];

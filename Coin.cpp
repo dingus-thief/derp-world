@@ -1,6 +1,6 @@
 #include "Coin.h"
 
-Coin::Coin(const sf::Sprite& sprite) : sprite(sprite), taken(false)
+Coin::Coin(const sf::Sprite& sprite) : taken(false), sprite(sprite)
 {
     //ctor
 }

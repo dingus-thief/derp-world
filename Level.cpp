@@ -6,6 +6,7 @@
 
 Level::Level(const std::string& filename) : accumulator(0)
 {
+    std::cout<<"contrusctor level\n";
     background.SetTexture(rm.getImage("backgroundGame.png"));
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
     class propSet
@@ -239,6 +240,16 @@ Level::Level(const std::string& filename) : accumulator(0)
     return;
 }
 
+Level::~Level()
+{
+    std::cout<<"destrusctor level\n";
+    cannons.clear();
+    bullets.clear();
+    tiles.clear();
+    coins.clear();
+    entities.clear();
+}
+
 void Level::handle(const sf::Event& event)
 {
 
@@ -246,6 +257,7 @@ void Level::handle(const sf::Event& event)
 
 void Level::reset()
 {
+    accumulator = 0;
     for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->dead = false;
     bullets.clear();
@@ -260,6 +272,7 @@ void Level::reset()
     hud.reset();
     points = 0;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
+    gameover = false;
 }
 
 void Level::update(int frameTime)
@@ -293,10 +306,6 @@ void Level::update(int frameTime)
     }
 }
 
-Level::~Level()
-{
-    //dtor
-}
 
 void Level::draw(sf::RenderWindow* window)
 {

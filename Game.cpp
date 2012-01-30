@@ -1,23 +1,11 @@
 #include "Game.h"
 #include <sstream>
+#include <iostream>
+#include "State.h"
 
-Game::Game()
+Game::Game() : running(true)
 {
-    Window.Create(sf::VideoMode(WIDTH, HEIGHT, 32), "Unnamed Platformer");
-    Window.SetFramerateLimit(100);
 
-    GameState* gState = new GameState(&Window);
-    states.push_back(gState);
-
-    MenuState* mState = new MenuState(&Window);
-    states.push_back(mState);
-
-    GameoverState* goState = new GameoverState(&Window);
-    states.push_back(goState);
-
-    icon.LoadFromFile("Data/Images/Ball.png");
-    Window.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
-    Window.EnableVerticalSync(false);
 }
 
 Game::~Game()
@@ -25,12 +13,58 @@ Game::~Game()
     //dtor
 }
 
-void Game::run()
+void Game::changeState(State* state)
 {
-    while(Window.IsOpen())
-    {
-        states[currentState]->handle();
-        states[currentState]->update();
-        states[currentState]->render();
-    }
+
+	// cleanup the current state
+	if ( !states.empty() ) {
+		states.pop_back();
+	}
+	// store and init the new state
+	states.push_back(state);
+}
+
+void Game::pushState(State* state)
+{
+	// pause current state
+	if ( !states.empty() ) {
+	    std::cout<<"pushing state\n";
+		states.back()->pause();
+	}
+	// store and init the new state
+	states.push_back(state);
+	std::cout<<"init new state\n";
+}
+
+void Game::popState()
+{
+	// cleanup the current state
+	if ( !states.empty() ) {
+	    std::cout<<"popping state\n";
+        states.pop_back();
+	}
+
+	// resume previous state
+	if ( !states.empty() ) {
+		states.back()->resume();
+	}
+}
+
+
+void Game::handle()
+{
+	// let the state handle events
+	states.back()->handle();
+}
+
+void Game::update()
+{
+	// let the state update the game
+	states.back()->update();
+}
+
+void Game::draw()
+{
+	// let the state draw the screen
+	states.back()->render();
 }

@@ -14,6 +14,16 @@ void HUD::reset()
     timer.Reset(true);
 }
 
+void HUD::pause()
+{
+    timer.Stop();
+}
+
+void HUD::resume()
+{
+    timer.Start();
+}
+
 HUD::~HUD()
 {
     //dtor

@@ -10,7 +10,7 @@ class HUD
         ~HUD();
         void update();
         void pause();
-        void start();
+        void resume();
         void reset();
         void draw(sf::RenderWindow* window, const sf::FloatRect& rect);
 

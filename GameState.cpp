@@ -1,6 +1,8 @@
 #include "GameState.h"
+#include <iostream>
 
-GameState::GameState(sf::RenderWindow* window) : Window(window)
+
+GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
 {
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
     sf::Vector2f halfsize(WIDTH, HEIGHT);
@@ -8,37 +10,65 @@ GameState::GameState(sf::RenderWindow* window) : Window(window)
     view = view_;
     hero = new Hero;
     level = new Level("Data/Levels/demo.tmx");
-    currentLvl = 0;
+    std::cout<<"constructor GameState finished";
+}
+
+GameState::~GameState()
+{
+    //level->reset();
+    delete hero;
+    delete level;
 }
 
 
 void GameState::update()
 {
-    int frameTime = Clock.Restart().AsMilliseconds();
+    int frameTime = Clock.GetElapsedTime().AsMilliseconds();
+    Clock.Reset(true);
     hero->update(frameTime, level);
     level->update(frameTime);
+    if(gameover)
+    {
+        gameover = false;
+        std::cout<<"gameover\n";
+        game->pushState(new GameoverState(window, game));
+    }
 }
 
-void GameState::reset()
+void GameState::init()
 {
 
 }
 
-void GameState::updateText()
+void GameState::cleanup()
 {
-    scoreText.SetString("Score: " + to_string(points));
+
+}
+
+void GameState::resume()
+{
+    level->hud.resume();
+    Clock.Start();
+}
+
+void GameState::pause()
+{
+    level->hud.pause();
+    Clock.Stop();
 }
 
 void GameState::handle()
 {
+    std::cout<<"handle\n";
+
     sf::Event Event;
-    while (Window->PollEvent(Event))
+    while (window->PollEvent(Event))
     {
         level->handle(Event);
         switch (Event.Type)
         {
         case sf::Event::Closed:
-            Window->Close();
+            window->Close();
             break;
         case sf::Event::KeyPressed:
         {
@@ -48,7 +78,8 @@ void GameState::handle()
             }
             if(Event.Key.Code == sf::Keyboard::Escape)
             {
-                currentState = 1;
+                game->popState();
+                return;
             }
         }
         case sf::Event::MouseButtonPressed:
@@ -64,9 +95,10 @@ void GameState::handle()
 
 void GameState::render()
 {
-    Window->Clear(sf::Color(100, 100, 240));
-    level->adjustView(Window, hero->sprite);
-    level->draw(Window);
-    hero->draw(Window);
-    Window->Display();
+    std::cout<<"render\n";
+    window->Clear(sf::Color(100, 100, 240));
+    level->adjustView(window, hero->sprite);
+    level->draw(window);
+    hero->draw(window);
+    window->Display();
 }

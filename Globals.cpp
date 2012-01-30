@@ -5,7 +5,7 @@
 ResourceManager rm;
 SoundManager sm;
 thor::FrameAnimation::Ptr explosion(new thor::FrameAnimation);
-sf::Clock Clock;
+thor::StopWatch Clock;
 
 
 //std::mt19937 rng;
@@ -15,7 +15,7 @@ int lives = 3;
 int currentState = 1;
 bool colliding[4] = {false, false, false, false};
 
-
+bool gameover = false;
 bool dead = false;
 bool Pause = false;
 

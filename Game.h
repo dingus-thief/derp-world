@@ -1,23 +1,27 @@
 #ifndef GAME_H
 #define GAME_H
 #include <vector>
-#include "State.h"
-#include "GameState.h"
-#include "MenuState.h"
-#include "GameoverState.h"
 #include "Globals.h"
 #include <SFML/Graphics.hpp>
+
+class State;
 
 class Game
 {
     public:
         Game();
         ~Game();
-        void run();
+        void draw();
+        void handle();
+        void update();
+
+        void changeState(State* state);
+        void pushState(State* state);
+        void popState();
+
+        bool running;
 
     private:
-        sf::RenderWindow Window;
-        sf::Image icon;
         std::vector<State*> states;
 
 };

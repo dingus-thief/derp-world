@@ -16,6 +16,7 @@ class Tile;
 class Level
 {
     friend class Hero;
+    friend class GameState;
 
     public:
         Level(const std::string& filename);
@@ -24,7 +25,7 @@ class Level
         void handle(const sf::Event& event);
         void reset();
 
-        virtual ~Level();
+        ~Level();
         void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
 
 
