@@ -20,9 +20,6 @@ class GameoverState : public State
         GameoverState(sf::RenderWindow* window, Game* game);
 
     private:
-        static GameoverState* m_GameoverState;
-
-        bool running;
 
         sf::Text gameoverText;
         sf::Text scoreText;

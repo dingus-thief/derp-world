@@ -7,16 +7,14 @@ const float ACCEL = 1.f/19.f;
 
 Hero::Hero() : vely(0), falling(true),  speed(1),  dir(DIR::IDLE), walking(false), jumping(false), aniAccu(0), accumulator(0), previousDir(DIR::IDLE)
 {
-    std::cout<<"contstructor hero start\n";
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(0, 0, 14, ch));
     sprite.SetPosition(20, 50);
-    std::cout<<"constructor hero finish\n";
 }
 
 Hero::~Hero()
 {
-    std::cout<<"destructor hero start\n";
+
 }
 
 void Hero::reset(Level* level)
