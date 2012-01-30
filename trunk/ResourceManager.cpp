@@ -34,25 +34,6 @@ Tile& ResourceManager::getTile(const std::string& tileID)
     return *tile;
 }
 
-/*void ResourceManager::loadTileset(const std::string& fileName)
-{
-    std::ifstream file;
-    file.open(fileName.c_str());
-    std::string name;
-    bool transparent;
-    std::string buffer;
-    int texAmount;
-    file >> texAmount;
-    getline(file, buffer); //take buffer
-    for(int i = 0; i < texAmount; i++)
-    {
-        file >> name;
-        file >> transparent;
-        std::cout<<name<<" "<<transparent<<"\n";
-        getline(file, buffer);
-        tiles[boost::lexical_cast<std::string>(i+1)] = new Tile(getImage(name), transparent);
-    }
-}*/
 
 void ResourceManager::storeImageAs(const std::string& fileName, const std::string& alias)
 {

@@ -10,7 +10,6 @@ GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
     view = view_;
     hero = new Hero;
     level = new Level("Data/Levels/demo.tmx");
-    std::cout<<"constructor GameState finished";
 }
 
 GameState::~GameState()
@@ -59,7 +58,6 @@ void GameState::pause()
 
 void GameState::handle()
 {
-    std::cout<<"handle\n";
 
     sf::Event Event;
     while (window->PollEvent(Event))
@@ -95,7 +93,6 @@ void GameState::handle()
 
 void GameState::render()
 {
-    std::cout<<"render\n";
     window->Clear(sf::Color(100, 100, 240));
     level->adjustView(window, hero->sprite);
     level->draw(window);

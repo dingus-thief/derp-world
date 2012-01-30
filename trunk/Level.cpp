@@ -6,7 +6,6 @@
 
 Level::Level(const std::string& filename) : accumulator(0)
 {
-    std::cout<<"contrusctor level\n";
     background.SetTexture(rm.getImage("backgroundGame.png"));
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
     class propSet
@@ -242,7 +241,6 @@ Level::Level(const std::string& filename) : accumulator(0)
 
 Level::~Level()
 {
-    std::cout<<"destrusctor level\n";
     cannons.clear();
     bullets.clear();
     tiles.clear();

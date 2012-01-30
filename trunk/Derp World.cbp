@@ -49,6 +49,8 @@
 		<Unit filename="Button.h" />
 		<Unit filename="Cannon.cpp" />
 		<Unit filename="Cannon.h" />
+		<Unit filename="Coin.cpp" />
+		<Unit filename="Coin.h" />
 		<Unit filename="Entity.cpp" />
 		<Unit filename="Entity.h" />
 		<Unit filename="Game.cpp" />
@@ -59,6 +61,8 @@
 		<Unit filename="GameoverState.h" />
 		<Unit filename="Globals.cpp" />
 		<Unit filename="Globals.h" />
+		<Unit filename="HUD.cpp" />
+		<Unit filename="HUD.h" />
 		<Unit filename="Hero.cpp" />
 		<Unit filename="Hero.h" />
 		<Unit filename="Level.cpp" />
