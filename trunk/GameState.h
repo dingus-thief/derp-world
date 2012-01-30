@@ -8,28 +8,35 @@
 #include "Level.h"
 #include "GameoverState.h"
 #include <sstream>
+#include <iostream>
 
 
 class GameState : public State
 {
     public:
-        GameState(sf::RenderWindow* window);
+        ~GameState();
         void render();
         void update();
         void handle();
 
+        void pause();
+        void resume();
+
+        void init();
+        void cleanup();
+
+
+        GameState(sf::RenderWindow* window, Game* game);
+
     private:
-        void updateText();
+
         void reset();
 
         Level* level;
         Hero* hero;
         sf::View view;
-        sf::RenderWindow* Window;
-        sf::Sprite background;
-        sf::Sprite heart;
-        sf::Text scoreText;
         int currentLvl;
+
 };
 
 #endif // GAMESTATE_H

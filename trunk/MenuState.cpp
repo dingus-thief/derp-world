@@ -1,8 +1,8 @@
 #include "MenuState.h"
 
-MenuState::MenuState(sf::RenderWindow* window)
+
+MenuState::MenuState(sf::RenderWindow* window, Game* game) : State(game, window)
 {
-    Window = window;
     background.SetTexture(rm.getImage("menuBackground.png"));
     playButton = new Button("Play", 0, 50);
     optionsButton = new Button("Options", 0, 110);
@@ -19,19 +19,19 @@ void MenuState::update()
 void MenuState::handle()
 {
     sf::Event Event;
-    while (Window->PollEvent(Event))
+    while (window->PollEvent(Event))
     {
         switch (Event.Type)
         {
             case sf::Event::Closed:
-                Window->Close();
+                window->Close();
                 break;
             case sf::Event::MouseMoved:
-                    checkButtons(Window->ConvertCoords(sf::Mouse::GetPosition(*Window).x, 0).x, Window->ConvertCoords(0, sf::Mouse::GetPosition(*Window).y).y);
+                    checkButtons(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
                 break;
             case sf::Event::MouseButtonPressed:
                 if(Event.MouseButton.Button == sf::Mouse::Left)
-                    clicked(Window->ConvertCoords(sf::Mouse::GetPosition(*Window).x, 0).x, Window->ConvertCoords(0, sf::Mouse::GetPosition(*Window).y).y);
+                    clicked(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
                 break;
             default: break;
         }
@@ -48,18 +48,18 @@ void MenuState::checkButtons(float x, float y)
 void MenuState::clicked(float x, float y)
 {
     if(playButton->isClicked(x, y))
-        currentState = 0;
+        game->pushState(new GameState(window, game));
     if(quitButton->isClicked(x, y))
-        Window->Close();
+        window->Close();
 }
 
 void MenuState::render()
 {
-    Window->SetView(Window->GetDefaultView());
-    Window->Clear(sf::Color::White);
-    Window->Draw(background);
-    playButton->draw(Window);
-    optionsButton->draw(Window);
-    quitButton->draw(Window);
-    Window->Display();
+    window->SetView(window->GetDefaultView());
+    window->Clear(sf::Color::White);
+    window->Draw(background);
+    playButton->draw(window);
+    optionsButton->draw(window);
+    quitButton->draw(window);
+    window->Display();
 }

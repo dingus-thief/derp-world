@@ -14,8 +14,13 @@ class Hero
         void draw(sf::RenderWindow* window);
         void update(int frameTime, Level* level);
         void handle(const sf::Event& event);
-        bool tryMove(Level* level, float x, float y);
+        void reset(Level* level);
         sf::Sprite sprite;
+
+
+    private:
+        bool tryMove(Level* level, float x, float y);
+        void handleAnimation(int frameTime);
         bool jumping;
         bool falling;
         bool walking;
@@ -25,11 +30,6 @@ class Hero
         DIR previousDir;
         float vely;
         float speed;
-
-    private:
-        void handleAnimation(int frameTime);
-        void reset(Level* level);
-
 
 };
 

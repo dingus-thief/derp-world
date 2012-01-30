@@ -8,15 +8,22 @@
 class GameoverState : public State
 {
     public:
-        GameoverState(sf::RenderWindow* window);
         ~GameoverState();
-        void run();
 
+        void update();
+        void render();
+        void handle();
+
+        void pause(){};
+        void resume(){};
+
+        GameoverState(sf::RenderWindow* window, Game* game);
 
     private:
+        static GameoverState* m_GameoverState;
+
         bool running;
 
-        sf::RenderWindow* window;
         sf::Text gameoverText;
         sf::Text scoreText;
         Button* quitButton;
@@ -25,9 +32,7 @@ class GameoverState : public State
         void checkButtons(float x, float y);
         void clicked(float x, float y);
 
-        void update();
-        void render();
-        void handle();
+
 
 };
 

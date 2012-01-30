@@ -5,23 +5,24 @@
 const float MAXVEL = 4.0f;
 const float ACCEL = 1.f/19.f;
 
-Hero::Hero() : vely(0), falling(true),  speed(1),  dir(DIR::IDLE), walking(false)
+Hero::Hero() : vely(0), falling(true),  speed(1),  dir(DIR::IDLE), walking(false), jumping(false), aniAccu(0), accumulator(0), previousDir(DIR::IDLE)
 {
+    std::cout<<"contstructor hero start\n";
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(0, 0, 14, ch));
     sprite.SetPosition(20, 50);
+    std::cout<<"constructor hero finish\n";
 }
 
 Hero::~Hero()
 {
-    //dtor
+    std::cout<<"destructor hero start\n";
 }
 
 void Hero::reset(Level* level)
 {
     level->reset();
     sprite.SetPosition(20, 50);
-    currentState = 2;
 }
 
 bool Hero::tryMove(Level* level, float x, float y)
@@ -32,7 +33,11 @@ bool Hero::tryMove(Level* level, float x, float y)
         return false;
     sf::FloatRect intersection;
     if(rect1.Top > HEIGHT)
+    {
         reset(level);
+        gameover = true;
+        return false;
+    }
 
     for(unsigned i = 0; i < level->coins.size(); i++)
     {
@@ -60,6 +65,8 @@ bool Hero::tryMove(Level* level, float x, float y)
             else
             {
                 reset(level);
+                gameover = true;
+                return false;
             }
         }
     }
@@ -77,6 +84,7 @@ bool Hero::tryMove(Level* level, float x, float y)
             else
             {
                 reset(level);
+                gameover = true;
                 return false;
             }
         }
@@ -100,6 +108,8 @@ bool Hero::tryMove(Level* level, float x, float y)
                 if(level->tiles[j].kill) //killing tile
                 {
                     reset(level);
+                    gameover = true;
+                    return false;
                 }
                 if(!level->tiles[j].platform)
                 {

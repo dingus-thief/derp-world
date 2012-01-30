@@ -1,6 +1,6 @@
 #include "GameoverState.h"
 
-GameoverState::GameoverState(sf::RenderWindow* window) : window(window)
+GameoverState::GameoverState(sf::RenderWindow* window, Game* game) : State(game, window)
 {
     gameoverText = rm.getText("Game Over", 20);
     setCenter(gameoverText, 60);
@@ -8,15 +8,6 @@ GameoverState::GameoverState(sf::RenderWindow* window) : window(window)
     setCenter(scoreText, 100);
     playAgainButton = new Button("Play again", 0, 150);
     quitButton = new Button("Quit", 0, 210);
-}
-
-void GameoverState::run()
-{
-    while(running)
-    {
-        handle();
-        render();
-    }
 }
 
 GameoverState::~GameoverState()
@@ -35,13 +26,11 @@ void GameoverState::clicked(float x, float y)
 {
     if(playAgainButton->isClicked(x, y))
     {
-        running = false;
-        currentState = 0;
+        game->popState();
     }
     if(quitButton->isClicked(x, y))
     {
-        running = false;
-        currentState = 1;
+
     }
 }
 
