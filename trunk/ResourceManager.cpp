@@ -17,6 +17,7 @@ sf::Texture& ResourceManager::getImage(std::string name)
     else
     {
         sf::Texture* img = new sf::Texture();
+        //img->SetSmooth(false);
 
         if(!img->LoadFromFile("Data/Images/" + name))
             blackList.push_back(name);
