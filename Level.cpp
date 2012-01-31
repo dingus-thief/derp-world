@@ -347,18 +347,6 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     if(herosprite.GetGlobalBounds().Left + WIDTH/2 > width*TILESIZE)
         outOfScreenX = true;
 
-    if(herosprite.GetGlobalBounds().Top + herosprite.GetGlobalBounds().Height + HEIGHT/2 > (height-4)*TILESIZE)
-        outOfScreenY = true;
-
-
-    if(!outOfScreenY)
-    {
-        sf::View view = window->GetView();
-        view.SetCenter(window->GetView().GetCenter().x, herosprite.GetGlobalBounds().Top + TILESIZE*4);
-        window->SetView(view);
-    }
-
-
     if(!outOfScreenX)
     {
         sf::View view = window->GetView();
@@ -366,5 +354,23 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
         background.SetPosition(herosprite.GetPosition().x - WIDTH/2, background.GetPosition().y);
         window->SetView(view);
     }
+
+    if(herosprite.GetGlobalBounds().Top + 78 > HEIGHT/2)
+    {
+        sf::View view = window->GetView();
+        view.SetCenter(window->GetView().GetCenter().x, HEIGHT/2);
+        window->SetView(view);
+        return;
+    }
+
+    if(!outOfScreenY);
+    {
+        sf::View view = window->GetView();
+        view.SetCenter(window->GetView().GetCenter().x, herosprite.GetGlobalBounds().Top+ 78);
+        window->SetView(view);
+    }
+
+
+
 
 }
