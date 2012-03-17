@@ -20,7 +20,7 @@ void Entity::kill()
 void Entity::update(const std::vector<Tile>& tiles)
 {
     //out of screen? (=end/start of level)
-    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height);
+    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height-1);
     sf::FloatRect intersection;
     //check collision with tiles
     for(unsigned j = 0; j < tiles.size(); j++) // check for the sides
@@ -38,9 +38,9 @@ void Entity::update(const std::vector<Tile>& tiles)
         }
     }
     if(x > 0) // going right
-        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left + 16, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
+        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left + TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
     else //going left
-        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left - 16, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
+        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left - TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
     bool willFall = true;
     for(unsigned j = 0; j < tiles.size(); j++) // check for the sides
     {

@@ -1,15 +1,44 @@
 #include "Hero.h"
 #include <iostream>
-#define ch 16
+#define ch 48
 
-const float MAXVEL = 4.0f;
+const float MAXVEL = 5.0f;
 const float ACCEL = 1.f/19.f;
 
-Hero::Hero() : vely(0), falling(true),  speed(1),  dir(DIR::IDLE), walking(false), jumping(false), aniAccu(0), accumulator(0), previousDir(DIR::IDLE)
+Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0)
 {
+    oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
-    sprite.SetTextureRect(sf::IntRect(0, 0, 14, ch));
+    sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
     sprite.SetPosition(20, 50);
+
+    leftRunAnim = thor::FrameAnimation::Create();
+    for(int i = 0; i < 42*5; i += 42)
+        leftRunAnim->AddFrame(1.f, sf::IntRect(i, 42, 42, 42));
+
+    rightRunAnim = thor::FrameAnimation::Create();
+    for(int i = 0; i < 42*5; i += 42)
+        rightRunAnim->AddFrame(1.f, sf::IntRect(i, 0, 42, 42));
+
+    rightJumpAnim = thor::FrameAnimation::Create();
+    rightJumpAnim->AddFrame(1.f, sf::IntRect(5*42, 0, 42, 42));
+
+    leftJumpAnim = thor::FrameAnimation::Create();
+    leftJumpAnim->AddFrame(1.f, sf::IntRect(5*42, 42, 42, 42));
+
+    leftIdleAnim = thor::FrameAnimation::Create();
+    leftIdleAnim->AddFrame(1.f, sf::IntRect(2*42, 42, 42, 42));
+
+    rightIdleAnim = thor::FrameAnimation::Create();
+    rightIdleAnim->AddFrame(1.f, sf::IntRect(2*42, 0, 42, 42));
+
+    animator.AddAnimation("leftRunning", leftRunAnim, sf::Seconds(0.5));
+    animator.AddAnimation("rightRunning", rightRunAnim, sf::Seconds(0.5));
+    animator.AddAnimation("rightJumping", rightJumpAnim, sf::Seconds(5));
+    animator.AddAnimation("leftJumping", leftJumpAnim, sf::Seconds(5));
+    animator.AddAnimation("rightIdle", rightIdleAnim, sf::Seconds(5));
+    animator.AddAnimation("leftIdle", leftIdleAnim, sf::Seconds(5));
+
 }
 
 Hero::~Hero()
@@ -23,6 +52,81 @@ void Hero::reset(Level* level)
     sprite.SetPosition(20, 50);
 }
 
+
+void Hero::shoot()
+{
+    if(oldState.dir == DIR::LEFT)
+        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top, -1));
+    else
+        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top, 1));
+}
+
+void Hero::update(int frameTime, Level* level)
+{
+    accumulator += frameTime;
+    while(accumulator >= timeStep)
+    {
+        if(dy < MAXVEL) //apply acceleration
+            dy += ACCEL;
+        else dy = MAXVEL;
+
+        //Gravity
+        if(tryMove(level, 0, 2/3 + dy))
+            currState.falling = true;
+        else
+        {
+            if(2/3 + dy > 0) //we were going down
+            {
+                currState.jumping = false;
+                currState.falling = false;
+            }
+            dy = 0;
+        }
+
+        //Sprinting
+        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::LShift))
+            speed = 1.7;
+        else
+            speed = 1.3;
+
+
+        //KEYBOARD INPUT
+        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !currState.falling)
+        {
+            dy = -4.f;
+            currState.jumping = true;
+        }
+
+        if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
+        {
+            dx = -0.5;
+            tryMove(level, dx*speed, 0);
+            currState.dir = DIR::LEFT;
+            if(!currState.jumping && !currState.falling)
+                currState.walking = true;
+        }
+        else if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Right))
+        {
+            dx = 0.5;
+            tryMove(level, dx*speed, 0);
+            currState.dir = DIR::RIGHT;
+            if(!currState.jumping && !currState.falling)
+                currState.walking = true;
+        }
+
+        for(auto itr = spells.begin(); itr != spells.end(); itr++)
+        {
+            (*itr)->update();
+        }
+
+        accumulator -= timeStep;
+    }
+
+    //handle animation
+    handleAnimation(frameTime);
+    deleteDestroyedSpells();
+}
+
 bool Hero::tryMove(Level* level, float x, float y)
 {
     //out of screen? (=end/start of level)
@@ -30,85 +134,23 @@ bool Hero::tryMove(Level* level, float x, float y)
     if(rect1.Left < 0 || rect1.Left + rect1.Width > level->width*TILESIZE)
         return false;
     sf::FloatRect intersection;
-    if(rect1.Top > HEIGHT)
-    {
-        reset(level);
-        gameover = true;
-        return false;
-    }
-
-    for(unsigned i = 0; i < level->coins.size(); i++)
-    {
-        if(!level->coins[i]->taken)
-        {
-            sf::FloatRect rect2 = level->coins[i]->sprite.GetGlobalBounds();
-            if(rect1.Intersects(rect2) && !level->coins[i]->taken)
-            {
-                level->coins[i]->taken = true;
-                points++;
-            }
-        }
-    }
-
-    for(unsigned i = 0; i < level->entities.size(); i++)
-    {
-        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
-        if(rect1.Intersects(rect2) && !level->entities[i]->dead)
-        {
-            if(rect1.Top + rect1.Height - y < rect2.Top) //we were going down
-            {
-                level->entities[i]->kill();
-                vely = -1.5;
-            }
-            else
-            {
-                reset(level);
-                gameover = true;
-                return false;
-            }
-        }
-    }
-
-    for(std::list<Bullet*>::iterator itr = level->bullets.begin(); itr != level->bullets.end(); itr++)
-    {
-        sf::FloatRect rect2((*itr)->sprite.GetGlobalBounds());
-        if(rect1.Intersects(rect2, intersection) && !(*itr)->dead)
-        {
-            if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
-            {
-                vely = -1.5;
-                (*itr)->dead = true;
-            }
-            else
-            {
-                reset(level);
-                gameover = true;
-                return false;
-            }
-        }
-    }
-
-    for(unsigned i = 0; i < level->cannons.size(); i++)
-    {
-        sf::FloatRect rect2(level->cannons[i]->sprite.GetGlobalBounds());
-        if(rect1.Intersects(rect2))
-            return false;
-    }
-
     //check collision with level->tiles
-    for(unsigned j = 0; j < level->tiles.size(); j++)
+    for(int j = 0; j < level->tiles.size(); j++)
     {
         if(!level->tiles[j].transparent)
         {
             sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
+            for(auto itr = spells.begin(); itr != spells.end(); itr++)
+            {
+                sf::FloatRect rect = (*itr)->getBounds();
+                if(rect.Intersects(rect2))
+                {
+                    (*itr)->onHit();
+                }
+            }
+
             if(rect1.Intersects(rect2, intersection))
             {
-                if(level->tiles[j].kill) //killing tile
-                {
-                    reset(level);
-                    gameover = true;
-                    return false;
-                }
                 if(!level->tiles[j].platform)
                 {
                     return false;
@@ -124,68 +166,38 @@ bool Hero::tryMove(Level* level, float x, float y)
             }
         }
     }
+    for(int i = 0; i < level->entities.size(); i++)
+    {
+        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
 
+        for(auto itr = spells.begin(); itr != spells.end(); itr++)
+        {
+            sf::FloatRect rect = (*itr)->getBounds();
+            if(rect.Intersects(rect2))
+            {
+                level->entities[i]->kill();
+                (*itr)->onHit();
+            }
+        }
 
+        if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
+        {
+            reset(level);
+            gameover = true;
+            return false;
+        }
+    }
     sprite.Move(x, y);
     return true;
 }
 
-void Hero::update(int frameTime, Level* level)
+void Hero::deleteDestroyedSpells()
 {
-    accumulator += frameTime;
-    while(accumulator >= timeStep)
+    for(auto itr = spells.begin(); itr != spells.end(); itr++)
     {
-        if(vely < MAXVEL) //apply acceleration
-            vely += ACCEL;
-        else vely = MAXVEL;
-
-        //Gravity
-        if(tryMove(level, 0, 2/3 + vely))
-            falling = true;
-        else
-        {
-            if(2/3 + vely > 0) //we were going down
-            {
-                jumping = false;
-                falling = false;
-            }
-            vely = 0;
-        }
-
-        //Sprinting
-        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::LShift))
-            speed = 1.5;
-        else
-            speed = 1.0;
-
-
-        //KEYBOARD INPUT
-        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !falling)
-        {
-            vely = -3.f;
-            jumping = true;
-        }
-        dir = DIR::IDLE;
-        if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
-        {
-            tryMove(level, -0.5*speed, 0);
-            dir = DIR::LEFT;
-            if(!jumping && !falling)
-                walking = true;
-        }
-        else if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Right))
-        {
-            tryMove(level, 0.5*speed, 0);
-            dir = DIR::RIGHT;
-            if(!jumping && !falling)
-                walking = true;
-        }
-
-        accumulator -= timeStep;
+        if((*itr)->destroyed)
+            itr = spells.erase(itr);
     }
-
-    //handle animation
-    handleAnimation(frameTime);
 }
 
 
@@ -193,50 +205,62 @@ void Hero::handle(const sf::Event& event)
 {
     switch(event.Type)
     {
-        case sf::Event::KeyPressed:
+    case sf::Event::KeyPressed:
+    {
+        if(event.Key.Code == sf::Keyboard::Space)
         {
-            if(event.Key.Code == sf::Keyboard::Space)
-            {
 
-            }
-            break;
         }
-        default: break;
+        break;
+    }
+    default:
+        break;
     }
 }
 
 void Hero::handleAnimation(int frameTime)
 {
-    aniAccu += frameTime;
-    if(dir != DIR::IDLE)
-        previousDir = dir;
-    int y = 0;
-    if(previousDir == DIR::LEFT)
+    if(currState != oldState && dx != 0)
     {
-        y = ch+1;
-    }
-    if(jumping || falling)
-    {
-        sprite.SetTextureRect(sf::IntRect(29, y, 14, ch));
-    }
-    else if(dir != DIR::IDLE)
-    {
-        if(aniAccu < 150/speed)
-            sprite.SetTextureRect(sf::IntRect(0, y, 14, ch));
-        else if(aniAccu < 300/speed)
+        animator.StopAnimation();
+        if(!currState.falling && !currState.jumping)
         {
-            sprite.SetTextureRect(sf::IntRect(15, y, 14, ch));
+            if(currState.dir == DIR::LEFT)
+                animator.PlayAnimation("leftRunning", true);
+            else
+                animator.PlayAnimation("rightRunning", true);
         }
+
         else
-            aniAccu -= 300/speed;
+        {
+            if(currState.dir == DIR::LEFT)
+                animator.PlayAnimation("leftJumping", true);
+            else
+                animator.PlayAnimation("rightJumping", true);
+        }
+        oldState = currState;
     }
-    else //idle
+    else if(dx == 0 && currState != oldState)
     {
-        sprite.SetTextureRect(sf::IntRect(0, y, 14, ch));
+        animator.StopAnimation();
+        if(oldState.dir == DIR::LEFT)
+            animator.PlayAnimation("leftIdle", true);
+        else if(oldState.dir == DIR::RIGHT)
+            animator.PlayAnimation("rightIdle", true);
+
+        oldState = currState;
     }
+
+    animator.Update(sf::Milliseconds(frameTime));
+    animator.Animate(sprite);
 }
 
 void Hero::draw(sf::RenderWindow* window)
 {
     window->Draw(sprite);
+
+    for(auto itr = spells.begin(); itr != spells.end(); itr++)
+    {
+        (*itr)->draw(window);
+    }
 }

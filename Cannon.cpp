@@ -20,7 +20,7 @@ void Cannon::update(std::list<Bullet*>& bullets)
     if(bulletClock.GetElapsedTime().AsMilliseconds() > 3000)
     {
         sf::FloatRect rect = sprite.GetGlobalBounds();
-        bullets.push_back(new Bullet(rect.Left, rect.Top));
+        bullets.push_back(new Bullet(rect.Left, rect.Top, 0.5));
         bulletClock.Restart();
     }
 }

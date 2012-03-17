@@ -221,7 +221,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                 sf::Sprite sprite;
                 sprite.SetTexture(tilesetImage);
                 sprite.SetTextureRect(subRects[subRectToUse]);
-                sprite.SetPosition(x, HEIGHT - height*(TILESIZE+1) + y - 2);
+                sprite.SetPosition(x, HEIGHT - height*(TILESIZE+2) + y + 8);
                 if(monster)
                     entities.push_back(new Entity(sprite));
                 else if(cannon)
@@ -307,13 +307,16 @@ void Level::update(int frameTime)
 
 void Level::draw(sf::RenderWindow* window)
 {
-    window->Draw(background);
+
     sf::View view = window->GetView();
     sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize()) + sf::Vector2f(16, 0)); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
+
+    background.SetPosition(viewport.Left+16, viewport.Top);
+    window->Draw(background);
     hud.draw(window, viewport);
     for(unsigned i = 0; i < tiles.size(); i++)
     {
-        if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top))
+        if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top) || viewport.Intersects(tiles[i].sprite.GetGlobalBounds()))
             tiles[i].draw(window);
     }
     for(unsigned i = 0; i < entities.size(); i++)
@@ -338,6 +341,7 @@ void Level::draw(sf::RenderWindow* window)
 
 void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) //rect = hero sprite
 {
+
     bool outOfScreenY = false;
     bool outOfScreenX = false;
 
@@ -350,15 +354,14 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     if(!outOfScreenX)
     {
         sf::View view = window->GetView();
-        view.SetCenter(herosprite.GetPosition().x, window->GetView().GetCenter().y);
-        background.SetPosition(herosprite.GetPosition().x - WIDTH/2, background.GetPosition().y);
+        view.SetCenter(static_cast<int>(herosprite.GetPosition().x), static_cast<int>(window->GetView().GetCenter().y));
         window->SetView(view);
     }
 
     if(herosprite.GetGlobalBounds().Top + 78 > HEIGHT/2)
     {
         sf::View view = window->GetView();
-        view.SetCenter(window->GetView().GetCenter().x, HEIGHT/2);
+        view.SetCenter(static_cast<int>(window->GetView().GetCenter().x), static_cast<int>(HEIGHT/2));
         window->SetView(view);
         return;
     }
@@ -366,11 +369,7 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     if(!outOfScreenY);
     {
         sf::View view = window->GetView();
-        view.SetCenter(window->GetView().GetCenter().x, herosprite.GetGlobalBounds().Top+ 78);
+        view.SetCenter(static_cast<int>(window->GetView().GetCenter().x), static_cast<int>(herosprite.GetGlobalBounds().Top+ 78));
         window->SetView(view);
     }
-
-
-
-
 }

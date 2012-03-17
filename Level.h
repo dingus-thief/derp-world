@@ -30,6 +30,8 @@ class Level
 
 
     private:
+        void shoot();
+
         HUD hud;
         int accumulator;
         int firstTileID;

@@ -21,7 +21,6 @@ class State
         Game* game;
         sf::RenderWindow* window;
 
-
     private:
 };
 
