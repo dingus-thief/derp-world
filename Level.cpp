@@ -137,7 +137,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                     sf::Sprite sprite;//sprite for the tile
                     sprite.SetTexture(tilesetImage);
                     sprite.SetTextureRect(subRects[subRectToUse]);
-                    sprite.SetPosition(x * TILESIZE, HEIGHT - height*TILESIZE + y*TILESIZE);
+                    sprite.SetPosition(x * TILESIZE, y * TILESIZE);
 
                     //add tile to layer
                     if(pMap.find(subRectToUse) != pMap.end())
@@ -207,7 +207,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                         {
                             std::string name = prop->Attribute("name");
                             if(name == "skeleton")
-                                entities.push_back(new Skeleton(x, y));
+                                entities.push_back(new Skeleton(x, y - 10));
 
                             prop = prop->NextSiblingElement("property");
                         }
@@ -338,6 +338,20 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     if(herosprite.GetGlobalBounds().Left + WIDTH/2 > width*TILESIZE)
         outOfScreenX = true;
 
+    if(herosprite.GetGlobalBounds().Top + HEIGHT/2 > height*TILESIZE)
+    {
+        sf::View view = window->GetView();
+        view.SetCenter(view.GetCenter().x, static_cast<int>(height*TILESIZE - HEIGHT/2));
+        window->SetView(view);
+    }
+    else
+    {
+        sf::View view = window->GetView();
+        view.SetCenter(view.GetCenter().x, static_cast<int>(herosprite.GetGlobalBounds().Top));
+        window->SetView(view);
+    }
+
+
     if(!outOfScreenX)
     {
         sf::View view = window->GetView();
@@ -345,18 +359,4 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
         window->SetView(view);
     }
 
-    if(herosprite.GetGlobalBounds().Top + 78 > HEIGHT/2)
-    {
-        sf::View view = window->GetView();
-        view.SetCenter(static_cast<int>(window->GetView().GetCenter().x), static_cast<int>(HEIGHT/2));
-        window->SetView(view);
-        return;
-    }
-
-    if(!outOfScreenY);
-    {
-        sf::View view = window->GetView();
-        view.SetCenter(static_cast<int>(window->GetView().GetCenter().x), static_cast<int>(herosprite.GetGlobalBounds().Top+ 78));
-        window->SetView(view);
-    }
 }
