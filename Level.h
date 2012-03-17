@@ -5,7 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include "Globals.h"
 #include "tinyxml/tinyxml.h"
-#include "Entity.h"
+#include "Skeleton.h"
 #include "Cannon.h"
 #include "Bullet.h"
 #include "Coin.h"

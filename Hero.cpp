@@ -147,7 +147,7 @@ void Hero::spellCollisions(Level* level)
         }
         for(int i = 0; i < level->entities.size(); i++)
         {
-            sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
+            sf::FloatRect rect2 = level->entities[i]->getBounds();
             if(rect.Intersects(rect2) && !level->entities[i]->dead)
             {
                 (*itr)->onHit();
@@ -190,7 +190,7 @@ bool Hero::tryMove(Level* level, float x, float y)
     }
     for(int i = 0; i < level->entities.size(); i++)
     {
-        sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
+        sf::FloatRect rect2 = level->entities[i]->getBounds();
 
         if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
         {

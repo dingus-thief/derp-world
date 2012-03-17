@@ -1,10 +1,16 @@
 #include "Entity.h"
 
-Entity::Entity(const sf::Sprite& sprite) : sprite(sprite), dead(false), x(0.3)
+Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), x(0.3), damage(damage), health(health)
 {
+    sprite.SetTexture(rm.getImage(name));
+    sprite.SetPosition(x, y);
     dir = LEFT;
     previousDir = LEFT;
     vely = 5;
+    rightAttackAnim = thor::FrameAnimation::Create();
+    leftAttackAnim = thor::FrameAnimation::Create();
+    rightRunAnim = thor::FrameAnimation::Create();
+    leftRunAnim = thor::FrameAnimation::Create();
 }
 
 Entity::~Entity()
@@ -19,9 +25,24 @@ void Entity::kill()
 
 void Entity::update(const std::vector<Tile>& tiles)
 {
+    move(tiles);
+    handleAnimation();
+    return;
+}
+
+sf::FloatRect Entity::getBounds()
+{
+    return sprite.GetGlobalBounds();
+}
+
+void Entity::move(const std::vector<Tile>& tiles)
+{
     //out of screen? (=end/start of level)
     sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height-1);
     sf::FloatRect intersection;
+
+    dir  = previousDir;
+
     //check collision with tiles
     for(unsigned j = 0; j < tiles.size(); j++) // check for the sides
     {
@@ -57,13 +78,25 @@ void Entity::update(const std::vector<Tile>& tiles)
         x = -x;
 
     sprite.Move(x, 0);
-    return;
 }
 
 void Entity::handleAnimation()
 {
-    aniAccu += timeStep;
+    if(dir != previousDir)
+    {
+        animator.StopAnimation();
+        if(dir == DIR::LEFT)
+        {
+            animator.PlayAnimation("leftRunning");
+        }
+        else
+            animator.PlayAnimation("rightRunning");
 
+    }
+    previousDir = dir;
+
+    animator.Update(sf::Milliseconds(timeStep));
+    animator.Animate(sprite);
 }
 
 void Entity::draw(sf::RenderWindow* window)
