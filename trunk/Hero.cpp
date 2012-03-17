@@ -56,9 +56,9 @@ void Hero::reset(Level* level)
 void Hero::shoot()
 {
     if(oldState.dir == DIR::LEFT)
-        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top, -1));
+        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left, sprite.GetGlobalBounds().Top+10, -1));
     else
-        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top, 1));
+        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, 1));
 }
 
 void Hero::update(int frameTime, Level* level)
@@ -96,7 +96,8 @@ void Hero::update(int frameTime, Level* level)
             dy = -4.f;
             currState.jumping = true;
         }
-
+        dx = 0;
+        currState.idle = false;
         if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
         {
             dx = -0.5;
@@ -113,6 +114,7 @@ void Hero::update(int frameTime, Level* level)
             if(!currState.jumping && !currState.falling)
                 currState.walking = true;
         }
+        else currState.idle = true;
 
         for(auto itr = spells.begin(); itr != spells.end(); itr++)
         {
@@ -124,7 +126,35 @@ void Hero::update(int frameTime, Level* level)
 
     //handle animation
     handleAnimation(frameTime);
+    spellCollisions(level);
     deleteDestroyedSpells();
+}
+
+void Hero::spellCollisions(Level* level)
+{
+    for(auto itr = spells.begin(); itr != spells.end(); itr++)
+    {
+        sf::FloatRect rect = (*itr)->getBounds();
+        //tiles
+        for(int i = 0; i < level->tiles.size(); i++)
+        {
+            if(!level->tiles[i].transparent)
+            {
+                sf::FloatRect rect2 = level->tiles[i].sprite.GetGlobalBounds();
+                if(rect.Intersects(rect2))
+                    (*itr)->onHit();
+            }
+        }
+        for(int i = 0; i < level->entities.size(); i++)
+        {
+            sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
+            if(rect.Intersects(rect2) && !level->entities[i]->dead)
+            {
+                (*itr)->onHit();
+                level->entities[i]->kill();
+            }
+        }
+    }
 }
 
 bool Hero::tryMove(Level* level, float x, float y)
@@ -140,14 +170,6 @@ bool Hero::tryMove(Level* level, float x, float y)
         if(!level->tiles[j].transparent)
         {
             sf::FloatRect rect2(level->tiles[j].sprite.GetGlobalBounds());
-            for(auto itr = spells.begin(); itr != spells.end(); itr++)
-            {
-                sf::FloatRect rect = (*itr)->getBounds();
-                if(rect.Intersects(rect2))
-                {
-                    (*itr)->onHit();
-                }
-            }
 
             if(rect1.Intersects(rect2, intersection))
             {
@@ -169,16 +191,6 @@ bool Hero::tryMove(Level* level, float x, float y)
     for(int i = 0; i < level->entities.size(); i++)
     {
         sf::FloatRect rect2 = level->entities[i]->sprite.GetGlobalBounds();
-
-        for(auto itr = spells.begin(); itr != spells.end(); itr++)
-        {
-            sf::FloatRect rect = (*itr)->getBounds();
-            if(rect.Intersects(rect2))
-            {
-                level->entities[i]->kill();
-                (*itr)->onHit();
-            }
-        }
 
         if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
         {
@@ -220,12 +232,12 @@ void Hero::handle(const sf::Event& event)
 
 void Hero::handleAnimation(int frameTime)
 {
-    if(currState != oldState && dx != 0)
+    if(currState != oldState && !currState.idle)
     {
         animator.StopAnimation();
         if(!currState.falling && !currState.jumping)
         {
-            if(currState.dir == DIR::LEFT)
+            if(dx < 0)
                 animator.PlayAnimation("leftRunning", true);
             else
                 animator.PlayAnimation("rightRunning", true);
@@ -233,14 +245,14 @@ void Hero::handleAnimation(int frameTime)
 
         else
         {
-            if(currState.dir == DIR::LEFT)
+            if(dx < 0)
                 animator.PlayAnimation("leftJumping", true);
             else
                 animator.PlayAnimation("rightJumping", true);
         }
         oldState = currState;
     }
-    else if(dx == 0 && currState != oldState)
+    else if(currState != oldState)
     {
         animator.StopAnimation();
         if(oldState.dir == DIR::LEFT)

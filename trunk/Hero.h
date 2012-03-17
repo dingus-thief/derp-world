@@ -9,14 +9,15 @@
 
 struct HeroState
 {
-    HeroState() : dir(DIR::RIGHT), walking(false), falling(true), jumping(false){};
+    HeroState() : dir(DIR::RIGHT), walking(false), falling(true), jumping(false), idle(false){};
     bool operator!=(const HeroState &other) const {
-    return !(dir == other.dir && walking == other.walking && jumping == other.jumping && falling == other.falling);
+    return !(dir == other.dir && walking == other.walking && jumping == other.jumping && falling == other.falling && idle == other.idle);
   }
     DIR dir;
     bool walking;
     bool falling;
     bool jumping;
+    bool idle;
 };
 
 class Hero
@@ -36,7 +37,7 @@ class Hero
         bool tryMove(Level* level, float x, float y);
         void handleAnimation(int frameTime);
         void deleteDestroyedSpells();
-        void revert();
+        void spellCollisions(Level* level);
         int accumulator;
         HeroState currState, oldState;
         thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim;
