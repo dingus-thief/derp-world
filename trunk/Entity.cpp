@@ -5,7 +5,7 @@ Entity::Entity(const std::string& name, int health, int damage, int x, int y) : 
     sprite.SetTexture(rm.getImage(name));
     sprite.SetPosition(x, y);
     dir = LEFT;
-    previousDir = LEFT;
+    previousDir = RIGHT;
     vely = 5;
     rightAttackAnim = thor::FrameAnimation::Create();
     leftAttackAnim = thor::FrameAnimation::Create();
@@ -75,7 +75,11 @@ void Entity::move(const std::vector<Tile>& tiles)
         }
     }
     if(willFall)
+    {
         x = -x;
+        if(x > 0) dir = RIGHT;
+        else dir = LEFT;
+    }
 
     sprite.Move(x, 0);
 }
@@ -87,10 +91,10 @@ void Entity::handleAnimation()
         animator.StopAnimation();
         if(dir == DIR::LEFT)
         {
-            animator.PlayAnimation("leftRunning");
+            animator.PlayAnimation("leftRunning", true);
         }
         else
-            animator.PlayAnimation("rightRunning");
+            animator.PlayAnimation("rightRunning", true);
 
     }
     previousDir = dir;
