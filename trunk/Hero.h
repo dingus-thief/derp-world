@@ -4,7 +4,20 @@
 #include <Thor/Animation.hpp>
 #include "Globals.h"
 #include "Level.h"
+#include "FireSpell.h"
 #include <Thor/Time/Timer.hpp>
+
+struct HeroState
+{
+    HeroState() : dir(DIR::RIGHT), walking(false), falling(true), jumping(false){};
+    bool operator!=(const HeroState &other) const {
+    return !(dir == other.dir && walking == other.walking && jumping == other.jumping && falling == other.falling);
+  }
+    DIR dir;
+    bool walking;
+    bool falling;
+    bool jumping;
+};
 
 class Hero
 {
@@ -15,20 +28,22 @@ class Hero
         void update(int frameTime, Level* level);
         void handle(const sf::Event& event);
         void reset(Level* level);
+        void shoot();
         sf::Sprite sprite;
 
 
     private:
         bool tryMove(Level* level, float x, float y);
         void handleAnimation(int frameTime);
-        bool jumping;
-        bool falling;
-        bool walking;
-        int aniAccu;
+        void deleteDestroyedSpells();
+        void revert();
         int accumulator;
-        DIR dir;
-        DIR previousDir;
-        float vely;
+        HeroState currState, oldState;
+        thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim;
+        thor::Animator animator;
+        std::list<Spell*> spells;
+        float dx;
+        float dy;
         float speed;
 
 };

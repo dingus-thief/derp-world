@@ -9,7 +9,7 @@ GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
     sf::View view_(center, halfsize);
     view = view_;
     hero = new Hero;
-    level = new Level("Data/Levels/demo.tmx");
+    level = new Level("Data/Levels/32x32.tmx");
 }
 
 GameState::~GameState()
@@ -70,9 +70,9 @@ void GameState::handle()
             break;
         case sf::Event::KeyPressed:
         {
-            if(Event.Key.Code == sf::Keyboard::P)
+            if(Event.Key.Code == sf::Keyboard::Up)
             {
-
+                hero->shoot();
             }
             if(Event.Key.Code == sf::Keyboard::Escape)
             {

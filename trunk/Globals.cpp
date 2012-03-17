@@ -13,7 +13,6 @@ thor::StopWatch Clock;
 int points = 0;
 int lives = 3;
 int currentState = 1;
-bool colliding[4] = {false, false, false, false};
 
 bool gameover = false;
 bool dead = false;

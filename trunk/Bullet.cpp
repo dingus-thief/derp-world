@@ -1,6 +1,6 @@
 #include "Bullet.h"
 
-Bullet::Bullet(int x, int y) : distance(0), dead(false)
+Bullet::Bullet(int x, int y, int delta) : distance(0), dead(false)
 {
     sprite.SetPosition(x, y);
     sprite.SetTexture(rm.getImage("Bullet.png"));
@@ -18,7 +18,7 @@ void Bullet::draw(sf::RenderWindow* window)
 
 void Bullet::update()
 {
-    sprite.Move(-0.5, 0);
+    sprite.Move(delta, 0);
     distance += 0.5;
     if(distance > 350)
         dead = true;
