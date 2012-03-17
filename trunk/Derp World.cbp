@@ -53,6 +53,8 @@
 		<Unit filename="Coin.h" />
 		<Unit filename="Entity.cpp" />
 		<Unit filename="Entity.h" />
+		<Unit filename="FireSpell.cpp" />
+		<Unit filename="FireSpell.h" />
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
 		<Unit filename="GameState.cpp" />
@@ -73,6 +75,8 @@
 		<Unit filename="ResourceManager.h" />
 		<Unit filename="SoundManager.cpp" />
 		<Unit filename="SoundManager.h" />
+		<Unit filename="Spell.cpp" />
+		<Unit filename="Spell.h" />
 		<Unit filename="State.cpp" />
 		<Unit filename="State.h" />
 		<Unit filename="Tile.cpp" />

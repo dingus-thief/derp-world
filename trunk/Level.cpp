@@ -170,6 +170,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     }
 
     //Objects
+
     TiXmlElement *objectGroupElement;
     if (map->FirstChildElement("objectgroup") != NULL)//Check that there is atleast one object layer
     {
@@ -192,10 +193,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                 }
                 int x = atoi(objectElement->Attribute("x"));
                 int y = atoi(objectElement->Attribute("y"));
-                int GID = atoi(objectElement->Attribute("gid"));
-                int subRectToUse = GID - firstTileID;
 
-                bool monster = false, cannon = false;
 
                 TiXmlElement *properties;
                 properties = objectElement->FirstChildElement("properties");
@@ -208,24 +206,13 @@ Level::Level(const std::string& filename) : accumulator(0)
                         while(prop)
                         {
                             std::string name = prop->Attribute("name");
-                            if(name == "monster")
-                                monster = true;
-                            else if(name == "cannon")
-                                cannon = true;
+                            if(name == "skeleton")
+                                entities.push_back(new Skeleton(x, y));
 
                             prop = prop->NextSiblingElement("property");
                         }
                     }
                 }
-
-                sf::Sprite sprite;
-                sprite.SetTexture(tilesetImage);
-                sprite.SetTextureRect(subRects[subRectToUse]);
-                sprite.SetPosition(x, HEIGHT - height*(TILESIZE+2) + y + 8);
-                if(monster)
-                    entities.push_back(new Entity(sprite));
-                else if(cannon)
-                    cannons.push_back(new Cannon(sprite));
 
                 objectElement = objectElement->NextSiblingElement("object");
             }
