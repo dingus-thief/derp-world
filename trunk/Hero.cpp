@@ -5,13 +5,23 @@
 const float MAXVEL = 5.0f;
 const float ACCEL = 1.f/19.f;
 
-Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0)
+Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0), currentSpell(spell::fire), mana(100), maxMana(100), health(100), maxHealth(100)
 {
     oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
     sprite.SetPosition(20, 50);
 
+    manaBar.SetFillColor(sf::Color::Blue);
+    healthBar.SetFillColor(sf::Color::Red);
+    updateBars();
+
+    initAnimation();
+
+}
+
+void Hero::initAnimation()
+{
     leftRunAnim = thor::FrameAnimation::Create();
     for(int i = 0; i < 42*5; i += 42)
         leftRunAnim->AddFrame(1.f, sf::IntRect(i, 42, 42, 42));
@@ -38,12 +48,17 @@ Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0)
     animator.AddAnimation("leftJumping", leftJumpAnim, sf::Seconds(5));
     animator.AddAnimation("rightIdle", rightIdleAnim, sf::Seconds(5));
     animator.AddAnimation("leftIdle", leftIdleAnim, sf::Seconds(5));
-
 }
 
 Hero::~Hero()
 {
 
+}
+
+void Hero::updateBars()
+{
+    manaBar.SetSize(sf::Vector2f(mana, 10));
+    healthBar.SetSize(sf::Vector2f(health, 10));
 }
 
 void Hero::reset(Level* level)
@@ -55,35 +70,60 @@ void Hero::reset(Level* level)
 
 void Hero::shoot()
 {
+    float sign = 0;
     if(oldState.dir == DIR::LEFT)
-        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left, sprite.GetGlobalBounds().Top+10, -1));
+        sign = -1;
     else
-        spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, 1));
+        sign = 1;
+    switch(currentSpell)
+    {
+        case fire:
+            if(mana - 10 > 0)
+            {
+                spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                mana -= 10;
+            }
+            break;
+        case ice:
+            if(mana - 18 > 0)
+            {
+                spells.push_back(new IceSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                mana -= 18;
+            }
+            break;
+        case green:
+            if(mana - 23 > 0)
+            {
+                spells.push_back(new GreenSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                mana -= 23;
+            }
+    }
+
 }
 
-void Hero::update(int frameTime, Level* level)
+void Hero::execGravity(Level* level)
 {
-    accumulator += frameTime;
-    while(accumulator >= timeStep)
+    if(dy < MAXVEL) //apply acceleration
+        dy += ACCEL;
+    else dy = MAXVEL;
+
+    //Gravity
+    if(tryMove(level, 0, 2/3 + dy))
+        currState.falling = true;
+    else
     {
-        if(dy < MAXVEL) //apply acceleration
-            dy += ACCEL;
-        else dy = MAXVEL;
-
-        //Gravity
-        if(tryMove(level, 0, 2/3 + dy))
-            currState.falling = true;
-        else
+        if(2/3 + dy > 0) //we were going down
         {
-            if(2/3 + dy > 0) //we were going down
-            {
-                currState.jumping = false;
-                currState.falling = false;
-            }
-            dy = 0;
+            currState.jumping = false;
+            currState.falling = false;
         }
+        dy = 0;
+    }
+}
 
-        //Sprinting
+void Hero::execInput(Level* level)
+{
+    //Sprinting
         if(sf::Keyboard::IsKeyPressed(sf::Keyboard::LShift))
             speed = 1.7;
         else
@@ -115,6 +155,17 @@ void Hero::update(int frameTime, Level* level)
                 currState.walking = true;
         }
         else currState.idle = true;
+}
+
+
+void Hero::update(int frameTime, Level* level)
+{
+    accumulator += frameTime;
+    while(accumulator >= timeStep)
+    {
+        execGravity(level);
+        execInput(level);
+
 
         for(auto itr = spells.begin(); itr != spells.end(); itr++)
         {
@@ -122,10 +173,13 @@ void Hero::update(int frameTime, Level* level)
         }
 
         accumulator -= timeStep;
+        if(mana < maxMana)
+            mana += 0.01;
     }
 
     //handle animation
     handleAnimation(frameTime);
+    updateBars();
     spellCollisions(level);
     deleteDestroyedSpells();
 }
@@ -151,7 +205,7 @@ void Hero::spellCollisions(Level* level)
             if(rect.Intersects(rect2) && !level->entities[i]->dead)
             {
                 (*itr)->onHit();
-                level->entities[i]->kill();
+                level->entities[i]->onHit((*itr)->damage);
             }
         }
     }
@@ -219,10 +273,16 @@ void Hero::handle(const sf::Event& event)
     {
     case sf::Event::KeyPressed:
     {
-        if(event.Key.Code == sf::Keyboard::Space)
-        {
+        if(event.Key.Code == sf::Keyboard::Up)
+            shoot();
 
-        }
+        if(event.Key.Code == sf::Keyboard::Num1)
+            currentSpell = spell::fire;
+        if(event.Key.Code == sf::Keyboard::Num2)
+            currentSpell = spell::ice;
+        if(event.Key.Code == sf::Keyboard::Num3)
+            currentSpell = spell::green;
+
         break;
     }
     default:
@@ -270,6 +330,14 @@ void Hero::handleAnimation(int frameTime)
 void Hero::draw(sf::RenderWindow* window)
 {
     window->Draw(sprite);
+
+    sf::View view = window->GetView();
+    sf::FloatRect rect(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2, view.GetSize().y/2)), sf::Vector2f(view.GetSize())); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
+
+    manaBar.SetPosition(rect.Left + 10, rect.Top + 10);
+    healthBar.SetPosition(rect.Left + 10, rect.Top + 25);
+    window->Draw(manaBar);
+    window->Draw(healthBar);
 
     for(auto itr = spells.begin(); itr != spells.end(); itr++)
     {

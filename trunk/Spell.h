@@ -7,7 +7,7 @@
 class Spell
 {
     public:
-        Spell(int x, int y, float delta);
+        Spell(int x, int y, float delta, unsigned damage, unsigned manacost);
         void update();
         void draw(sf::RenderWindow* window);
         sf::FloatRect getBounds(){return sprite.GetGlobalBounds();}
@@ -15,11 +15,14 @@ class Spell
         virtual void onHit() = 0;
 
         bool destroyed;
+        unsigned damage;
+        unsigned manacost;
 
     protected:
         int x;
         int y;
         float delta;
+
         sf::Sprite sprite;
         thor::Animator animator;
         thor::FrameAnimation::Ptr animation;

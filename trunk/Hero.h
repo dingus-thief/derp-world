@@ -5,6 +5,8 @@
 #include "Globals.h"
 #include "Level.h"
 #include "FireSpell.h"
+#include "GreenSpell.h"
+#include "IceSpell.h"
 #include <Thor/Time/Timer.hpp>
 
 struct HeroState
@@ -19,6 +21,8 @@ struct HeroState
     bool jumping;
     bool idle;
 };
+
+enum spell{fire, ice, green};
 
 class Hero
 {
@@ -38,15 +42,25 @@ class Hero
         void handleAnimation(int frameTime);
         void deleteDestroyedSpells();
         void spellCollisions(Level* level);
+        void initAnimation();
+        void execGravity(Level* level);
+        void execInput(Level* level);
+        void updateBars();
         int accumulator;
         HeroState currState, oldState;
         thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim;
         thor::Animator animator;
         std::list<Spell*> spells;
+        spell currentSpell;
+        int maxHealth;
+        float health;
+        int maxMana;
+        float mana;
+        sf::RectangleShape manaBar;
+        sf::RectangleShape healthBar;
         float dx;
         float dy;
         float speed;
-
 };
 
 #endif // HERO_H

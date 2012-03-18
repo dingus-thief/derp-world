@@ -58,11 +58,11 @@ void GameState::pause()
 
 void GameState::handle()
 {
-
     sf::Event Event;
     while (window->PollEvent(Event))
     {
         level->handle(Event);
+        hero->handle(Event);
         switch (Event.Type)
         {
         case sf::Event::Closed:
@@ -70,10 +70,6 @@ void GameState::handle()
             break;
         case sf::Event::KeyPressed:
         {
-            if(Event.Key.Code == sf::Keyboard::Up)
-            {
-                hero->shoot();
-            }
             if(Event.Key.Code == sf::Keyboard::Escape)
             {
                 game->popState();
