@@ -14,7 +14,7 @@ class Entity
         ~Entity();
         void update(const std::vector<Tile>& tiles);
         void draw(sf::RenderWindow* window);
-        void kill();
+        void onHit(unsigned damage);
         sf::FloatRect getBounds();
         bool dead;
 

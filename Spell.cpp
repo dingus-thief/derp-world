@@ -1,6 +1,6 @@
 #include "Spell.h"
 
-Spell::Spell(int x, int y, float delta) : destroyed(false), delta(delta)
+Spell::Spell(int x, int y, float delta, unsigned damage, unsigned manacost) : destroyed(false), delta(delta), damage(damage), manacost(manacost)
 {
     sprite.SetPosition(x, y);
 }

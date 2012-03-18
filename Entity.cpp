@@ -18,9 +18,11 @@ Entity::~Entity()
     //dtor
 }
 
-void Entity::kill()
+void Entity::onHit(unsigned damage)
 {
-    dead = true;
+    health -= damage;
+    if(health <= 0)
+        dead = true;
 }
 
 void Entity::update(const std::vector<Tile>& tiles)
