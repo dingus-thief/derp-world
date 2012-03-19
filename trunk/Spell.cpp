@@ -1,15 +1,8 @@
 #include "Spell.h"
 
-Spell::Spell(int x, int y, float delta, unsigned damage, unsigned manacost) : destroyed(false), delta(delta), damage(damage), manacost(manacost)
+Spell::Spell(int x, int y, float delta, unsigned damage, unsigned manacost, spell spellType) : destroyed(false), delta(delta), damage(damage), manacost(manacost), spellType(spellType)
 {
     sprite.SetPosition(x, y);
-}
-
-void Spell::update()
-{
-    animator.Update(sf::Milliseconds(timeStep));
-    animator.Animate(sprite);
-    sprite.Move(delta, 0);
 }
 
 Spell::~Spell()
@@ -19,5 +12,6 @@ Spell::~Spell()
 
 void Spell::draw(sf::RenderWindow* window)
 {
+    system->Draw(*window);
     window->Draw(sprite);
 }

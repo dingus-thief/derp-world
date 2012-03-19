@@ -11,10 +11,16 @@ Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0), currentSpell(spell::fire)
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
     sprite.SetPosition(20, 50);
+    spellMenu.SetTexture(rm.getImage("spellMenu.png"));
+    spellRect.SetSize(sf::Vector2f(32, 32));
+    spellRect.SetPosition(150, 0);
+    spellRect.SetOutlineColor(sf::Color::Yellow);
+    spellRect.SetOutlineThickness(3);
+    spellRect.SetFillColor(sf::Color::Transparent);
 
     manaBar.SetFillColor(sf::Color::Blue);
     healthBar.SetFillColor(sf::Color::Red);
-    updateBars();
+    updateHud();
 
     initAnimation();
 
@@ -55,7 +61,7 @@ Hero::~Hero()
 
 }
 
-void Hero::updateBars()
+void Hero::updateHud()
 {
     manaBar.SetSize(sf::Vector2f(mana, 10));
     healthBar.SetSize(sf::Vector2f(health, 10));
@@ -179,7 +185,7 @@ void Hero::update(int frameTime, Level* level)
 
     //handle animation
     handleAnimation(frameTime);
-    updateBars();
+    updateHud();
     spellCollisions(level);
     deleteDestroyedSpells();
 }
@@ -205,7 +211,7 @@ void Hero::spellCollisions(Level* level)
             if(rect.Intersects(rect2) && !level->entities[i]->dead)
             {
                 (*itr)->onHit();
-                level->entities[i]->onHit((*itr)->damage);
+                level->entities[i]->onHit((*itr)->damage, (*itr)->type());
             }
         }
     }
@@ -336,8 +342,12 @@ void Hero::draw(sf::RenderWindow* window)
 
     manaBar.SetPosition(rect.Left + 10, rect.Top + 10);
     healthBar.SetPosition(rect.Left + 10, rect.Top + 25);
+    spellMenu.SetPosition(rect.Left + 150, rect.Top + 10);
+    spellRect.SetPosition(rect.Left + 150 + currentSpell*36, rect.Top + 10);
     window->Draw(manaBar);
     window->Draw(healthBar);
+    window->Draw(spellMenu);
+    window->Draw(spellRect);
 
     for(auto itr = spells.begin(); itr != spells.end(); itr++)
     {

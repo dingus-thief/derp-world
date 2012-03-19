@@ -11,6 +11,10 @@ Skeleton::Skeleton(int x, int y) : Entity("skeleton.png", 50, 10, x, y)
     animator.AddAnimation("rightRunning", rightRunAnim, sf::Seconds(0.5));
     animator.PlayAnimation("leftRunning", true);
 
+    fireEffectiveness = 2;
+    iceEffectiveness = 0.5;
+    energyEffectiveness = 3;
+
     //sprite.SetTextureRect(sf::IntRect(32, 0, 32, 42));
 }
 

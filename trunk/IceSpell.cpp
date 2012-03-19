@@ -1,6 +1,6 @@
 #include "IceSpell.h"
 
-IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9)
+IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9, spell::ice)
 {
     sprite.SetTexture(rm.getImage("ice.png"));
     animation = thor::FrameAnimation::Create();
@@ -10,11 +10,32 @@ IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9)
     animator.AddAnimation("animation", animation, sf::Seconds(0.3));
     animator.PlayAnimation("animation", true);
 
+    particleImage.LoadFromFile("Data/Images/iceParticle.png");
+    system = new thor::ParticleSystem(thor::ResourcePtr<sf::Texture>(&particleImage));
+
+    emitter = thor::DirectionalEmitter::Create(15, sf::Seconds(0.3));
+    emitter->SetParticleVelocity(sf::Vector2f(-1, 0));
+
+    const thor::ColorGradient gradient = thor::CreateGradient(sf::Color::Blue)(1)(sf::Color::Transparent);
+    system->AddAffector(thor::ColorAffector::Create(gradient));
+
+    system->AddEmitter(emitter);
+
+
 }
 
 IceSpell::~IceSpell()
 {
-    //dtor
+
+}
+
+void IceSpell::update()
+{
+    animator.Update(sf::Milliseconds(timeStep));
+    animator.Animate(sprite);
+    emitter->SetEmissionZone(thor::Emitter::ZonePtr(new thor::Rectangle(sprite.GetGlobalBounds())));
+    system->Update(sf::Milliseconds(timeStep));
+    sprite.Move(delta, 0);
 }
 
 void IceSpell::onHit()

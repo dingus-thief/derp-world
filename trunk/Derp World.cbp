@@ -5,6 +5,15 @@
 		<Option title="Derp World" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option show_notes="0">
+			<notes>
+				<![CDATA[TODO:
+- Inventory System
+- Dialogue + friendly NPCs
+- Better Menu
+- ]]>
+			</notes>
+		</Option>
 		<Build>
 			<Target title="Debug">
 				<Option output="bin\Debug\Derp World" prefix_auto="1" extension_auto="1" />
@@ -51,6 +60,7 @@
 		<Unit filename="Cannon.h" />
 		<Unit filename="Coin.cpp" />
 		<Unit filename="Coin.h" />
+		<Unit filename="Constants.h" />
 		<Unit filename="Entity.cpp" />
 		<Unit filename="Entity.h" />
 		<Unit filename="FireSpell.cpp" />
@@ -75,6 +85,8 @@
 		<Unit filename="Level.h" />
 		<Unit filename="MenuState.cpp" />
 		<Unit filename="MenuState.h" />
+		<Unit filename="RandomEmitter.cpp" />
+		<Unit filename="RandomEmitter.h" />
 		<Unit filename="ResourceManager.cpp" />
 		<Unit filename="ResourceManager.h" />
 		<Unit filename="Skeleton.cpp" />
