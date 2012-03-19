@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <Thor/Animation.hpp>
 #include "Globals.h"
+#include "Constants.h"
 #include "Level.h"
 #include "FireSpell.h"
 #include "GreenSpell.h"
@@ -21,8 +22,6 @@ struct HeroState
     bool jumping;
     bool idle;
 };
-
-enum spell{fire, ice, green};
 
 class Hero
 {
@@ -45,7 +44,7 @@ class Hero
         void initAnimation();
         void execGravity(Level* level);
         void execInput(Level* level);
-        void updateBars();
+        void updateHud();
         int accumulator;
         HeroState currState, oldState;
         thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim;
@@ -58,6 +57,8 @@ class Hero
         float mana;
         sf::RectangleShape manaBar;
         sf::RectangleShape healthBar;
+        sf::RectangleShape spellRect;
+        sf::Sprite spellMenu;
         float dx;
         float dy;
         float speed;

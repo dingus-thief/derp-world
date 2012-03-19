@@ -10,6 +10,7 @@ class GreenSpell : public Spell
         GreenSpell(int x, int y, float delta);
         ~GreenSpell();
         void onHit();
+        void update();
     private:
 };
 

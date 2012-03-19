@@ -2,7 +2,7 @@
 #define FIRESPELL_H
 
 #include "Spell.h"
-
+#include "RandomEmitter.h"
 
 class FireSpell : public Spell
 {
@@ -10,8 +10,11 @@ class FireSpell : public Spell
         FireSpell(int x, int y, float delta);
         virtual ~FireSpell();
         void onHit();
-    protected:
+        void update();
+
     private:
+        thor::DirectionalEmitter::Ptr emitter;
+        thor::Emitter::ZonePtr zone;
 };
 
 #endif // FIRESPELL_H

@@ -18,9 +18,22 @@ Entity::~Entity()
     //dtor
 }
 
-void Entity::onHit(unsigned damage)
+void Entity::onHit(unsigned damage, spell spellType)
 {
-    health -= damage;
+    float effectiveness = 0;
+    switch(spellType)
+    {
+        case spell::fire:
+            effectiveness = fireEffectiveness;
+            break;
+        case spell::ice:
+            effectiveness = iceEffectiveness;
+            break;
+        case spell::green:
+            effectiveness = energyEffectiveness;
+            break;
+    }
+    health -= damage*effectiveness;
     if(health <= 0)
         dead = true;
 }

@@ -10,8 +10,11 @@ class IceSpell : public Spell
         IceSpell(int x, int y, float delta);
         ~IceSpell();
         void onHit();
+        void update();
 
     private:
+        thor::DirectionalEmitter::Ptr emitter;
+        thor::Emitter::ZonePtr zone;
 };
 
 #endif // ICESPELL_H
