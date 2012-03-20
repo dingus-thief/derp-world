@@ -52,6 +52,8 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="Bat.cpp" />
+		<Unit filename="Bat.h" />
 		<Unit filename="Bullet.cpp" />
 		<Unit filename="Bullet.h" />
 		<Unit filename="Button.cpp" />
@@ -85,12 +87,16 @@
 		<Unit filename="Level.h" />
 		<Unit filename="MenuState.cpp" />
 		<Unit filename="MenuState.h" />
+		<Unit filename="MovingTile.cpp" />
+		<Unit filename="MovingTile.h" />
 		<Unit filename="RandomEmitter.cpp" />
 		<Unit filename="RandomEmitter.h" />
 		<Unit filename="ResourceManager.cpp" />
 		<Unit filename="ResourceManager.h" />
 		<Unit filename="Skeleton.cpp" />
 		<Unit filename="Skeleton.h" />
+		<Unit filename="Snake.cpp" />
+		<Unit filename="Snake.h" />
 		<Unit filename="SoundManager.cpp" />
 		<Unit filename="SoundManager.h" />
 		<Unit filename="Spell.cpp" />

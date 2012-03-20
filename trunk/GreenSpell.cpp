@@ -30,3 +30,4 @@ void GreenSpell::onHit()
 {
     destroyed = true;
 }
+//HEHEH WAHCT      CCOOOOLLL HEEEE WOOOOOOWIE GEMAAAAN COOL!! MKLD!!! ma kga andere tileset gebruiken!!! kom we gaan een level maken FUUUCK ff doe maar rustig zenu :p

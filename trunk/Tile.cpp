@@ -20,3 +20,13 @@ Tile* Tile::clone()
 {
     return new Tile(*this);
 }
+
+sf::Vector2f Tile::getCenterPoint()
+{
+    return sf::Vector2f(sprite.GetGlobalBounds().Top + sprite.GetGlobalBounds().Height/2, sprite.GetGlobalBounds().Left + sprite.GetGlobalBounds().Width/2);
+}
+
+sf::FloatRect Tile::getBounds()
+{
+    return sprite.GetGlobalBounds();
+}
