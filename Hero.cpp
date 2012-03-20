@@ -5,7 +5,7 @@
 const float MAXVEL = 5.0f;
 const float ACCEL = 1.f/19.f;
 
-Hero::Hero() : speed(1), accumulator(0), dx(0), dy(0), currentSpell(spell::fire), mana(100), maxMana(100), health(100), maxHealth(100)
+Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), currentSpell(spell::fire), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false)
 {
     oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
@@ -77,30 +77,37 @@ void Hero::reset(Level* level)
 void Hero::shoot()
 {
     float sign = 0;
+    int offset = 0;
     if(oldState.dir == DIR::LEFT)
+    {
         sign = -1;
+        offset = 0;
+    }
     else
+    {
         sign = 1;
+        offset = 42;
+    }
     switch(currentSpell)
     {
         case fire:
             if(mana - 10 > 0)
             {
-                spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
                 mana -= 10;
             }
             break;
         case ice:
             if(mana - 18 > 0)
             {
-                spells.push_back(new IceSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                spells.push_back(new IceSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
                 mana -= 18;
             }
             break;
         case green:
             if(mana - 23 > 0)
             {
-                spells.push_back(new GreenSpell(sprite.GetGlobalBounds().Left + 32, sprite.GetGlobalBounds().Top+10, sign*1.5));
+                spells.push_back(new GreenSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
                 mana -= 23;
             }
     }
@@ -114,9 +121,14 @@ void Hero::execGravity(Level* level)
     else dy = MAXVEL;
 
     //Gravity
-    if(tryMove(level, 0, 2/3 + dy))
-        currState.falling = true;
-    else
+    bool fell = false;
+    if(!onPlatform)
+        if(tryMove(level, 0, 2/3 + dy))
+        {
+            currState.falling = true;
+            fell = true;
+        }
+    if(!fell)
     {
         if(2/3 + dy > 0) //we were going down
         {
@@ -129,12 +141,6 @@ void Hero::execGravity(Level* level)
 
 void Hero::execInput(Level* level)
 {
-    //Sprinting
-        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::LShift))
-            speed = 1.7;
-        else
-            speed = 1.3;
-
 
         //KEYBOARD INPUT
         if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !currState.falling)
@@ -142,6 +148,7 @@ void Hero::execInput(Level* level)
             dy = -4.f;
             currState.jumping = true;
         }
+
         dx = 0;
         currState.idle = false;
         if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
@@ -163,24 +170,23 @@ void Hero::execInput(Level* level)
         else currState.idle = true;
 }
 
-
 void Hero::update(int frameTime, Level* level)
 {
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
+        checkPlatforms(level->movingTiles); //to see if we need to move with some
         execGravity(level);
         execInput(level);
-
 
         for(auto itr = spells.begin(); itr != spells.end(); itr++)
         {
             (*itr)->update();
         }
 
+        regenerateMana();
+
         accumulator -= timeStep;
-        if(mana < maxMana)
-            mana += 0.01;
     }
 
     //handle animation
@@ -188,6 +194,38 @@ void Hero::update(int frameTime, Level* level)
     updateHud();
     spellCollisions(level);
     deleteDestroyedSpells();
+}
+
+void Hero::regenerateMana()
+{
+    if(mana < maxMana)
+        mana += 0.01;
+}
+
+void Hero::checkPlatforms(std::vector<MovingTile> platforms)
+{
+    onPlatform = false;
+    if(!currState.jumping) //don't interfere if we're jumping
+    {
+        sf::FloatRect rect1 = sprite.GetGlobalBounds();
+        rect1.Height = rect1.Height + 1; //for the x-axis platforms we need to increase our height by 1 so we get a collision
+        for(int i = 0; i < platforms.size(); i++)
+        {
+            sf::FloatRect rect2 = platforms[i].getBounds();
+
+            if(rect1.Intersects(rect2))
+            {
+                if(rect1.Top + rect1.Height + 1 >= rect2.Top) //collision on top
+                {
+                    onPlatform = true;
+                    currState.falling = false; //we landed!
+                    sprite.Move(platforms[i].getSpeed()); //move the player along the platform
+
+                    dy = 0; //falling acceleration goes back to zero (landed)
+                }
+            }
+        }
+    }
 }
 
 void Hero::spellCollisions(Level* level)
@@ -248,6 +286,20 @@ bool Hero::tryMove(Level* level, float x, float y)
             }
         }
     }
+
+    for(int i = 0; i < level->movingTiles.size(); i++)
+    {
+        sf::FloatRect rect2 = level->movingTiles[i].getBounds();
+
+        if(rect1.Intersects(rect2))
+        {
+            if(y > 0 && rect1.Top + rect1.Height - y <= rect2.Top) //we were going down
+            {
+                return false;
+            }
+        }
+    }
+
     for(int i = 0; i < level->entities.size(); i++)
     {
         sf::FloatRect rect2 = level->entities[i]->getBounds();
@@ -271,7 +323,6 @@ void Hero::deleteDestroyedSpells()
             itr = spells.erase(itr);
     }
 }
-
 
 void Hero::handle(const sf::Event& event)
 {
@@ -301,7 +352,7 @@ void Hero::handleAnimation(int frameTime)
     if(currState != oldState && !currState.idle)
     {
         animator.StopAnimation();
-        if(!currState.falling && !currState.jumping)
+        if((!currState.falling && !currState.jumping) || onPlatform)
         {
             if(dx < 0)
                 animator.PlayAnimation("leftRunning", true);

@@ -44,6 +44,8 @@ class Hero
         void initAnimation();
         void execGravity(Level* level);
         void execInput(Level* level);
+        void regenerateMana();
+        void checkPlatforms(std::vector<MovingTile> platforms);
         void updateHud();
         int accumulator;
         HeroState currState, oldState;
@@ -55,6 +57,7 @@ class Hero
         float health;
         int maxMana;
         float mana;
+        bool onPlatform;
         sf::RectangleShape manaBar;
         sf::RectangleShape healthBar;
         sf::RectangleShape spellRect;
@@ -62,6 +65,7 @@ class Hero
         float dx;
         float dy;
         float speed;
+        sf::Vector2f platformSpeed;
 };
 
 #endif // HERO_H

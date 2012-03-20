@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), x(0.3), damage(damage), health(health)
+Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), speed(0.3), damage(damage), health(health), flying(false)
 {
     sprite.SetTexture(rm.getImage(name));
     sprite.SetPosition(x, y);
@@ -38,9 +38,9 @@ void Entity::onHit(unsigned damage, spell spellType)
         dead = true;
 }
 
-void Entity::update(const std::vector<Tile>& tiles)
+void Entity::update(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks)
 {
-    move(tiles);
+    move(tiles, flyBlocks);
     handleAnimation();
     return;
 }
@@ -50,10 +50,10 @@ sf::FloatRect Entity::getBounds()
     return sprite.GetGlobalBounds();
 }
 
-void Entity::move(const std::vector<Tile>& tiles)
+void Entity::move(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks)
 {
     //out of screen? (=end/start of level)
-    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height-1);
+    sf::FloatRect rect1(sprite.GetGlobalBounds().Left+speed, sprite.GetGlobalBounds().Top, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height-1);
     sf::FloatRect intersection;
 
     dir  = previousDir;
@@ -66,37 +66,46 @@ void Entity::move(const std::vector<Tile>& tiles)
             sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
             if(rect1.Intersects(rect2, intersection))
             {
-                x = -x;
-                if(x > 0) dir = RIGHT;
-                else dir = LEFT;
+                speed = -speed;
                 break;
             }
         }
     }
-    if(x > 0) // going right
-        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left + TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
-    else //going left
-        rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left - TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
-    bool willFall = true;
-    for(unsigned j = 0; j < tiles.size(); j++) // check for the sides
+
+
+    if(!flying)
     {
-        if(!tiles[j].transparent)
+        if(speed > 0) // going right
+            rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left + TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
+        else //going left
+            rect1 = sf::FloatRect(sprite.GetGlobalBounds().Left - TILESIZE, sprite.GetGlobalBounds().Top+2, sprite.GetGlobalBounds().Width-2, sprite.GetGlobalBounds().Height);
+
+        bool willFall = true;
+        for(unsigned j = 0; j < tiles.size(); j++) // check for the sides
         {
-            sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
-            if(rect1.Intersects(rect2, intersection))
+            if(!tiles[j].transparent)
             {
-                willFall = false;
+                sf::FloatRect rect2(tiles[j].sprite.GetGlobalBounds());
+                if(rect1.Intersects(rect2, intersection))
+                    willFall = false;
             }
         }
+        if(willFall)
+            speed = -speed;
     }
-    if(willFall)
+    else
     {
-        x = -x;
-        if(x > 0) dir = RIGHT;
-        else dir = LEFT;
+        for(auto itr = flyBlocks.begin(); itr != flyBlocks.end(); itr++)
+        {
+            if(rect1.Intersects(*itr))
+                speed = -speed;
+        }
     }
 
-    sprite.Move(x, 0);
+    if(speed > 0) dir = RIGHT;
+    else dir = LEFT;
+
+    sprite.Move(speed, 0);
 }
 
 void Entity::handleAnimation()

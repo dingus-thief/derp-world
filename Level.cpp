@@ -1,6 +1,5 @@
 #include "Level.h"
 #include "Tile.h"
-#include "Entity.h"
 #include <fstream>
 #include <iostream>
 
@@ -181,37 +180,53 @@ Level::Level(const std::string& filename) : accumulator(0)
             objectElement = objectGroupElement->FirstChildElement("object");
             while (objectElement)//loop through objects
             {
-                std::string objectType;
-                if (objectElement->Attribute("type") != NULL)
-                {
-                    objectType = objectElement->Attribute("type");
-                }
-                std::string objectName;
-                if (objectElement->Attribute("name") != NULL)
-                {
-                    objectName = objectElement->Attribute("name");
-                }
                 int x = atoi(objectElement->Attribute("x"));
                 int y = atoi(objectElement->Attribute("y"));
 
-
-                TiXmlElement *properties;
-                properties = objectElement->FirstChildElement("properties");
-                if (properties != NULL)
+                std::string objectName;
+                if (objectElement->Attribute("name") != NULL)
                 {
-                    TiXmlElement *prop;
-                    prop = properties->FirstChildElement("property");
-                    if (prop != NULL)
+                    std::string name = objectElement->Attribute("name");
+                    if(name == "movingPlatform")
                     {
-                        while(prop)
+                        float deltax = 0;
+                        float deltay = 0;
+                        TiXmlElement *properties;
+                        properties = objectElement->FirstChildElement("properties");
+                        if (properties != NULL)
                         {
-                            std::string name = prop->Attribute("name");
-                            if(name == "skeleton")
-                                entities.push_back(new Skeleton(x, y - 10));
+                            TiXmlElement *prop;
+                            prop = properties->FirstChildElement("property");
+                            if (prop != NULL)
+                            {
+                                while(prop)
+                                {
+                                    std::string propName = prop->Attribute("name");
+                                    if(propName == "x")
+                                        deltax = atof(prop->Attribute("value"));
+                                    else if(propName == "y")
+                                        deltay = atof(prop->Attribute("value"));
 
-                            prop = prop->NextSiblingElement("property");
+                                    prop = prop->NextSiblingElement("property");
+                                }
+                            }
                         }
+                        sf::Sprite sprite;
+                        sprite.SetTexture(rm.getImage("platform.png"));
+                        sprite.SetPosition(x, y);
+                        movingTiles.push_back(MovingTile(sprite, false, true, false, deltax, deltay));
                     }
+
+                    else if(name == "skeleton")
+                        entities.push_back(new Skeleton(x, y - 10));
+                    else if(name == "bat")
+                        entities.push_back(new Bat(x, y+2));
+                    else if(name == "snake")
+                        entities.push_back(new Snake(x, y));
+                    else if(name == "flyBlock")
+                        flyBlocks.push_back(sf::FloatRect(x, y, 32, 32));
+                    else if(name == "platformBlock")
+                        platformBlocks.push_back(sf::FloatRect(x, y, 32, 32));
                 }
 
                 objectElement = objectElement->NextSiblingElement("object");
@@ -268,7 +283,11 @@ void Level::update(int frameTime)
     {
         for(unsigned i = 0; i < entities.size(); i++)
         {
-            entities[i]->update(tiles);
+            entities[i]->update(tiles, flyBlocks);
+        }
+        for(unsigned i = 0; i < movingTiles.size(); i++)
+        {
+            movingTiles[i].update(platformBlocks);
         }
         for(unsigned i = 0; i < cannons.size(); i++)
         {
@@ -306,6 +325,11 @@ void Level::draw(sf::RenderWindow* window)
         if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top) || viewport.Intersects(tiles[i].sprite.GetGlobalBounds()))
             tiles[i].draw(window);
     }
+    for(unsigned i = 0; i < movingTiles.size(); i++)
+    {
+        if(viewport.Contains(movingTiles[i].sprite.GetGlobalBounds().Left, movingTiles[i].sprite.GetGlobalBounds().Top) || viewport.Intersects(movingTiles[i].sprite.GetGlobalBounds()))
+            movingTiles[i].draw(window);
+    }
     for(unsigned i = 0; i < entities.size(); i++)
     {
         entities[i]->draw(window);
@@ -338,7 +362,7 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     if(herosprite.GetGlobalBounds().Left + WIDTH/2 > width*TILESIZE)
         outOfScreenX = true;
 
-    if(herosprite.GetGlobalBounds().Top + HEIGHT/2 > height*TILESIZE)
+    if(herosprite.GetGlobalBounds().Top + 50 + HEIGHT/2 > height*TILESIZE)
     {
         sf::View view = window->GetView();
         view.SetCenter(view.GetCenter().x, static_cast<int>(height*TILESIZE - HEIGHT/2));
@@ -347,7 +371,14 @@ void Level::adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite) /
     else
     {
         sf::View view = window->GetView();
-        view.SetCenter(view.GetCenter().x, static_cast<int>(herosprite.GetGlobalBounds().Top));
+        view.SetCenter(view.GetCenter().x, static_cast<int>(herosprite.GetGlobalBounds().Top + 50));
+        window->SetView(view);
+    }
+
+    if(herosprite.GetGlobalBounds().Top + 50 - HEIGHT/2 < 0)
+    {
+        sf::View view = window->GetView();
+        view.SetCenter(view.GetCenter().x, HEIGHT/2);
         window->SetView(view);
     }
 

@@ -9,7 +9,7 @@ GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
     sf::View view_(center, halfsize);
     view = view_;
     hero = new Hero;
-    level = new Level("Data/Levels/32x32.tmx");
+    level = new Level("Data/Levels/coolio.tmx");
 }
 
 GameState::~GameState()
@@ -24,8 +24,9 @@ void GameState::update()
 {
     int frameTime = Clock.GetElapsedTime().AsMilliseconds();
     Clock.Reset(true);
-    hero->update(frameTime, level);
+
     level->update(frameTime);
+    hero->update(frameTime, level);
     if(gameover)
     {
         gameover = false;

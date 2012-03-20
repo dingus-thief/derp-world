@@ -13,11 +13,12 @@ class Entity
     public:
         Entity(const std::string& name, int health, int damage, int x, int y);
         ~Entity();
-        void update(const std::vector<Tile>& tiles);
+        void update(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks);
         void draw(sf::RenderWindow* window);
         void onHit(unsigned damage, spell spellType);
         sf::FloatRect getBounds();
         bool dead;
+        bool flying;
 
     protected:
 
@@ -26,11 +27,10 @@ class Entity
         float fireEffectiveness;
         float iceEffectiveness;
         float energyEffectiveness;
-        void move(const std::vector<Tile>& tiles);
+        void move(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks);
         void handleAnimation();
         DIR previousDir;
         float speed;
-        float x;
         float vely;
         DIR dir;
 

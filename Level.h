@@ -6,7 +6,10 @@
 #include "Globals.h"
 #include "tinyxml/tinyxml.h"
 #include "Skeleton.h"
+#include "Bat.h"
+#include "Snake.h"
 #include "Cannon.h"
+#include "MovingTile.h"
 #include "Bullet.h"
 #include "Coin.h"
 #include "HUD.h"
@@ -43,8 +46,11 @@ class Level
         std::vector<Cannon*> cannons;
         std::vector<Entity*> entities;
         std::list<Bullet*> bullets;
+        std::list<sf::FloatRect> flyBlocks;
+        std::list<sf::FloatRect> platformBlocks;
         std::vector<Coin*> coins;
         std::vector<Tile> tiles;
+        std::vector<MovingTile> movingTiles;
         //std::vector <sf::Rect <int> > transparentObjects;
         //std::vector <Object> objects;
 };
