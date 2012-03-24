@@ -4,8 +4,8 @@ IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9, spell:
 {
     sprite.SetTexture(rm.getImage("ice.png"));
     animation = thor::FrameAnimation::Create();
-        animation->AddFrame(1.f, sf::IntRect(0, 0, 12, 16));
-        animation->AddFrame(1.f, sf::IntRect(13, 0, 12, 16));
+    animation->AddFrame(1.f, sf::IntRect(0, 0, 16, 16));
+    animation->AddFrame(1.f, sf::IntRect(17, 0, 16, 16));
 
     animator.AddAnimation("animation", animation, sf::Seconds(0.3));
     animator.PlayAnimation("animation", true);
@@ -18,17 +18,19 @@ IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9, spell:
 
     onHitEmitter = RandomEmitter::Create(200, sf::Milliseconds(200));
 
-    const thor::ColorGradient gradient = thor::CreateGradient(sf::Color::Blue)(1)(sf::Color::Transparent);
-    system->AddAffector(thor::ColorAffector::Create(gradient));
+    system->AddAffector(thor::FadeOutAffector::Create(1.f));
 
     system->AddEmitter(emitter);
-
-
 }
 
 IceSpell::~IceSpell()
 {
 
+}
+
+Spell* IceSpell::clone(int x, int y, float delta)
+{
+    return new IceSpell(x, y, delta);
 }
 
 void IceSpell::update()

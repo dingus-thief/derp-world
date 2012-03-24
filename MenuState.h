@@ -7,26 +7,26 @@
 
 class MenuState : public State
 {
-    public:
-        void handle();
-        void update();
-        void render();
+public:
+    void handle();
+    void update();
+    void render();
 
-        void pause(){};
-        void resume(){};
+    void pause() {};
+    void resume() {};
 
-        MenuState(sf::RenderWindow* window, Game* game);
+    MenuState(sf::RenderWindow* window, Game* game);
 
-    private:
+private:
 
-        void clicked(float x, float y);
-        void checkButtons(float x, float y);
+    void clicked(float x, float y);
+    void checkButtons(float x, float y);
 
-        sf::Sprite background;
-        Button* playButton;
-        Button* optionsButton;
-        Button* quitButton;
-        sf::Music matrix;
+    sf::Sprite background;
+    Button* playButton;
+    Button* optionsButton;
+    Button* quitButton;
+    sf::Music matrix;
 };
 
 #endif // MENUSTATE_H

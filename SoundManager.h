@@ -5,12 +5,12 @@
 
 class SoundManager
 {
-    public:
-        SoundManager();
-        void play(const std::string& name);
+public:
+    SoundManager();
+    void play(const std::string& name);
 
-    private:
-        std::map<std::string, sf::SoundBuffer*> sounds;
+private:
+    std::map<std::string, sf::SoundBuffer*> sounds;
 
 };
 

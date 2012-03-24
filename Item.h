@@ -4,11 +4,11 @@
 
 class Item
 {
-    public:
-        Item(int x, int y);
-        virtual ~Item();
-    protected:
-    private:
+public:
+    Item(int x, int y);
+    virtual ~Item();
+protected:
+private:
 };
 
 #endif // ITEM_H

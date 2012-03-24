@@ -25,7 +25,7 @@ void GameState::update()
     int frameTime = Clock.GetElapsedTime().AsMilliseconds();
     Clock.Reset(true);
 
-    level->update(frameTime);
+    level->update(frameTime, hero->getBounds());
     hero->update(frameTime, level);
     if(gameover)
     {

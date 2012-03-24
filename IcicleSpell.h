@@ -1,14 +1,14 @@
-#ifndef ICESPELL_H
-#define ICESPELL_H
+#ifndef ICICLESPELL_H
+#define ICICLESPELL_H
 #include "RandomEmitter.h"
 #include "Spell.h"
 
 
-class IceSpell : public Spell
+class IcicleSpell : public Spell
 {
 public:
-    IceSpell(int x, int y, float delta);
-    ~IceSpell();
+    IcicleSpell(int x, int y, float delta);
+    virtual ~IcicleSpell();
     void onHit();
     void update();
     Spell* clone(int x, int y, float delta);
@@ -19,4 +19,4 @@ private:
     RandomEmitter::Ptr onHitEmitter;
 };
 
-#endif // ICESPELL_H
+#endif // ICICLESPELL_H

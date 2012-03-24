@@ -30,15 +30,15 @@ void Entity::onHit(unsigned damage, spell spellType)
     float effectiveness = 0;
     switch(spellType)
     {
-        case spell::fire:
-            effectiveness = fireEffectiveness;
-            break;
-        case spell::ice:
-            effectiveness = iceEffectiveness;
-            break;
-        case spell::green:
-            effectiveness = energyEffectiveness;
-            break;
+    case spell::fire:
+        effectiveness = fireEffectiveness;
+        break;
+    case spell::ice:
+        effectiveness = iceEffectiveness;
+        break;
+    case spell::green:
+        effectiveness = energyEffectiveness;
+        break;
     }
     health -= damage*effectiveness;
     if(health <= 0)

@@ -4,19 +4,19 @@
 
 class Tile
 {
-    public:
-        Tile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill);
-        ~Tile();
-        void draw(sf::RenderWindow* window);
-        sf::Vector2f getCenterPoint();
-        sf::FloatRect getBounds();
-        sf::Sprite sprite;
-        bool transparent;
-        bool platform;
-        bool kill;
-        Tile* clone();
+public:
+    Tile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill);
+    ~Tile();
+    void draw(sf::RenderWindow* window);
+    sf::Vector2f getCenterPoint();
+    sf::FloatRect getBounds();
+    sf::Sprite sprite;
+    bool transparent;
+    bool platform;
+    bool kill;
+    Tile* clone();
 
-    private:
+private:
 
 };
 

@@ -224,6 +224,8 @@ Level::Level(const std::string& filename) : accumulator(0)
                         platformBlocks.push_back(sf::FloatRect(x, y, 32, 32));
                     else if(name == "coin")
                         coins.push_back(new Coin(x, y));
+                    else if(name == "spike")
+                        spikes.push_back(FallingSpike(x, y));
                 }
 
                 objectElement = objectElement->NextSiblingElement("object");
@@ -240,15 +242,11 @@ Level::Level(const std::string& filename) : accumulator(0)
 
 Level::~Level()
 {
-    for(auto itr = bullets.begin(); itr != bullets.end(); itr++)
-        itr = bullets.erase(itr);
     for(auto itr = entities.begin(); itr != entities.end(); itr++)
         itr = entities.erase(itr);
     for(auto itr = coins.begin(); itr != coins.end(); itr++)
         itr = coins.erase(itr);
 
-    cannons.clear();
-    bullets.clear();
     tiles.clear();
     coins.clear();
     entities.clear();
@@ -264,11 +262,6 @@ void Level::reset()
     accumulator = 0;
     for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->dead = false;
-    bullets.clear();
-    for(unsigned i = 0; i < cannons.size(); i++)
-    {
-        cannons[i]->reset();
-    }
     for(unsigned i = 0; i < coins.size(); i++)
     {
         coins[i]->taken = false;
@@ -279,7 +272,7 @@ void Level::reset()
     gameover = false;
 }
 
-void Level::update(int frameTime)
+void Level::update(int frameTime, sf::FloatRect heroRect)
 {
 
     accumulator += frameTime;
@@ -293,22 +286,9 @@ void Level::update(int frameTime)
         {
             movingTiles[i].update(platformBlocks);
         }
-        for(unsigned i = 0; i < cannons.size(); i++)
+        for(unsigned i = 0; i < spikes.size(); i++)
         {
-            cannons[i]->update(bullets);
-        }
-        std::list<Bullet*>::iterator itr = bullets.begin();
-        while(itr != bullets.end())
-        {
-            if((*itr)->dead)
-            {
-                bullets.erase(itr++);
-                continue;
-            }
-            else
-                (*itr)->update();
-
-            itr++;
+            spikes[i].update(heroRect, tiles);
         }
         accumulator -= timeStep;
     }
@@ -337,19 +317,13 @@ void Level::draw(sf::RenderWindow* window)
     {
         entities[i]->draw(window);
     }
-    for(unsigned i = 0; i < cannons.size(); i++)
-    {
-        cannons[i]->draw(window);
-    }
     for(unsigned i = 0; i < coins.size(); i++)
     {
         coins[i]->draw(window);
     }
-    std::list<Bullet*>::iterator itr = bullets.begin();
-    while(itr != bullets.end())
+    for(unsigned i = 0; i < spikes.size(); i++)
     {
-        (*itr)->draw(window);
-        itr++;
+        spikes[i].draw(window);
     }
 }
 
