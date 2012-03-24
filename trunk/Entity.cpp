@@ -1,16 +1,22 @@
 #include "Entity.h"
 
-Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), speed(0.3), damage(damage), health(health), flying(false)
+Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), speed(0.3), damage(damage), health(health), maxHealth(health), flying(false), isHit(false)
 {
     sprite.SetTexture(rm.getImage(name));
     sprite.SetPosition(x, y);
     dir = LEFT;
     previousDir = RIGHT;
-    vely = 5;
+    vely = -2;
     rightAttackAnim = thor::FrameAnimation::Create();
     leftAttackAnim = thor::FrameAnimation::Create();
     rightRunAnim = thor::FrameAnimation::Create();
     leftRunAnim = thor::FrameAnimation::Create();
+    healthRect.SetSize(sf::Vector2f(40, 10));
+    healthRect.SetFillColor(sf::Color::Green);
+    maxHealthRect.SetFillColor(sf::Color::Red);
+    maxHealthRect.SetSize(sf::Vector2f(40, 10));
+    maxHealthRect.SetOutlineThickness(2);
+    maxHealthRect.SetOutlineColor(sf::Color::Black);
 }
 
 Entity::~Entity()
@@ -20,6 +26,7 @@ Entity::~Entity()
 
 void Entity::onHit(unsigned damage, spell spellType)
 {
+    isHit = true;
     float effectiveness = 0;
     switch(spellType)
     {
@@ -38,10 +45,27 @@ void Entity::onHit(unsigned damage, spell spellType)
         dead = true;
 }
 
+void Entity::updateHealthBar()
+{
+    sf::FloatRect rect1 = sprite.GetGlobalBounds();
+    healthRect.SetPosition(rect1.Left - 5, rect1.Top - 15);
+    maxHealthRect.SetPosition(rect1.Left - 5, rect1.Top - 15);
+    healthRect.SetSize(sf::Vector2f((static_cast<float>(health)/static_cast<float>(maxHealth))*40, 10.f));
+}
+
 void Entity::update(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks)
 {
-    move(tiles, flyBlocks);
-    handleAnimation();
+    if(!dead)
+    {
+        updateHealthBar();
+        move(tiles, flyBlocks);
+        handleAnimation();
+    }
+    else
+    {
+        sprite.Move(0, vely);
+        vely += ACCEL;
+    }
     return;
 }
 
@@ -129,6 +153,10 @@ void Entity::handleAnimation()
 
 void Entity::draw(sf::RenderWindow* window)
 {
-    if(!dead)
-        window->Draw(sprite);
+    if(!dead && isHit)
+    {
+        window->Draw(maxHealthRect);
+        window->Draw(healthRect);
+    }
+    window->Draw(sprite);
 }

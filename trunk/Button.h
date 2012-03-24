@@ -10,11 +10,14 @@ class Button
         void draw(sf::RenderWindow* Window);
         bool isClicked(float x, float y);
         void checkHL(float x, float y);
+        void centerText();
         bool highlighted;
 
     private:
         sf::Sprite buttonSprite;
         sf::Text text;
+        int x;
+        int y;
 
 
 };

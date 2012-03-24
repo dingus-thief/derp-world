@@ -4,9 +4,9 @@
 MenuState::MenuState(sf::RenderWindow* window, Game* game) : State(game, window)
 {
     background.SetTexture(rm.getImage("menuBackground.png"));
-    playButton = new Button("Play", 0, 50);
-    optionsButton = new Button("Options", 0, 110);
-    quitButton = new Button("Quit", 0, 170);
+    playButton = new Button("Play", 0, 100);
+    optionsButton = new Button("Options", 0, 200);
+    quitButton = new Button("Quit", 0, 300);
     matrix.OpenFromFile("Data/Audio/matrixintro.ogg");
     //matrix.Play();
 }

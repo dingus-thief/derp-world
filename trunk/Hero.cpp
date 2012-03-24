@@ -2,25 +2,12 @@
 #include <iostream>
 #define ch 48
 
-const float MAXVEL = 5.0f;
-const float ACCEL = 1.f/19.f;
-
 Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), currentSpell(spell::fire), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false)
 {
     oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
     sprite.SetPosition(20, 50);
-    spellMenu.SetTexture(rm.getImage("spellMenu.png"));
-    spellRect.SetSize(sf::Vector2f(32, 32));
-    spellRect.SetPosition(150, 0);
-    spellRect.SetOutlineColor(sf::Color::Yellow);
-    spellRect.SetOutlineThickness(3);
-    spellRect.SetFillColor(sf::Color::Transparent);
-
-    manaBar.SetFillColor(sf::Color::Blue);
-    healthBar.SetFillColor(sf::Color::Red);
-    updateHud();
 
     initAnimation();
 
@@ -48,23 +35,25 @@ void Hero::initAnimation()
     rightIdleAnim = thor::FrameAnimation::Create();
     rightIdleAnim->AddFrame(1.f, sf::IntRect(2*42, 0, 42, 42));
 
+    leftShootAnim = thor::FrameAnimation::Create();
+    leftShootAnim->AddFrame(1.f, sf::IntRect(6*42, 42, 42, 42));
+
+    rightShootAnim = thor::FrameAnimation::Create();
+    rightShootAnim->AddFrame(1.f, sf::IntRect(6*42, 0, 42, 42));
+
     animator.AddAnimation("leftRunning", leftRunAnim, sf::Seconds(0.5));
     animator.AddAnimation("rightRunning", rightRunAnim, sf::Seconds(0.5));
     animator.AddAnimation("rightJumping", rightJumpAnim, sf::Seconds(5));
     animator.AddAnimation("leftJumping", leftJumpAnim, sf::Seconds(5));
     animator.AddAnimation("rightIdle", rightIdleAnim, sf::Seconds(5));
     animator.AddAnimation("leftIdle", leftIdleAnim, sf::Seconds(5));
+    animator.AddAnimation("leftShoot", leftShootAnim, sf::Seconds(0.5));
+    animator.AddAnimation("rightShoot", rightShootAnim, sf::Seconds(0.5));
 }
 
 Hero::~Hero()
 {
 
-}
-
-void Hero::updateHud()
-{
-    manaBar.SetSize(sf::Vector2f(mana, 10));
-    healthBar.SetSize(sf::Vector2f(health, 10));
 }
 
 void Hero::reset(Level* level)
@@ -82,11 +71,13 @@ void Hero::shoot()
     {
         sign = -1;
         offset = 0;
+        //animator.PlayAnimation("leftShoot");
     }
     else
     {
         sign = 1;
         offset = 42;
+        //animator.PlayAnimation("rightShoot");
     }
     switch(currentSpell)
     {
@@ -191,7 +182,7 @@ void Hero::update(int frameTime, Level* level)
 
     //handle animation
     handleAnimation(frameTime);
-    updateHud();
+    HUD::instance()->update(health, mana);
     spellCollisions(level);
     deleteDestroyedSpells();
 }
@@ -234,22 +225,25 @@ void Hero::spellCollisions(Level* level)
     {
         sf::FloatRect rect = (*itr)->getBounds();
         //tiles
-        for(int i = 0; i < level->tiles.size(); i++)
+        if(!(*itr)->hit)
         {
-            if(!level->tiles[i].transparent)
+            for(int i = 0; i < level->tiles.size(); i++)
             {
-                sf::FloatRect rect2 = level->tiles[i].sprite.GetGlobalBounds();
-                if(rect.Intersects(rect2))
-                    (*itr)->onHit();
+                if(!level->tiles[i].transparent)
+                {
+                    sf::FloatRect rect2 = level->tiles[i].sprite.GetGlobalBounds();
+                    if(rect.Intersects(rect2))
+                        (*itr)->onHit();
+                }
             }
-        }
-        for(int i = 0; i < level->entities.size(); i++)
-        {
-            sf::FloatRect rect2 = level->entities[i]->getBounds();
-            if(rect.Intersects(rect2) && !level->entities[i]->dead)
+            for(int i = 0; i < level->entities.size(); i++)
             {
-                (*itr)->onHit();
-                level->entities[i]->onHit((*itr)->damage, (*itr)->type());
+                sf::FloatRect rect2 = level->entities[i]->getBounds();
+                if(rect.Intersects(rect2) && !level->entities[i]->dead)
+                {
+                    (*itr)->onHit();
+                    level->entities[i]->onHit((*itr)->damage, (*itr)->type());
+                }
             }
         }
     }
@@ -311,6 +305,18 @@ bool Hero::tryMove(Level* level, float x, float y)
             return false;
         }
     }
+
+    for(int i = 0; i < level->coins.size(); i++)
+    {
+        sf::FloatRect rect2 = level->coins[i]->getBounds();
+
+        if(rect1.Intersects(rect2) && ! level->coins[i]->taken)
+        {
+            level->coins[i]->taken = true;
+            level->coins[i]->onHit();
+        }
+    }
+
     sprite.Move(x, y);
     return true;
 }
@@ -387,18 +393,6 @@ void Hero::handleAnimation(int frameTime)
 void Hero::draw(sf::RenderWindow* window)
 {
     window->Draw(sprite);
-
-    sf::View view = window->GetView();
-    sf::FloatRect rect(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2, view.GetSize().y/2)), sf::Vector2f(view.GetSize())); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
-
-    manaBar.SetPosition(rect.Left + 10, rect.Top + 10);
-    healthBar.SetPosition(rect.Left + 10, rect.Top + 25);
-    spellMenu.SetPosition(rect.Left + 150, rect.Top + 10);
-    spellRect.SetPosition(rect.Left + 150 + currentSpell*36, rect.Top + 10);
-    window->Draw(manaBar);
-    window->Draw(healthBar);
-    window->Draw(spellMenu);
-    window->Draw(spellRect);
 
     for(auto itr = spells.begin(); itr != spells.end(); itr++)
     {

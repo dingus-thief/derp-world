@@ -14,6 +14,7 @@ class FireSpell : public Spell
 
     private:
         thor::DirectionalEmitter::Ptr emitter;
+        RandomEmitter::Ptr onHitEmitter;
         thor::Emitter::ZonePtr zone;
 };
 

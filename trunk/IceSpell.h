@@ -1,6 +1,6 @@
 #ifndef ICESPELL_H
 #define ICESPELL_H
-
+#include "RandomEmitter.h"
 #include "Spell.h"
 
 
@@ -15,6 +15,7 @@ class IceSpell : public Spell
     private:
         thor::DirectionalEmitter::Ptr emitter;
         thor::Emitter::ZonePtr zone;
+        RandomEmitter::Ptr onHitEmitter;
 };
 
 #endif // ICESPELL_H
