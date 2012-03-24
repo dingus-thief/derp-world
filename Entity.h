@@ -23,16 +23,21 @@ class Entity
     protected:
 
         int health;
+        int maxHealth;
         int damage;
+        bool isHit;
         float fireEffectiveness;
         float iceEffectiveness;
         float energyEffectiveness;
         void move(const std::vector<Tile>& tiles, const std::list<sf::FloatRect>& flyBlocks);
         void handleAnimation();
+        void updateHealthBar();
         DIR previousDir;
         float speed;
         float vely;
         DIR dir;
+        sf::RectangleShape healthRect;
+        sf::RectangleShape maxHealthRect;
 
 
         float delta;

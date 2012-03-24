@@ -56,8 +56,6 @@ Level::Level(const std::string& filename) : accumulator(0)
                 transparent = true;
             else if(name == "kill")
                 kill = true;
-            else if(name == "coin")
-                coin = true;
             prop = prop->NextSiblingElement("property");
         }
         pMap[id] = propSet(transparent, platform, kill, coin);
@@ -141,10 +139,7 @@ Level::Level(const std::string& filename) : accumulator(0)
                     //add tile to layer
                     if(pMap.find(subRectToUse) != pMap.end())
                     {
-                        if(!pMap[subRectToUse].coin)
-                            tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform, pMap[subRectToUse].kill));
-                        else
-                            coins.push_back(new Coin(sprite));
+                        tiles.push_back(Tile(sprite, pMap[subRectToUse].transparent, pMap[subRectToUse].platform, pMap[subRectToUse].kill));
                     }
                     else
                         tiles.push_back(Tile(sprite, false, false, false));
@@ -227,6 +222,8 @@ Level::Level(const std::string& filename) : accumulator(0)
                         flyBlocks.push_back(sf::FloatRect(x, y, 32, 32));
                     else if(name == "platformBlock")
                         platformBlocks.push_back(sf::FloatRect(x, y, 32, 32));
+                    else if(name == "coin")
+                        coins.push_back(new Coin(x, y));
                 }
 
                 objectElement = objectElement->NextSiblingElement("object");
@@ -243,6 +240,13 @@ Level::Level(const std::string& filename) : accumulator(0)
 
 Level::~Level()
 {
+    for(auto itr = bullets.begin(); itr != bullets.end(); itr++)
+        itr = bullets.erase(itr);
+    for(auto itr = entities.begin(); itr != entities.end(); itr++)
+        itr = entities.erase(itr);
+    for(auto itr = coins.begin(); itr != coins.end(); itr++)
+        itr = coins.erase(itr);
+
     cannons.clear();
     bullets.clear();
     tiles.clear();
@@ -269,7 +273,7 @@ void Level::reset()
     {
         coins[i]->taken = false;
     }
-    hud.reset();
+    HUD::instance()->reset();
     points = 0;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
     gameover = false;
@@ -277,7 +281,7 @@ void Level::reset()
 
 void Level::update(int frameTime)
 {
-    hud.update();
+
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
@@ -319,7 +323,6 @@ void Level::draw(sf::RenderWindow* window)
 
     background.SetPosition(viewport.Left+16, viewport.Top);
     window->Draw(background);
-    hud.draw(window, viewport);
     for(unsigned i = 0; i < tiles.size(); i++)
     {
         if(viewport.Contains(tiles[i].sprite.GetGlobalBounds().Left, tiles[i].sprite.GetGlobalBounds().Top) || viewport.Intersects(tiles[i].sprite.GetGlobalBounds()))

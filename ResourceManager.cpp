@@ -7,10 +7,10 @@
 
 ResourceManager::ResourceManager()
 {
-    font.LoadFromFile("Data/Fonts/GOUDYSTO.TTF");
+    font.LoadFromFile("Data/Fonts/visitor.TTF");
 }
 
-sf::Texture& ResourceManager::getImage(std::string name)
+sf::Texture& ResourceManager::getImage(const std::string& name)
 {
     if(textures.find(name) != textures.end())
         return(*textures[name]);
@@ -29,10 +29,23 @@ sf::Texture& ResourceManager::getImage(std::string name)
     }
 }
 
-Tile& ResourceManager::getTile(const std::string& tileID)
+sf::SoundBuffer& ResourceManager::getSoundBuffer(const std::string& name)
 {
-    Tile* tile = new Tile(*tiles[tileID]);
-    return *tile;
+    if(buffers.find(name) != buffers.end())
+        return(*buffers[name]);
+    else
+    {
+        sf::SoundBuffer* img = new sf::SoundBuffer();
+        //img->SetSmooth(false);
+
+        if(!img->LoadFromFile("Data/Audio/" + name))
+            blackList.push_back(name);
+        else
+        {
+            buffers[name] = img;
+        }
+        return *img;
+    }
 }
 
 

@@ -20,6 +20,7 @@ class Spell
         virtual void update() = 0;
 
         bool destroyed;
+        bool hit;
         unsigned damage;
         unsigned manacost;
 
@@ -28,6 +29,7 @@ class Spell
         int y;
         float delta;
         spell spellType;
+
 
         sf::Sprite sprite;
         thor::Animator animator;

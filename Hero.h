@@ -46,10 +46,9 @@ class Hero
         void execInput(Level* level);
         void regenerateMana();
         void checkPlatforms(std::vector<MovingTile> platforms);
-        void updateHud();
         int accumulator;
         HeroState currState, oldState;
-        thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim;
+        thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim, leftShootAnim, rightShootAnim;
         thor::Animator animator;
         std::list<Spell*> spells;
         spell currentSpell;
@@ -58,10 +57,6 @@ class Hero
         int maxMana;
         float mana;
         bool onPlatform;
-        sf::RectangleShape manaBar;
-        sf::RectangleShape healthBar;
-        sf::RectangleShape spellRect;
-        sf::Sprite spellMenu;
         float dx;
         float dy;
         float speed;

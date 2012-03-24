@@ -6,18 +6,32 @@
 class HUD
 {
     public:
-        HUD();
+        static HUD* instance();
         ~HUD();
-        void update();
+        void update(int health, int mana);
         void pause();
         void resume();
         void reset();
-        void draw(sf::RenderWindow* window, const sf::FloatRect& rect);
+        void setMaxMana(int maxMana);
+        void setMaxHealth(int maxHealth);
+        void draw(sf::RenderWindow* window);
 
     private:
+        HUD();
+        static HUD* m_instance;
         sf::Text cointext;
         sf::Text timeText;
         sf::Sprite coinSprite;
+        sf::RectangleShape manaBar;
+        sf::RectangleShape manaMaxBar;
+        sf::RectangleShape healthMaxBar;
+        sf::RectangleShape healthBar;
+        sf::RectangleShape spellRect;
+        sf::Sprite spellMenu;
+        int spellRectX;
+        int maxMana;
+        int maxHealth;
+
         int lastScore;
         int lastTime;
         thor::StopWatch timer;

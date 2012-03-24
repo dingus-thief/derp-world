@@ -21,5 +21,4 @@ void SoundManager::play(const std::string& name)
         sf::Sound* sound = new sf::Sound(*sounds[name]);
         sound->Play();
     }
-
 }

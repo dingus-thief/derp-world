@@ -47,13 +47,13 @@ void GameState::cleanup()
 
 void GameState::resume()
 {
-    level->hud.resume();
+    HUD::instance()->resume();
     Clock.Start();
 }
 
 void GameState::pause()
 {
-    level->hud.pause();
+    HUD::instance()->pause();
     Clock.Stop();
 }
 
@@ -94,5 +94,6 @@ void GameState::render()
     level->adjustView(window, hero->sprite);
     level->draw(window);
     hero->draw(window);
+    HUD::instance()->draw(window);
     window->Display();
 }
