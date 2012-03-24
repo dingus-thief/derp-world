@@ -8,21 +8,21 @@ class State;
 
 class Game
 {
-    public:
-        Game();
-        ~Game();
-        void draw();
-        void handle();
-        void update();
+public:
+    Game();
+    ~Game();
+    void draw();
+    void handle();
+    void update();
 
-        void changeState(State* state);
-        void pushState(State* state);
-        void popState();
+    void changeState(State* state);
+    void pushState(State* state);
+    void popState();
 
-        bool running;
+    bool running;
 
-    private:
-        std::vector<State*> states;
+private:
+    std::vector<State*> states;
 
 };
 

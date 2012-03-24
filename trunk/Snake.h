@@ -6,11 +6,11 @@
 
 class Snake : public Entity
 {
-    public:
-        Snake(int x, int y);
-        ~Snake();
-    protected:
-    private:
+public:
+    Snake(int x, int y);
+    ~Snake();
+protected:
+private:
 };
 
 #endif // SNAKE_H

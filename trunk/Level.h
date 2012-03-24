@@ -13,6 +13,7 @@
 #include "Bullet.h"
 #include "Coin.h"
 #include "HUD.h"
+#include "FallingSpike.h"
 
 class Tile;
 
@@ -21,37 +22,36 @@ class Level
     friend class Hero;
     friend class GameState;
 
-    public:
-        Level(const std::string& filename);
-        void draw(sf::RenderWindow* window);
-        void update(int frameTime);
-        void handle(const sf::Event& event);
-        void reset();
+public:
+    Level(const std::string& filename);
+    void draw(sf::RenderWindow* window);
+    void update(int frameTime, sf::FloatRect heroRect);
+    void handle(const sf::Event& event);
+    void reset();
 
-        ~Level();
-        void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
+    ~Level();
+    void adjustView(sf::RenderWindow* window, const sf::Sprite& herosprite);
 
 
-    private:
-        void shoot();
+private:
+    void shoot();
 
-        int accumulator;
-        int firstTileID;
-        sf::Rect <float> drawingBounds;
-        sf::Texture tilesetImage;
-        sf::Sprite background;
-        int width;
-        int height;
-        std::vector<Cannon*> cannons;
-        std::vector<Entity*> entities;
-        std::list<Bullet*> bullets;
-        std::list<sf::FloatRect> flyBlocks;
-        std::list<sf::FloatRect> platformBlocks;
-        std::vector<Coin*> coins;
-        std::vector<Tile> tiles;
-        std::vector<MovingTile> movingTiles;
-        //std::vector <sf::Rect <int> > transparentObjects;
-        //std::vector <Object> objects;
+    int accumulator;
+    int firstTileID;
+    sf::Rect <float> drawingBounds;
+    sf::Texture tilesetImage;
+    sf::Sprite background;
+    int width;
+    int height;
+    std::vector<Entity*> entities;
+    std::list<sf::FloatRect> flyBlocks;
+    std::list<sf::FloatRect> platformBlocks;
+    std::vector<Coin*> coins;
+    std::vector<FallingSpike> spikes;
+    std::vector<Tile> tiles;
+    std::vector<MovingTile> movingTiles;
+    //std::vector <sf::Rect <int> > transparentObjects;
+    //std::vector <Object> objects;
 };
 
 #endif // LEVEL_H

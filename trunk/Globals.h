@@ -25,7 +25,7 @@ extern bool dead;
 extern bool Pause;
 extern bool colliding[4];
 
-enum DIR{LEFT, RIGHT};
+enum DIR {LEFT, RIGHT};
 
 extern class ResourceManager rm;
 extern class SoundManager sm;

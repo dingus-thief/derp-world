@@ -12,7 +12,7 @@ Spell::~Spell()
 
 void Spell::draw(sf::RenderWindow* window)
 {
+    system->Draw(*window);
     if(!hit)
         window->Draw(sprite);
-    system->Draw(*window);
 }

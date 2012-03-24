@@ -21,11 +21,11 @@ int main()
     Game game;
     game.changeState(new MenuState(&Window, &game));
     // main loop
-	while ( game.running )
-	{
-		game.handle();
-		game.update();
-		game.draw();
-	}
+    while ( game.running )
+    {
+        game.handle();
+        game.update();
+        game.draw();
+    }
     return 0;
 }

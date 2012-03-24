@@ -6,16 +6,16 @@
 
 class RandomEmitter : public thor::Emitter
 {
-    public:
-        typedef std::tr1::shared_ptr<RandomEmitter> Ptr;
+public:
+    typedef std::tr1::shared_ptr<RandomEmitter> Ptr;
 
-        static Ptr Create(float particlesPerSecond, sf::Time particleLifetime);
+    static Ptr Create(float particlesPerSecond, sf::Time particleLifetime);
 
-        RandomEmitter(float particlesPerSecond, sf::Time particleLifetime);
+    RandomEmitter(float particlesPerSecond, sf::Time particleLifetime);
 
-        virtual void Emit(Adder& system, sf::Time dt);
+    virtual void Emit(Adder& system, sf::Time dt);
 
-    private:
+private:
 };
 
 #endif // RANDOMEMITTER_H

@@ -6,11 +6,11 @@
 
 class Bat : public Entity
 {
-    public:
-        Bat(int x, int y);
-        ~Bat();
-    protected:
-    private:
+public:
+    Bat(int x, int y);
+    ~Bat();
+protected:
+private:
 };
 
 #endif // BAT_H

@@ -13,29 +13,29 @@
 
 class GameState : public State
 {
-    public:
-        ~GameState();
-        void render();
-        void update();
-        void handle();
+public:
+    ~GameState();
+    void render();
+    void update();
+    void handle();
 
-        void pause();
-        void resume();
+    void pause();
+    void resume();
 
-        void init();
-        void cleanup();
+    void init();
+    void cleanup();
 
 
-        GameState(sf::RenderWindow* window, Game* game);
+    GameState(sf::RenderWindow* window, Game* game);
 
-    private:
+private:
 
-        void reset();
+    void reset();
 
-        Level* level;
-        Hero* hero;
-        sf::View view;
-        int currentLvl;
+    Level* level;
+    Hero* hero;
+    sf::View view;
+    int currentLvl;
 
 };
 

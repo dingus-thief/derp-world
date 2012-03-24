@@ -2,8 +2,9 @@
 #include <iostream>
 #define ch 48
 
-Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), currentSpell(spell::fire), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false)
+Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false)
 {
+    currentSpell = new FireSpell(0, 0, 0);
     oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
@@ -62,9 +63,10 @@ void Hero::reset(Level* level)
     sprite.SetPosition(20, 50);
 }
 
-
 void Hero::shoot()
 {
+    Spell* newSpell;
+
     float sign = 0;
     int offset = 0;
     if(oldState.dir == DIR::LEFT)
@@ -79,30 +81,11 @@ void Hero::shoot()
         offset = 42;
         //animator.PlayAnimation("rightShoot");
     }
-    switch(currentSpell)
+    if(mana - currentSpell->manacost > 0)
     {
-        case fire:
-            if(mana - 10 > 0)
-            {
-                spells.push_back(new FireSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
-                mana -= 10;
-            }
-            break;
-        case ice:
-            if(mana - 18 > 0)
-            {
-                spells.push_back(new IceSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
-                mana -= 18;
-            }
-            break;
-        case green:
-            if(mana - 23 > 0)
-            {
-                spells.push_back(new GreenSpell(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
-                mana -= 23;
-            }
+        spells.push_back(currentSpell->clone(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
+        mana -= currentSpell->manacost;
     }
-
 }
 
 void Hero::execGravity(Level* level)
@@ -133,32 +116,32 @@ void Hero::execGravity(Level* level)
 void Hero::execInput(Level* level)
 {
 
-        //KEYBOARD INPUT
-        if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !currState.falling)
-        {
-            dy = -4.f;
-            currState.jumping = true;
-        }
+    //KEYBOARD INPUT
+    if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !currState.falling)
+    {
+        dy = -4.f;
+        currState.jumping = true;
+    }
 
-        dx = 0;
-        currState.idle = false;
-        if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
-        {
-            dx = -0.5;
-            tryMove(level, dx*speed, 0);
-            currState.dir = DIR::LEFT;
-            if(!currState.jumping && !currState.falling)
-                currState.walking = true;
-        }
-        else if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Right))
-        {
-            dx = 0.5;
-            tryMove(level, dx*speed, 0);
-            currState.dir = DIR::RIGHT;
-            if(!currState.jumping && !currState.falling)
-                currState.walking = true;
-        }
-        else currState.idle = true;
+    dx = 0;
+    currState.idle = false;
+    if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Left))
+    {
+        dx = -0.5;
+        tryMove(level, dx*speed, 0);
+        currState.dir = DIR::LEFT;
+        if(!currState.jumping && !currState.falling)
+            currState.walking = true;
+    }
+    else if (sf::Keyboard::IsKeyPressed(sf::Keyboard::Right))
+    {
+        dx = 0.5;
+        tryMove(level, dx*speed, 0);
+        currState.dir = DIR::RIGHT;
+        if(!currState.jumping && !currState.falling)
+            currState.walking = true;
+    }
+    else currState.idle = true;
 }
 
 void Hero::update(int frameTime, Level* level)
@@ -317,8 +300,25 @@ bool Hero::tryMove(Level* level, float x, float y)
         }
     }
 
+    for(auto itr = level->spikes.begin(); itr != level->spikes.end(); itr++)
+    {
+        sf::FloatRect rect2 = (*itr).getBounds();
+
+        if(rect1.Intersects(rect2))
+        {
+            (*itr).onHit();
+            itr = level->spikes.erase(itr);
+            gameover = true;
+        }
+    }
+
     sprite.Move(x, y);
     return true;
+}
+
+sf::FloatRect Hero::getBounds()
+{
+    return sprite.GetGlobalBounds();
 }
 
 void Hero::deleteDestroyedSpells()
@@ -340,11 +340,15 @@ void Hero::handle(const sf::Event& event)
             shoot();
 
         if(event.Key.Code == sf::Keyboard::Num1)
-            currentSpell = spell::fire;
+            currentSpell = new FireSpell(0, 0, 0);
         if(event.Key.Code == sf::Keyboard::Num2)
-            currentSpell = spell::ice;
+            currentSpell = new IceSpell(0, 0, 0);
         if(event.Key.Code == sf::Keyboard::Num3)
-            currentSpell = spell::green;
+            currentSpell = new GreenSpell(0, 0, 0);
+        if(event.Key.Code == sf::Keyboard::Num4)
+            currentSpell = new IcicleSpell(0, 0, 0);
+        if(event.Key.Code == sf::Keyboard::Num5)
+            currentSpell = new FireBallSpell(0, 0, 0);
 
         break;
     }

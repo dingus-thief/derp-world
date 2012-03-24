@@ -79,8 +79,8 @@ ResourceManager::~ResourceManager()
 bool ResourceManager::isValid(std::string name)
 {
     for(std::list<std::string>::iterator itr = blackList.begin(); itr != blackList.end(); itr++)
-    if(*itr == name)
-        return false;
+        if(*itr == name)
+            return false;
     return true;
 }
 

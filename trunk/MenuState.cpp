@@ -23,17 +23,18 @@ void MenuState::handle()
     {
         switch (Event.Type)
         {
-            case sf::Event::Closed:
-                window->Close();
-                break;
-            case sf::Event::MouseMoved:
-                    checkButtons(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
-                break;
-            case sf::Event::MouseButtonPressed:
-                if(Event.MouseButton.Button == sf::Mouse::Left)
-                    clicked(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
-                break;
-            default: break;
+        case sf::Event::Closed:
+            window->Close();
+            break;
+        case sf::Event::MouseMoved:
+            checkButtons(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
+            break;
+        case sf::Event::MouseButtonPressed:
+            if(Event.MouseButton.Button == sf::Mouse::Left)
+                clicked(window->ConvertCoords(sf::Mouse::GetPosition(*window).x, 0).x, window->ConvertCoords(0, sf::Mouse::GetPosition(*window).y).y);
+            break;
+        default:
+            break;
         }
     }
 }

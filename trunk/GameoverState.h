@@ -7,27 +7,27 @@
 
 class GameoverState : public State
 {
-    public:
-        ~GameoverState();
+public:
+    ~GameoverState();
 
-        void update();
-        void render();
-        void handle();
+    void update();
+    void render();
+    void handle();
 
-        void pause(){};
-        void resume(){};
+    void pause() {};
+    void resume() {};
 
-        GameoverState(sf::RenderWindow* window, Game* game);
+    GameoverState(sf::RenderWindow* window, Game* game);
 
-    private:
+private:
 
-        sf::Text gameoverText;
-        sf::Text scoreText;
-        Button* quitButton;
-        Button* playAgainButton;
+    sf::Text gameoverText;
+    sf::Text scoreText;
+    Button* quitButton;
+    Button* playAgainButton;
 
-        void checkButtons(float x, float y);
-        void clicked(float x, float y);
+    void checkButtons(float x, float y);
+    void clicked(float x, float y);
 
 
 
