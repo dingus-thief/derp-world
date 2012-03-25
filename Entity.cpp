@@ -42,7 +42,11 @@ void Entity::onHit(unsigned damage, spell spellType)
     }
     health -= damage*effectiveness;
     if(health <= 0)
+    {
+        xpText.SetPosition(sprite.GetGlobalBounds().Left, sprite.GetGlobalBounds().Top);
+        HUD::instance()->addXp(xp);
         dead = true;
+    }
 }
 
 void Entity::reset()
@@ -72,6 +76,7 @@ void Entity::update(const std::vector<Tile>& tiles, const std::list<sf::FloatRec
     }
     else
     {
+        xpText.Move(0, -1);
         sprite.Move(0, vely);
         vely += ACCEL;
     }
@@ -162,6 +167,8 @@ void Entity::handleAnimation()
 
 void Entity::draw(sf::RenderWindow* window)
 {
+    if(dead)
+        window->Draw(xpText);
     if(!dead && isHit)
     {
         window->Draw(maxHealthRect);

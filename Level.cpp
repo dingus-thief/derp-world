@@ -228,6 +228,8 @@ Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 7
                         spikes.push_back(FallingSpike(x, y));
                     else if(name == "manaPotion")
                         items.push_back(Item(x, y, ItemType::manaPotion));
+                    else if(name == "healthPotion")
+                        items.push_back(Item(x, y, ItemType::healthPotion));
                 }
 
                 objectElement = objectElement->NextSiblingElement("object");
