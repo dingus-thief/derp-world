@@ -1,6 +1,6 @@
 #include "FallingSpike.h"
 
-FallingSpike::FallingSpike(int x, int y) : falling(false), dead(false), vely(1)
+FallingSpike::FallingSpike(int x, int y) : falling(false), dead(false), vely(0)
 {
     sprite.SetTexture(rm.getImage("iceSpike.png"));
     sprite.SetPosition(x, y);

@@ -47,6 +47,7 @@ void Entity::onHit(unsigned damage, spell spellType)
 
 void Entity::reset()
 {
+    vely = -2;
     isHit = false;
     dead = false;
     health = maxHealth;

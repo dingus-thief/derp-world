@@ -5,11 +5,13 @@ GameState* GameState::gameState = 0;
 
 GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
-
+    music.OpenFromFile("Data/Audio/background.ogg");
+    music.SetLoop(true);
 }
 
 void GameState::init()
 {
+    music.Play();
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
     sf::Vector2f halfsize(WIDTH, HEIGHT);
     sf::View view_(center, halfsize);
@@ -27,6 +29,7 @@ void GameState::cleanup()
 {
     delete hero;
     delete level;
+    music.Stop();
 }
 
 void GameState::update()

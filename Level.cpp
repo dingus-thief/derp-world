@@ -226,6 +226,8 @@ Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 7
                         coins.push_back(new Coin(x, y));
                     else if(name == "spike")
                         spikes.push_back(FallingSpike(x, y));
+                    else if(name == "manaPotion")
+                        items.push_back(Item(x, y, ItemType::manaPotion));
                 }
 
                 objectElement = objectElement->NextSiblingElement("object");
@@ -266,6 +268,8 @@ void Level::reset()
     accumulator = 0;
     for(unsigned i = 0; i < entities.size(); i++)
         entities[i]->reset();
+    for(unsigned i = 0; i < items.size(); i++)
+        items[i].reset();
     for(unsigned i = 0; i < coins.size(); i++)
     {
         coins[i]->taken = false;
@@ -332,6 +336,10 @@ void Level::draw(sf::RenderWindow* window)
     for(unsigned i = 0; i < spikes.size(); i++)
     {
         spikes[i].draw(window);
+    }
+    for(unsigned i = 0; i < items.size(); i++)
+    {
+        items[i].draw(window);
     }
 }
 

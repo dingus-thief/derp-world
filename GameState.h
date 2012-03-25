@@ -45,6 +45,7 @@ class GameState : public State
         Hero* hero;
         sf::View view;
         int currentLvl;
+        sf::Music music;
 
         static GameState* gameState;
 

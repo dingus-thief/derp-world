@@ -51,6 +51,7 @@ class Hero
         void execInput(Level* level);
         void regenerateMana();
         void checkPlatforms(std::vector<MovingTile> platforms);
+        void checkItems(std::vector<Item>& items);
         int accumulator;
         HeroState currState, oldState;
         thor::FrameAnimation::Ptr leftRunAnim, rightRunAnim, leftJumpAnim, rightJumpAnim, leftIdleAnim, rightIdleAnim, leftShootAnim, rightShootAnim;
