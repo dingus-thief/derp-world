@@ -1,5 +1,4 @@
 #include <iostream>
-#include "Game.h"
 #include "MenuState.h"
 
 using namespace std;
@@ -10,7 +9,7 @@ int main()
 {
     sf::Image icon;
     sf::RenderWindow Window;
-    Window.Create(sf::VideoMode(WIDTH, HEIGHT, 32), "Derp World");
+    Window.Create(sf::VideoMode(WIDTH, HEIGHT, 32), "Derp World", sf::Style::Close);
     Window.SetFramerateLimit(100);
 
     icon.LoadFromFile("Data/Images/Ball.png");

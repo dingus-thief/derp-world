@@ -14,6 +14,7 @@
 #include "Coin.h"
 #include "HUD.h"
 #include "FallingSpike.h"
+#include "Item.h"
 
 class Tile;
 
@@ -51,6 +52,7 @@ class Level
         std::vector<FallingSpike> spikes;
         std::vector<Tile> tiles;
         std::vector<MovingTile> movingTiles;
+        std::vector<Item> items;
         sf::Vector2f lastCheckpoint;
         //std::vector <sf::Rect <int> > transparentObjects;
         //std::vector <Object> objects;

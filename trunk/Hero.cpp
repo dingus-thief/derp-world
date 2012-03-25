@@ -151,7 +151,11 @@ void Hero::execInput(Level* level)
         if(!currState.jumping && !currState.falling)
             currState.walking = true;
     }
-    else currState.idle = true;
+    else
+    {
+        currState.idle = true;
+    }
+
 }
 
 void Hero::update(int frameTime, Level* level)
@@ -181,6 +185,7 @@ void Hero::update(int frameTime, Level* level)
     }
 
     //handle animation
+    checkItems(level->items);
     handleAnimation(frameTime);
     HUD::instance()->update(health, mana);
     spellCollisions(level);
@@ -191,6 +196,31 @@ void Hero::regenerateMana()
 {
     if(mana < maxMana)
         mana += 0.01;
+}
+
+void Hero::checkItems(std::vector<Item>& items)
+{
+    sf::FloatRect rect = sprite.GetGlobalBounds();
+    for(int i = 0; i < items.size(); i++)
+    {
+        sf::FloatRect rect2 = items[i].getBounds();
+
+        if(rect.Intersects(rect2) && !items[i].isCollected())
+        {
+            items[i].onCollect();
+
+            switch(items[i].getType())
+            {
+                case manaPotion:
+                {
+                    mana += 50;
+                    if(mana > maxMana)
+                        mana = maxMana;
+                }
+
+            }
+        }
+    }
 }
 
 void Hero::checkPlatforms(std::vector<MovingTile> platforms)
