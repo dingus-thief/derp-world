@@ -40,6 +40,7 @@ void GameState::update()
 
     level->update(frameTime, hero->getBounds());
     hero->update(frameTime, level);
+    HUD::instance()->update();
 
     level->adjustView(window, hero->sprite);
 

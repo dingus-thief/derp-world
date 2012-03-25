@@ -8,12 +8,14 @@ class HUD
     public:
         static HUD* instance();
         ~HUD();
-        void update(int lives, int mana);
+        void update();
         void pause();
         void resume();
         void reset();
         void setMaxMana(int maxMana);
-        void setMaxLives(int maxLives);
+        void setLives(int mLives);
+        void setMaxXp(int mxp);
+        void setMana(int mMana);
         void draw(sf::RenderWindow* window);
         void addXp(int xp);
 
@@ -28,15 +30,12 @@ class HUD
         sf::RectangleShape manaMaxBar;
         sf::RectangleShape xpMaxBar;
         sf::Sprite heart;
-        int liveCount;
         sf::RectangleShape spellRect;
         sf::Sprite spellMenu;
         int spellRectX;
         int maxMana;
-        int maxLives;
         int maxXp;
-
-
+        int liveCount;
 
         int lastScore;
         int lastTime;

@@ -192,9 +192,12 @@ void Hero::update(int frameTime, Level* level)
     //handle animation
     checkItems(level->items);
     handleAnimation(frameTime);
-    HUD::instance()->update(lives, mana);
     spellCollisions(level);
     deleteDestroyedSpells();
+
+    HUD::instance()->setMana(mana);
+    HUD::instance()->setLives(lives);
+
 }
 
 void Hero::regenerateMana()
