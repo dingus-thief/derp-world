@@ -1,8 +1,14 @@
 #include "GameState.h"
 #include <iostream>
 
+GameState* GameState::gameState = 0;
 
-GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
+GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
+{
+
+}
+
+void GameState::init()
 {
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
     sf::Vector2f halfsize(WIDTH, HEIGHT);
@@ -14,40 +20,46 @@ GameState::GameState(sf::RenderWindow* window, Game* game) : State(game, window)
 
 GameState::~GameState()
 {
-    //level->reset();
+
+}
+
+void GameState::cleanup()
+{
     delete hero;
     delete level;
 }
-
 
 void GameState::update()
 {
     int frameTime = Clock.GetElapsedTime().AsMilliseconds();
     Clock.Reset(true);
 
+
     level->update(frameTime, hero->getBounds());
     hero->update(frameTime, level);
-    if(gameover)
+
+    level->adjustView(window, hero->sprite);
+
+    if(hero->getBounds().Top > level->height*TILESIZE)
+    {
+        hero->reset(level->getLastCheckpoint());
+        level->reset();
+        stateManager->pushState(LiveLostState::Instance(window, stateManager));
+    }
+
+    /*if(gameover)
     {
         gameover = false;
         std::cout<<"gameover\n";
-        game->pushState(new GameoverState(window, game));
-    }
-}
-
-void GameState::init()
-{
-
-}
-
-void GameState::cleanup()
-{
-
+        stateManager->pushState(GameoverState::Instance(window, stateManager));
+    }*/
 }
 
 void GameState::resume()
 {
     HUD::instance()->resume();
+    sf::View view(sf::Vector2f(WIDTH/2, HEIGHT/2), sf::Vector2f(WIDTH, HEIGHT));
+    window->SetView(view);
     Clock.Start();
 }
 
@@ -66,24 +78,24 @@ void GameState::handle()
         hero->handle(Event);
         switch (Event.Type)
         {
-        case sf::Event::Closed:
-            window->Close();
-            break;
-        case sf::Event::KeyPressed:
-        {
-            if(Event.Key.Code == sf::Keyboard::Escape)
-            {
-                game->popState();
-                return;
-            }
-        }
-        case sf::Event::MouseButtonPressed:
-        {
-            if(Event.MouseButton.Button == sf::Mouse::Left)
+            case sf::Event::Closed:
+                window->Close();
                 break;
-        }
-        default:
-            break;
+            case sf::Event::KeyPressed:
+                {
+                    if(Event.Key.Code == sf::Keyboard::Escape)
+                    {
+                        stateManager->popState();
+                        return;
+                    }
+                }
+            case sf::Event::MouseButtonPressed:
+                {
+                    if(Event.MouseButton.Button == sf::Mouse::Left)
+                        break;
+                }
+            default:
+                break;
         }
     }
 }
@@ -91,9 +103,7 @@ void GameState::handle()
 void GameState::render()
 {
     window->Clear(sf::Color(100, 100, 240));
-    level->adjustView(window, hero->sprite);
     level->draw(window);
     hero->draw(window);
     HUD::instance()->draw(window);
-    window->Display();
 }

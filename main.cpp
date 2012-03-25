@@ -17,15 +17,16 @@ int main()
     Window.SetIcon(icon.GetWidth(), icon.GetHeight(), icon.GetPixelsPtr());
     Window.EnableVerticalSync(false);
 
+    StateManager stateManager;
 
-    Game game;
-    game.changeState(new MenuState(&Window, &game));
+    stateManager.changeState(MenuState::Instance(&Window, &stateManager));
     // main loop
-    while ( game.running )
+    while ( stateManager.running )
     {
-        game.handle();
-        game.update();
-        game.draw();
+        stateManager.handle();
+        stateManager.update();
+        stateManager.draw();
+        Window.Display();
     }
     return 0;
 }

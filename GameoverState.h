@@ -7,30 +7,37 @@
 
 class GameoverState : public State
 {
-public:
-    ~GameoverState();
+    public:
+        ~GameoverState();
+        void init();
+        void cleanup();
 
-    void update();
-    void render();
-    void handle();
+        void update();
+        void render();
+        void handle();
 
-    void pause() {};
-    void resume() {};
+        void pause() {};
+        void resume() {};
 
-    GameoverState(sf::RenderWindow* window, Game* game);
+        static GameoverState* Instance(sf::RenderWindow* window, StateManager* mgr)
+        {
+            if(gameoverState == NULL)
+                gameoverState = new GameoverState(window, mgr);
+            return gameoverState;
+        }
 
-private:
+    private:
+        GameoverState(sf::RenderWindow* window, StateManager* mgr);
 
-    sf::Text gameoverText;
-    sf::Text scoreText;
-    Button* quitButton;
-    Button* playAgainButton;
+        sf::Text gameoverText;
+        sf::Text scoreText;
+        Button* quitButton;
+        Button* playAgainButton;
 
-    void checkButtons(float x, float y);
-    void clicked(float x, float y);
+        static GameoverState* gameoverState;
 
-
-
+        void checkButtons(float x, float y);
+        void clicked(float x, float y);
 };
 
 #endif // GAMEOVERSTATE_H

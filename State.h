@@ -1,27 +1,29 @@
 #ifndef STATE_H
 #define STATE_H
-#include "Game.h"
+#include "StateManager.h"
 
 class State
 {
-public:
-    State(Game* game, sf::RenderWindow* window);
-    virtual ~State() {};
-    virtual void handle() = 0;
-    virtual void update() = 0;
-    virtual void render() = 0;
+    public:
+        State(sf::RenderWindow* window, StateManager* mgr);
+        virtual ~State() {};
+        virtual void handle() = 0;
+        virtual void update() = 0;
+        virtual void render() = 0;
 
-    virtual void pause() = 0;
-    virtual void resume() = 0;
+        virtual void pause() = 0;
+        virtual void resume() = 0;
 
-    virtual void init() {};
-    virtual void cleanup() {};
+        virtual void init() = 0;
+        virtual void cleanup() = 0;
 
-protected:
-    Game* game;
-    sf::RenderWindow* window;
+        bool drawOnTop;
 
-private:
+    protected:
+        StateManager* stateManager;
+        sf::RenderWindow* window;
+
+    private:
 };
 
 #endif // STATE_H

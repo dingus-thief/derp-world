@@ -7,19 +7,19 @@
 
 class Cannon
 {
-    friend class Hero;
+        friend class Hero;
 
-public:
-    Cannon(const sf::Sprite& sprite);
-    ~Cannon();
+    public:
+        Cannon(const sf::Sprite& sprite);
+        ~Cannon();
 
-    void update(std::list<Bullet*>& bullets);
-    void draw(sf::RenderWindow* window);
-    void reset();
+        void update(std::list<Bullet*>& bullets);
+        void draw(sf::RenderWindow* window);
+        void reset();
 
-private:
-    sf::Clock bulletClock;
-    sf::Sprite sprite;
+    private:
+        sf::Clock bulletClock;
+        sf::Sprite sprite;
 };
 
 #endif // CANNON_H

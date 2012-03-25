@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(const std::string& name, int health, int damage, int x, int y) : dead(false), speed(0.3), damage(damage), health(health), maxHealth(health), flying(false), isHit(false)
+Entity::Entity(const std::string& name, int health, int damage, int x, int y) : originalX(x), originalY(y), dead(false), attacking(false), speed(0.3), damage(damage), health(health), maxHealth(health), flying(false), isHit(false)
 {
     sprite.SetTexture(rm.getImage(name));
     sprite.SetPosition(x, y);
@@ -30,19 +30,27 @@ void Entity::onHit(unsigned damage, spell spellType)
     float effectiveness = 0;
     switch(spellType)
     {
-    case spell::fire:
-        effectiveness = fireEffectiveness;
-        break;
-    case spell::ice:
-        effectiveness = iceEffectiveness;
-        break;
-    case spell::green:
-        effectiveness = energyEffectiveness;
-        break;
+        case spell::fire:
+            effectiveness = fireEffectiveness;
+            break;
+        case spell::ice:
+            effectiveness = iceEffectiveness;
+            break;
+        case spell::green:
+            effectiveness = energyEffectiveness;
+            break;
     }
     health -= damage*effectiveness;
     if(health <= 0)
         dead = true;
+}
+
+void Entity::reset()
+{
+    isHit = false;
+    dead = false;
+    health = maxHealth;
+    sprite.SetPosition(originalX, originalY);
 }
 
 void Entity::updateHealthBar()

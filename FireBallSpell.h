@@ -6,17 +6,17 @@
 
 class FireBallSpell : public Spell
 {
-public:
-    FireBallSpell(int x, int y, float delta);
-    virtual ~FireBallSpell();
-    void onHit();
-    void update();
-    Spell* clone(int x, int y, float delta);
+    public:
+        FireBallSpell(int x, int y, float delta);
+        virtual ~FireBallSpell();
+        void onHit();
+        void update();
+        Spell* clone(int x, int y, float delta);
 
-private:
-    thor::DirectionalEmitter::Ptr emitter;
-    RandomEmitter::Ptr onHitEmitter;
-    thor::Emitter::ZonePtr zone;
+    private:
+        thor::DirectionalEmitter::Ptr emitter;
+        RandomEmitter::Ptr onHitEmitter;
+        thor::Emitter::ZonePtr zone;
 };
 
 #endif // FIREBALLSPELL_H

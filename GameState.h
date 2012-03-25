@@ -7,35 +7,46 @@
 #include "State.h"
 #include "Level.h"
 #include "GameoverState.h"
+#include "LiveLostState.h"
 #include <sstream>
 #include <iostream>
+#include "Constants.h"
 
 
 class GameState : public State
 {
-public:
-    ~GameState();
-    void render();
-    void update();
-    void handle();
+    public:
+        ~GameState();
+        void render();
+        void update();
+        void handle();
 
-    void pause();
-    void resume();
+        void pause();
+        void resume();
 
-    void init();
-    void cleanup();
+        void init();
+        void cleanup();
+
+        static GameState* Instance(sf::RenderWindow* window, StateManager* mgr)
+        {
+            if(gameState == NULL)
+                gameState = new GameState(window, mgr);
+            return gameState;
+        }
 
 
-    GameState(sf::RenderWindow* window, Game* game);
+    private:
 
-private:
+        GameState(sf::RenderWindow* window, StateManager* mgr);
 
-    void reset();
+        void reset();
 
-    Level* level;
-    Hero* hero;
-    sf::View view;
-    int currentLvl;
+        Level* level;
+        Hero* hero;
+        sf::View view;
+        int currentLvl;
+
+        static GameState* gameState;
 
 };
 

@@ -7,16 +7,16 @@
 
 class MovingTile : public Tile
 {
-public:
-    MovingTile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill, float x, float y);
-    ~MovingTile();
+    public:
+        MovingTile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill, float x, float y);
+        ~MovingTile();
 
-    void update(std::list<sf::FloatRect> blocks);
-    sf::Vector2f getSpeed();
+        void update(std::list<sf::FloatRect> blocks);
+        sf::Vector2f getSpeed();
 
-private:
-    float x;
-    float y;
+    private:
+        float x;
+        float y;
 };
 
 #endif // MOVINGTILE_H

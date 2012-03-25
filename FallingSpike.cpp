@@ -1,6 +1,6 @@
 #include "FallingSpike.h"
 
-FallingSpike::FallingSpike(int x, int y) : falling(false), dead(false)
+FallingSpike::FallingSpike(int x, int y) : falling(false), dead(false), vely(1)
 {
     sprite.SetTexture(rm.getImage("iceSpike.png"));
     sprite.SetPosition(x, y);
@@ -23,7 +23,10 @@ void FallingSpike::update(sf::FloatRect heroRect, std::vector<Tile> tiles)
         falling = true;
 
     if(falling)
-        sprite.Move(0, 1);
+    {
+        sprite.Move(0, vely);
+        vely += ACCEL;
+    }
 }
 
 void FallingSpike::draw(sf::RenderWindow* window)
