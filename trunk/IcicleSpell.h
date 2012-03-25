@@ -6,17 +6,17 @@
 
 class IcicleSpell : public Spell
 {
-public:
-    IcicleSpell(int x, int y, float delta);
-    virtual ~IcicleSpell();
-    void onHit();
-    void update();
-    Spell* clone(int x, int y, float delta);
+    public:
+        IcicleSpell(int x, int y, float delta);
+        virtual ~IcicleSpell();
+        void onHit();
+        void update();
+        Spell* clone(int x, int y, float delta);
 
-private:
-    thor::DirectionalEmitter::Ptr emitter;
-    thor::Emitter::ZonePtr zone;
-    RandomEmitter::Ptr onHitEmitter;
+    private:
+        thor::DirectionalEmitter::Ptr emitter;
+        thor::Emitter::ZonePtr zone;
+        RandomEmitter::Ptr onHitEmitter;
 };
 
 #endif // ICICLESPELL_H

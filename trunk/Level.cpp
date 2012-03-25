@@ -3,18 +3,18 @@
 #include <fstream>
 #include <iostream>
 
-Level::Level(const std::string& filename) : accumulator(0)
+Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 75)
 {
     background.SetTexture(rm.getImage("backgroundGame.png"));
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
     class propSet
     {
-    public:
-        propSet(bool transparent = false, bool platform = false, bool kill = false, bool coin = false) : transparent(transparent), platform(platform), kill(kill), coin(coin) {};
-        bool transparent;
-        bool platform;
-        bool kill;
-        bool coin;
+        public:
+            propSet(bool transparent = false, bool platform = false, bool kill = false, bool coin = false) : transparent(transparent), platform(platform), kill(kill), coin(coin) {};
+            bool transparent;
+            bool platform;
+            bool kill;
+            bool coin;
     };
     std::map<int, propSet> pMap;
 
@@ -67,7 +67,7 @@ Level::Level(const std::string& filename) : accumulator(0)
     image = tilesetElement->FirstChildElement("image");
     std::string imagepath = image->Attribute("source");
 
-    if (!tilesetImage.LoadFromFile(imagepath))//Load the tileset image
+    if (!tilesetImage.LoadFromFile("Data/Images/tileset.png"))//Load the tileset image
     {
         std::cout << "Failed to load tile sheet." << std::endl;
         return;
@@ -243,13 +243,17 @@ Level::Level(const std::string& filename) : accumulator(0)
 Level::~Level()
 {
     for(auto itr = entities.begin(); itr != entities.end(); itr++)
-        itr = entities.erase(itr);
+        delete (*itr);
     for(auto itr = coins.begin(); itr != coins.end(); itr++)
-        itr = coins.erase(itr);
+        delete (*itr);
 
     tiles.clear();
+    movingTiles.clear();
+    spikes.clear();
     coins.clear();
     entities.clear();
+    flyBlocks.clear();
+    platformBlocks.clear();
 }
 
 void Level::handle(const sf::Event& event)
@@ -261,7 +265,7 @@ void Level::reset()
 {
     accumulator = 0;
     for(unsigned i = 0; i < entities.size(); i++)
-        entities[i]->dead = false;
+        entities[i]->reset();
     for(unsigned i = 0; i < coins.size(); i++)
     {
         coins[i]->taken = false;
@@ -269,7 +273,6 @@ void Level::reset()
     HUD::instance()->reset();
     points = 0;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
-    gameover = false;
 }
 
 void Level::update(int frameTime, sf::FloatRect heroRect)
@@ -292,6 +295,11 @@ void Level::update(int frameTime, sf::FloatRect heroRect)
         }
         accumulator -= timeStep;
     }
+}
+
+sf::Vector2f Level::getLastCheckpoint()
+{
+    return lastCheckpoint;
 }
 
 

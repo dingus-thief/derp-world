@@ -1,6 +1,6 @@
 #include "State.h"
 
-State::State(Game* game, sf::RenderWindow* window) : game(game), window(window)
+State::State(sf::RenderWindow* window, StateManager* mgr) : window(window), stateManager(mgr), drawOnTop(false)
 {
     //ctor
 }

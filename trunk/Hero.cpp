@@ -2,7 +2,7 @@
 #include <iostream>
 #define ch 48
 
-Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false)
+Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0)
 {
     currentSpell = new FireSpell(0, 0, 0);
     oldState.falling = false;
@@ -11,7 +11,22 @@ Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100)
     sprite.SetPosition(20, 50);
 
     initAnimation();
+}
 
+void Hero::reset(sf::Vector2f vec)
+{
+    dy = 0;
+    dead = false;
+    mana = maxMana;
+    health = maxHealth;
+    sprite.SetPosition(vec);
+    currentSpell = new FireSpell(0, 0, 0);
+}
+
+void Hero::onDead()
+{
+    dead = true;
+    deathy = -2.5;
 }
 
 void Hero::initAnimation()
@@ -57,12 +72,6 @@ Hero::~Hero()
 
 }
 
-void Hero::reset(Level* level)
-{
-    level->reset();
-    sprite.SetPosition(20, 50);
-}
-
 void Hero::shoot()
 {
     Spell* newSpell;
@@ -81,8 +90,9 @@ void Hero::shoot()
         offset = 42;
         //animator.PlayAnimation("rightShoot");
     }
-    if(mana - currentSpell->manacost > 0)
+    if(mana - currentSpell->manacost > 0 && shootClock.GetElapsedTime() > sf::Seconds(0.5))
     {
+        shootClock.Restart();
         spells.push_back(currentSpell->clone(sprite.GetGlobalBounds().Left + offset, sprite.GetGlobalBounds().Top+10, sign*1.5));
         mana -= currentSpell->manacost;
     }
@@ -149,6 +159,15 @@ void Hero::update(int frameTime, Level* level)
     accumulator += frameTime;
     while(accumulator >= timeStep)
     {
+        accumulator -= timeStep;
+
+        if(dead)
+        {
+            sprite.Move(0, deathy);
+            deathy += ACCEL;
+            continue;
+        }
+
         checkPlatforms(level->movingTiles); //to see if we need to move with some
         execGravity(level);
         execInput(level);
@@ -159,8 +178,6 @@ void Hero::update(int frameTime, Level* level)
         }
 
         regenerateMana();
-
-        accumulator -= timeStep;
     }
 
     //handle animation
@@ -234,10 +251,11 @@ void Hero::spellCollisions(Level* level)
 
 bool Hero::tryMove(Level* level, float x, float y)
 {
+    bool canMove = true;
     //out of screen? (=end/start of level)
     sf::FloatRect rect1(sprite.GetGlobalBounds().Left+x, sprite.GetGlobalBounds().Top+y, sprite.GetGlobalBounds().Width, sprite.GetGlobalBounds().Height);
     if(rect1.Left < 0 || rect1.Left + rect1.Width > level->width*TILESIZE)
-        return false;
+        canMove = false;
     sf::FloatRect intersection;
     //check collision with level->tiles
     for(int j = 0; j < level->tiles.size(); j++)
@@ -250,13 +268,13 @@ bool Hero::tryMove(Level* level, float x, float y)
             {
                 if(!level->tiles[j].platform)
                 {
-                    return false;
+                    canMove = false;
                 }
                 else //it's a platform tile
                 {
                     if((y > 0 && rect1.Top + rect1.Height - y <= rect2.Top)) //we were going down
                     {
-                        return false;
+                        canMove = false;
                     }
                 }
 
@@ -272,7 +290,7 @@ bool Hero::tryMove(Level* level, float x, float y)
         {
             if(y > 0 && rect1.Top + rect1.Height - y <= rect2.Top) //we were going down
             {
-                return false;
+                canMove = false;
             }
         }
     }
@@ -283,9 +301,9 @@ bool Hero::tryMove(Level* level, float x, float y)
 
         if(rect1.Intersects(rect2) && ! level->entities[i]->dead)
         {
-            reset(level);
-            gameover = true;
+            onDead();
             return false;
+            canMove = false;
         }
     }
 
@@ -306,14 +324,14 @@ bool Hero::tryMove(Level* level, float x, float y)
 
         if(rect1.Intersects(rect2))
         {
-            (*itr).onHit();
-            itr = level->spikes.erase(itr);
-            gameover = true;
+            onDead();
+            return false;
         }
     }
 
-    sprite.Move(x, y);
-    return true;
+    if(canMove)
+        sprite.Move(x, y);
+    return canMove;
 }
 
 sf::FloatRect Hero::getBounds()
@@ -334,26 +352,26 @@ void Hero::handle(const sf::Event& event)
 {
     switch(event.Type)
     {
-    case sf::Event::KeyPressed:
-    {
-        if(event.Key.Code == sf::Keyboard::Up)
-            shoot();
+        case sf::Event::KeyPressed:
+            {
+                if(event.Key.Code == sf::Keyboard::Up)
+                    shoot();
 
-        if(event.Key.Code == sf::Keyboard::Num1)
-            currentSpell = new FireSpell(0, 0, 0);
-        if(event.Key.Code == sf::Keyboard::Num2)
-            currentSpell = new IceSpell(0, 0, 0);
-        if(event.Key.Code == sf::Keyboard::Num3)
-            currentSpell = new GreenSpell(0, 0, 0);
-        if(event.Key.Code == sf::Keyboard::Num4)
-            currentSpell = new IcicleSpell(0, 0, 0);
-        if(event.Key.Code == sf::Keyboard::Num5)
-            currentSpell = new FireBallSpell(0, 0, 0);
+                if(event.Key.Code == sf::Keyboard::Num1)
+                    currentSpell = new FireSpell(0, 0, 0);
+                if(event.Key.Code == sf::Keyboard::Num2)
+                    currentSpell = new IceSpell(0, 0, 0);
+                if(event.Key.Code == sf::Keyboard::Num3)
+                    currentSpell = new GreenSpell(0, 0, 0);
+                if(event.Key.Code == sf::Keyboard::Num4)
+                    currentSpell = new IcicleSpell(0, 0, 0);
+                if(event.Key.Code == sf::Keyboard::Num5)
+                    currentSpell = new FireBallSpell(0, 0, 0);
 
-        break;
-    }
-    default:
-        break;
+                break;
+            }
+        default:
+            break;
     }
 }
 

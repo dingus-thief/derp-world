@@ -6,13 +6,13 @@
 
 class GreenSpell : public Spell
 {
-public:
-    GreenSpell(int x, int y, float delta);
-    ~GreenSpell();
-    void onHit();
-    void update();
-    Spell* clone(int x, int y, float delta);
-private:
+    public:
+        GreenSpell(int x, int y, float delta);
+        ~GreenSpell();
+        void onHit();
+        void update();
+        Spell* clone(int x, int y, float delta);
+    private:
 };
 
 #endif // GREENSPELL_H

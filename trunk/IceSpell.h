@@ -6,17 +6,17 @@
 
 class IceSpell : public Spell
 {
-public:
-    IceSpell(int x, int y, float delta);
-    ~IceSpell();
-    void onHit();
-    void update();
-    Spell* clone(int x, int y, float delta);
+    public:
+        IceSpell(int x, int y, float delta);
+        ~IceSpell();
+        void onHit();
+        void update();
+        Spell* clone(int x, int y, float delta);
 
-private:
-    thor::DirectionalEmitter::Ptr emitter;
-    thor::Emitter::ZonePtr zone;
-    RandomEmitter::Ptr onHitEmitter;
+    private:
+        thor::DirectionalEmitter::Ptr emitter;
+        thor::Emitter::ZonePtr zone;
+        RandomEmitter::Ptr onHitEmitter;
 };
 
 #endif // ICESPELL_H

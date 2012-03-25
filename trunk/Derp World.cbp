@@ -5,13 +5,19 @@
 		<Option title="Derp World" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
+		<Option virtualFolders="Monsters\;Spells\;States\;Game World\;" />
 		<Option show_notes="0">
 			<notes>
 				<![CDATA[TODO:
 - Inventory System
 - Dialogue + friendly NPCs
 - Better Menu
-- ]]>
+- spellcast animation
+- SOUNDS
+- Tree based skill system
+- update png files for player & skeleton (1px in between)
+- Pletters
+- Staven met verschillende kracht en specialiteiten]]>
 			</notes>
 		</Option>
 		<Build>
@@ -52,59 +58,161 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="Bat.cpp" />
-		<Unit filename="Bat.h" />
-		<Unit filename="Bullet.cpp" />
-		<Unit filename="Bullet.h" />
+		<Unit filename="Bat.cpp">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Bat.h">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Bullet.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Bullet.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
 		<Unit filename="Button.cpp" />
 		<Unit filename="Button.h" />
-		<Unit filename="Cannon.cpp" />
-		<Unit filename="Cannon.h" />
-		<Unit filename="Coin.cpp" />
-		<Unit filename="Coin.h" />
+		<Unit filename="Cannon.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Cannon.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Coin.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Coin.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
 		<Unit filename="Constants.h" />
-		<Unit filename="Entity.cpp" />
-		<Unit filename="Entity.h" />
-		<Unit filename="FireSpell.cpp" />
-		<Unit filename="FireSpell.h" />
+		<Unit filename="Entity.cpp">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Entity.h">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="FallingSpike.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="FallingSpike.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="FireBallSpell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="FireBallSpell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="FireSpell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="FireSpell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
 		<Unit filename="Game.cpp" />
 		<Unit filename="Game.h" />
-		<Unit filename="GameState.cpp" />
-		<Unit filename="GameState.h" />
-		<Unit filename="GameoverState.cpp" />
-		<Unit filename="GameoverState.h" />
+		<Unit filename="GameState.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="GameState.h">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="GameoverState.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="GameoverState.h">
+			<Option virtualFolder="States\" />
+		</Unit>
 		<Unit filename="Globals.cpp" />
 		<Unit filename="Globals.h" />
-		<Unit filename="GreenSpell.cpp" />
-		<Unit filename="GreenSpell.h" />
+		<Unit filename="GreenSpell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="GreenSpell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
 		<Unit filename="HUD.cpp" />
 		<Unit filename="HUD.h" />
 		<Unit filename="Hero.cpp" />
 		<Unit filename="Hero.h" />
-		<Unit filename="IceSpell.cpp" />
-		<Unit filename="IceSpell.h" />
-		<Unit filename="Level.cpp" />
-		<Unit filename="Level.h" />
-		<Unit filename="MenuState.cpp" />
-		<Unit filename="MenuState.h" />
-		<Unit filename="MovingTile.cpp" />
-		<Unit filename="MovingTile.h" />
+		<Unit filename="IceSpell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="IceSpell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="IcicleSpell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="IcicleSpell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="Item.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Item.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Level.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Level.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="MenuState.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="MenuState.h">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="MovingTile.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="MovingTile.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
 		<Unit filename="RandomEmitter.cpp" />
 		<Unit filename="RandomEmitter.h" />
 		<Unit filename="ResourceManager.cpp" />
 		<Unit filename="ResourceManager.h" />
-		<Unit filename="Skeleton.cpp" />
-		<Unit filename="Skeleton.h" />
-		<Unit filename="Snake.cpp" />
-		<Unit filename="Snake.h" />
+		<Unit filename="Skeleton.cpp">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Skeleton.h">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Snake.cpp">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
+		<Unit filename="Snake.h">
+			<Option virtualFolder="Monsters\" />
+		</Unit>
 		<Unit filename="SoundManager.cpp" />
 		<Unit filename="SoundManager.h" />
-		<Unit filename="Spell.cpp" />
-		<Unit filename="Spell.h" />
-		<Unit filename="State.cpp" />
-		<Unit filename="State.h" />
-		<Unit filename="Tile.cpp" />
-		<Unit filename="Tile.h" />
+		<Unit filename="Spell.cpp">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="Spell.h">
+			<Option virtualFolder="Spells\" />
+		</Unit>
+		<Unit filename="State.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="State.h">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="StateManager.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="StateManager.h">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="Tile.cpp">
+			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="Tile.h">
+			<Option virtualFolder="Game World\" />
+		</Unit>
 		<Unit filename="main.cpp" />
 		<Unit filename="tinyxml\tinystr.cpp" />
 		<Unit filename="tinyxml\tinystr.h" />

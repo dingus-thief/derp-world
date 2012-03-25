@@ -6,11 +6,11 @@
 
 class Skeleton : public Entity
 {
-public:
-    Skeleton(int x, int y);
-    ~Skeleton();
+    public:
+        Skeleton(int x, int y);
+        ~Skeleton();
 
-private:
+    private:
 };
 
 #endif // SKELETON_H
