@@ -2,7 +2,7 @@
 #include <iostream>
 #define ch 48
 
-Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), health(100), maxHealth(100), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0)
+Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), lives(3), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0)
 {
     currentSpell = new FireSpell(0, 0, 0);
     oldState.falling = false;
@@ -18,9 +18,14 @@ void Hero::reset(sf::Vector2f vec)
     dy = 0;
     dead = false;
     mana = maxMana;
-    health = maxHealth;
     sprite.SetPosition(vec);
     currentSpell = new FireSpell(0, 0, 0);
+    lives--;
+}
+
+int Hero::getLivesLeft()
+{
+    return lives;
 }
 
 void Hero::onDead()
@@ -187,7 +192,7 @@ void Hero::update(int frameTime, Level* level)
     //handle animation
     checkItems(level->items);
     handleAnimation(frameTime);
-    HUD::instance()->update(health, mana);
+    HUD::instance()->update(lives, mana);
     spellCollisions(level);
     deleteDestroyedSpells();
 }
@@ -216,6 +221,10 @@ void Hero::checkItems(std::vector<Item>& items)
                     mana += 50;
                     if(mana > maxMana)
                         mana = maxMana;
+                } break;
+                case healthPotion:
+                {
+                    lives++;
                 }
 
             }

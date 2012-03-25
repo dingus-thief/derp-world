@@ -8,12 +8,12 @@ class HUD
     public:
         static HUD* instance();
         ~HUD();
-        void update(int health, int mana);
+        void update(int lives, int mana);
         void pause();
         void resume();
         void reset();
         void setMaxMana(int maxMana);
-        void setMaxHealth(int maxHealth);
+        void setMaxLives(int maxLives);
         void draw(sf::RenderWindow* window);
 
     private:
@@ -24,13 +24,14 @@ class HUD
         sf::Sprite coinSprite;
         sf::RectangleShape manaBar;
         sf::RectangleShape manaMaxBar;
-        sf::RectangleShape healthMaxBar;
-        sf::RectangleShape healthBar;
+        sf::Sprite heart;
+        int liveCount;
         sf::RectangleShape spellRect;
         sf::Sprite spellMenu;
         int spellRectX;
         int maxMana;
-        int maxHealth;
+        int maxLives;
+
 
         int lastScore;
         int lastTime;

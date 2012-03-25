@@ -2,12 +2,13 @@
 
 HUD *HUD::m_instance = 0;
 
-HUD::HUD() : lastScore(0), spellRectX(0), maxHealth(100), maxMana(100)
+HUD::HUD() : lastScore(0), spellRectX(0), maxLives(3), maxMana(100)
 {
     coinSprite.SetTexture(rm.getImage("coin.png"));
     cointext.SetPosition(20, 10);
     cointext.SetCharacterSize(20);
     timeText.SetCharacterSize(20);
+    heart.SetTexture(rm.getImage("heart.png"));
 
     spellMenu.SetTexture(rm.getImage("spellMenu.png"));
     spellRect.SetSize(sf::Vector2f(32, 32));
@@ -21,18 +22,14 @@ HUD::HUD() : lastScore(0), spellRectX(0), maxHealth(100), maxMana(100)
     manaMaxBar.SetFillColor(sf::Color::Transparent);
     manaMaxBar.SetOutlineColor(sf::Color::Black);
     manaMaxBar.SetOutlineThickness(2);
-    healthBar.SetFillColor(sf::Color::Red);
-    healthMaxBar.SetFillColor(sf::Color::Transparent);
-    healthMaxBar.SetOutlineColor(sf::Color::Black);
-    healthMaxBar.SetOutlineThickness(2);
+
     manaMaxBar.SetSize(sf::Vector2f(100, 10));
-    healthMaxBar.SetSize(sf::Vector2f(100, 10));
     timer.Start();
 }
 
-void HUD::setMaxHealth(int mHealth)
+void HUD::setMaxLives(int maxlives)
 {
-    maxHealth = mHealth;
+    maxLives = maxlives;
 }
 
 void HUD::setMaxMana(int mMana)
@@ -67,10 +64,10 @@ HUD::~HUD()
     //dtor
 }
 
-void HUD::update(int health, int mana)
+void HUD::update(int lives, int mana)
 {
     manaBar.SetSize(sf::Vector2f(mana * (maxMana/100), 10));
-    healthBar.SetSize(sf::Vector2f(health * (maxHealth/100) , 10));
+    liveCount = lives;
 
     if(points != lastScore)
     {
@@ -96,14 +93,15 @@ void HUD::draw(sf::RenderWindow* window)
 
     manaBar.SetPosition(rect.Left + 10, rect.Top + 10);
     manaMaxBar.SetPosition(rect.Left + 10, rect.Top + 10);
-    healthBar.SetPosition(rect.Left + 10, rect.Top + 25);
-    healthMaxBar.SetPosition(rect.Left + 10, rect.Top + 25);
+    for(int i = rect.Left + 10; i < rect.Left + 10 + 19*liveCount; i += 19)
+    {
+        heart.SetPosition(i, rect.Top + 25);
+        window->Draw(heart);
+    }
     spellMenu.SetPosition(rect.Left + 150, rect.Top + 10);
     spellRect.SetPosition(rect.Left + 150 + spellRectX, rect.Top + 10);
     window->Draw(manaBar);
     window->Draw(manaMaxBar);
-    window->Draw(healthBar);
-    window->Draw(healthMaxBar);
     window->Draw(spellMenu);
     window->Draw(spellRect);
 }

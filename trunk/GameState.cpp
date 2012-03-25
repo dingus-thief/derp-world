@@ -47,7 +47,7 @@ void GameState::update()
     {
         hero->reset(level->getLastCheckpoint());
         level->reset();
-        stateManager->pushState(LiveLostState::Instance(window, stateManager));
+        stateManager->pushState(LiveLostState::Instance(window, stateManager, hero->getLivesLeft()));
     }
 
     /*if(gameover)
