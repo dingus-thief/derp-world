@@ -3,6 +3,7 @@
 IcicleSpell::IcicleSpell(int x, int y, float delta) : Spell(x, y, delta, 35, 15, spell::ice)
 {
     sprite.SetTexture(rm.getImage("icicle.png"));
+    sprite.SetTextureRect(sf::IntRect(0, 0, 24, 16));
     animation = thor::FrameAnimation::Create();
     for(int i = 0; i < 8*24; i+=24)
         animation->AddFrame(1.f, sf::IntRect(i, 0, 24, 16));

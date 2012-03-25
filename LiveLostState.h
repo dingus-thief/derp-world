@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "State.h"
 #include "Button.h"
+#include <cstdlib>
 
 
 class LiveLostState : public State
@@ -18,13 +19,16 @@ class LiveLostState : public State
         void init();
         void cleanup();
 
-        static LiveLostState* Instance(sf::RenderWindow* window, StateManager* mgr)
+        static LiveLostState* Instance(sf::RenderWindow* window, StateManager* mgr, int livesLeft)
        	{
        	    if(liveLostState == NULL)
                 liveLostState = new LiveLostState(window, mgr);
+            liveLostState->livesLeft = livesLeft;
 
             return liveLostState;
         }
+
+        int livesLeft;
 
     private:
         LiveLostState(sf::RenderWindow* window, StateManager* mgr);
@@ -35,6 +39,7 @@ class LiveLostState : public State
         sf::Sprite background;
         Button* restartButton;
         sf::Text text;
+
 
         bool goingDown;
         float pixelsGoneDown;

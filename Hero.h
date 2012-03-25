@@ -37,6 +37,7 @@ class Hero
         void reset(sf::Vector2f vec);
         void shoot();
         sf::FloatRect getBounds();
+        int getLivesLeft();
         sf::Sprite sprite;
 
 
@@ -59,8 +60,8 @@ class Hero
         std::list<Spell*> spells;
         Spell* currentSpell;
         sf::Clock shootClock;
-        int maxHealth;
-        float health;
+        int lives;
+        int maxLives;
         int maxMana;
         float mana;
         bool onPlatform;

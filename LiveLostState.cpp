@@ -6,7 +6,6 @@ LiveLostState::LiveLostState(sf::RenderWindow* window, StateManager* mgr) : Stat
 {
     background.SetTexture(rm.getImage("liveLostBackground.png"));
     drawOnTop = true;
-    text = rm.getText("You died!\nYou have lifes left.");
 }
 
 void LiveLostState::checkButtons(float x, float y)
@@ -71,6 +70,7 @@ void LiveLostState::resume() {}
 
 void LiveLostState::init()
 {
+    text = rm.getText("You died!\nYou have " + to_string(livesLeft) + " lifes left.");
     background.SetPosition(window->ConvertCoords(100, -200));
     restartButton = new Button("Continue", 0, static_cast<int>(window->ConvertCoords(0, -50).y));
     restartButton->setPosition(static_cast<int>(window->ConvertCoords(200, -50).x), static_cast<int>(window->ConvertCoords(200, -50).y));

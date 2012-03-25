@@ -270,6 +270,8 @@ void Level::reset()
         entities[i]->reset();
     for(unsigned i = 0; i < items.size(); i++)
         items[i].reset();
+    for(unsigned i = 0; i < spikes.size(); i++)
+        spikes[i].reset();
     for(unsigned i = 0; i < coins.size(); i++)
     {
         coins[i]->taken = false;

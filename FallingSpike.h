@@ -12,6 +12,7 @@ class FallingSpike
         virtual ~FallingSpike();
         void update(sf::FloatRect heroRect, std::vector<Tile> tiles);
         void onHit();
+        void reset();
 
         sf::FloatRect getBounds();
         void draw(sf::RenderWindow* window);
@@ -21,6 +22,7 @@ class FallingSpike
         bool falling;
         bool dead;
         float vely;
+        sf::Vector2f originalPos;
 };
 
 #endif // FALLINGSPIKE_H
