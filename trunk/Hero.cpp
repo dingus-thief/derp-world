@@ -226,7 +226,6 @@ void Hero::checkItems(std::vector<Item>& items)
                 {
                     lives++;
                 }
-
             }
         }
     }

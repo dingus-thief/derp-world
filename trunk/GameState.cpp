@@ -11,7 +11,7 @@ GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window
 
 void GameState::init()
 {
-    music.Play();
+    //music.Play();
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
     sf::Vector2f halfsize(WIDTH, HEIGHT);
     sf::View view_(center, halfsize);

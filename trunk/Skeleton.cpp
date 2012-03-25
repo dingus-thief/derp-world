@@ -2,6 +2,9 @@
 
 Skeleton::Skeleton(int x, int y) : Entity("skeleton.png", 50, 10, x, y)
 {
+    xp = 8;
+    xpText = rm.getText("+8", 13);
+
     for(int i = 0; i < 32*3; i+=32)
         rightRunAnim->AddFrame(1.f, sf::IntRect(i, 0, 32, 42));
     for(int i = 0; i < 32*3; i+=32)

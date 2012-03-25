@@ -5,10 +5,11 @@
 #include "Globals.h"
 #include "Tile.h"
 #include "Constants.h"
+#include "HUD.h"
 
 class Entity
 {
-        friend class Level;
+    friend class Level;
 
     public:
         Entity(const std::string& name, int health, int damage, int x, int y);
@@ -22,6 +23,8 @@ class Entity
         bool flying;
         bool attacking;
         int damage;
+        int xp;
+        sf::Text xpText;
         DIR dir;
 
     protected:

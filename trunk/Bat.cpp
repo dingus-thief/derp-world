@@ -2,6 +2,9 @@
 
 Bat::Bat(int x, int y) : Entity("bat.png", 30, 20, x, y)
 {
+    xp = 10;
+    xpText = rm.getText("+10", 13);
+
     flying = true;
     speed = 0.6;
 
