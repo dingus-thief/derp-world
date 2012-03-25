@@ -2,7 +2,7 @@
 
 HUD *HUD::m_instance = 0;
 
-HUD::HUD() : lastScore(0), spellRectX(0), maxLives(3), maxMana(100), maxXp(100)
+HUD::HUD() : lastScore(0), spellRectX(0), maxMana(100), maxXp(100)
 {
     coinSprite.SetTexture(rm.getImage("coin.png"));
     cointext.SetPosition(20, 10);
@@ -33,14 +33,24 @@ HUD::HUD() : lastScore(0), spellRectX(0), maxLives(3), maxMana(100), maxXp(100)
     timer.Start();
 }
 
-void HUD::setMaxLives(int maxlives)
-{
-    maxLives = maxlives;
-}
-
 void HUD::setMaxMana(int mMana)
 {
     maxMana = mMana;
+}
+
+void HUD::setMaxXp(int mXp)
+{
+    maxXp = mXp;
+}
+
+void HUD::setMana(int mMana)
+{
+    manaBar.SetSize(sf::Vector2f(mMana * (maxMana/100), 10));
+}
+
+void HUD::setLives(int mLives)
+{
+    liveCount = mLives;
 }
 
 void HUD::addXp(int mxp)
@@ -75,11 +85,8 @@ HUD::~HUD()
     //dtor
 }
 
-void HUD::update(int lives, int mana)
+void HUD::update()
 {
-    manaBar.SetSize(sf::Vector2f(mana * (maxMana/100), 10));
-    liveCount = lives;
-
     if(points != lastScore)
     {
         cointext.SetString(to_string(points));
