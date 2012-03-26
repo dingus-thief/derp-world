@@ -24,6 +24,7 @@ int main()
     {
         stateManager.handle();
         stateManager.update();
+        Window.Clear();
         stateManager.draw();
         Window.Display();
     }

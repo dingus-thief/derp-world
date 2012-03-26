@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include "Globals.h"
 #include "GameState.h"
+#include "NewGameState.h"
 #include "Button.h"
 
 class MenuState : public State
@@ -33,7 +34,7 @@ class MenuState : public State
         void checkButtons(float x, float y);
 
         sf::Sprite background;
-        Button* playButton;
+        Button* newGameButton;
         Button* optionsButton;
         Button* quitButton;
 

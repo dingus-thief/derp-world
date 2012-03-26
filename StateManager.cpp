@@ -15,10 +15,10 @@
     void StateManager::changeState(State* state)
     {
         // cleanup the current state
-        /*if ( !states.empty() ) {
+        if ( !states.empty() ) {
             states.back()->cleanup();
             states.pop_back();
-        }*/
+        }
 
         // store and init the new state
         states.push_back(state);
