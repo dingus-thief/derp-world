@@ -10,15 +10,15 @@ MenuState::MenuState(sf::RenderWindow* window, StateManager* mgr) : State(window
 void MenuState::init()
 {
     background.SetTexture(rm.getImage("menuBackground.png"));
-    playButton = new Button("Play",0, 100);
-    playButton->center(0, WIDTH);
+    newGameButton = new Button("New Game",0, 100);
+    newGameButton->center(0, WIDTH);
     optionsButton = new Button("Options", 0, 200);
     quitButton = new Button("Quit", 0, 300);
 }
 
 void MenuState::cleanup()
 {
-    delete playButton;
+    delete newGameButton;
     delete optionsButton;
     delete quitButton;
 }
@@ -53,15 +53,15 @@ void MenuState::handle()
 
 void MenuState::checkButtons(float x, float y)
 {
-    playButton->checkHL(x, y);
+    newGameButton->checkHL(x, y);
     optionsButton->checkHL(x, y);
     quitButton->checkHL(x, y);
 }
 
 void MenuState::clicked(float x, float y)
 {
-    if(playButton->isClicked(x, y))
-        stateManager->pushState(GameState::Instance(window, stateManager));
+    if(newGameButton->isClicked(x, y))
+        stateManager->pushState(NewGameState::Instance(window, stateManager));
     if(quitButton->isClicked(x, y))
         window->Close();
 }
@@ -71,7 +71,7 @@ void MenuState::render()
     window->SetView(window->GetDefaultView());
     window->Clear(sf::Color::White);
     window->Draw(background);
-    playButton->draw(window);
+    newGameButton->draw(window);
     optionsButton->draw(window);
     quitButton->draw(window);
 }
