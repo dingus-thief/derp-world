@@ -1,28 +1,32 @@
 #include "GameState.h"
 #include <iostream>
 
-GameState* GameState::gameState = 0;
+GameState* GameState::gameState = NULL;
 
 GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
+    std::cout<<"GameState constructor called.\n";
     loadingSprite.SetTexture(rm.getImage("loading.png"));
-}
 
-void GameState::init()
-{
-    window->Clear();
-    window->Draw(loadingSprite);
-    window->Display();
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
     sf::Vector2f halfsize(WIDTH, HEIGHT);
     sf::View view_(center, halfsize);
     view = view_;
-    hud = new HUD;
-    hero = new Hero(hud);
-    level = new Level(levelPath);
+
     music = new sf::Music;
     music->OpenFromFile("Data/Audio/background.ogg");
     music->SetLoop(true);
+}
+
+void GameState::init()
+{
+    std::cout<<"GameState::init() called.\n";
+    window->Clear();
+    window->Draw(loadingSprite);
+    window->Display();
+    hud = new HUD;
+    hero = new Hero(hud);
+    level = new Level(levelPath);
     //music->Play();
 }
 
@@ -36,7 +40,6 @@ void GameState::cleanup()
     delete hero;
     delete level;
     delete hud;
-    delete music;
 }
 
 void GameState::update()

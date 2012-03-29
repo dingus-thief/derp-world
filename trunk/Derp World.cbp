@@ -17,7 +17,8 @@
 - Tree based skill system
 - update png files for player & skeleton (1px in between)
 - Pletters
-- Staven met verschillende kracht en specialiteiten]]>
+- Staven met verschillende kracht en specialiteiten
+- Maak resourcemanager singleton]]>
 			</notes>
 		</Option>
 		<Build>
@@ -109,8 +110,6 @@
 		<Unit filename="FireSpell.h">
 			<Option virtualFolder="Spells\" />
 		</Unit>
-		<Unit filename="Game.cpp" />
-		<Unit filename="Game.h" />
 		<Unit filename="GameState.cpp">
 			<Option virtualFolder="States\" />
 		</Unit>
@@ -159,6 +158,12 @@
 		<Unit filename="Level.h">
 			<Option virtualFolder="Game World\" />
 		</Unit>
+		<Unit filename="LiveLostState.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="LiveLostState.h">
+			<Option virtualFolder="States\" />
+		</Unit>
 		<Unit filename="MenuState.cpp">
 			<Option virtualFolder="States\" />
 		</Unit>
@@ -170,6 +175,12 @@
 		</Unit>
 		<Unit filename="MovingTile.h">
 			<Option virtualFolder="Game World\" />
+		</Unit>
+		<Unit filename="NewGameState.cpp">
+			<Option virtualFolder="States\" />
+		</Unit>
+		<Unit filename="NewGameState.h">
+			<Option virtualFolder="States\" />
 		</Unit>
 		<Unit filename="RandomEmitter.cpp" />
 		<Unit filename="RandomEmitter.h" />
@@ -207,6 +218,8 @@
 		<Unit filename="StateManager.h">
 			<Option virtualFolder="States\" />
 		</Unit>
+		<Unit filename="TextEdit.cpp" />
+		<Unit filename="TextEdit.h" />
 		<Unit filename="Tile.cpp">
 			<Option virtualFolder="Game World\" />
 		</Unit>

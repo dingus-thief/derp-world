@@ -4,11 +4,6 @@ MenuState* MenuState::menuState = NULL;
 
 MenuState::MenuState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
-
-}
-
-void MenuState::init()
-{
     background.SetTexture(rm.getImage("menuBackground.png"));
     newGameButton = new Button("New Game",0, 100);
     newGameButton->center(0, WIDTH);
@@ -16,11 +11,14 @@ void MenuState::init()
     quitButton = new Button("Quit", 0, 300);
 }
 
+void MenuState::init()
+{
+
+}
+
 void MenuState::cleanup()
 {
-    delete newGameButton;
-    delete optionsButton;
-    delete quitButton;
+
 }
 
 void MenuState::update()

@@ -4,6 +4,9 @@ NewGameState* NewGameState::newGameState = NULL;
 
 NewGameState::NewGameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
+    nameEdit = new TextEdit(300, 50, 175);
+    startButton = new Button("Start!", 500, 400);
+
     background.SetTexture(rm.getImage("menuBackground.png"));
     fireIncrementer.SetTexture(rm.getImage("incrementer.png"));
     fireDecrementer.SetTexture(rm.getImage("decrementer.png"));
@@ -141,8 +144,6 @@ void NewGameState::init()
     firePoints = 1;
     icePoints = 1;
     energyPoints = 1;
-    nameEdit = new TextEdit(300, 50, 175);
-    startButton = new Button("Start!", 500, 400);
 }
 
 void NewGameState::cleanup()
@@ -158,7 +159,4 @@ void NewGameState::cleanup()
     file << 1 << "\n"; //amount of lives
     file << 100 << "\n"; //amount of mana
     file.close();
-
-    delete nameEdit;
-    delete startButton;
 }
