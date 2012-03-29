@@ -30,7 +30,7 @@ void TextEdit::checkClick(float x, float y)
     sf::FloatRect rect(textBox.GetGlobalBounds());
     if(rect.Contains(x, y))
     {
-        textBox.SetOutlineColor(sf::Color::Green);
+        textBox.SetOutlineColor(sf::Color(0, 130, 19));
         focused = true;
     }
 }

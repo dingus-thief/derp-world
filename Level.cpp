@@ -3,10 +3,41 @@
 #include <fstream>
 #include <iostream>
 
-Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 75)
+Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 75), filename(filename)//, thread(&Level::loadFromFile, this)
 {
     background.SetTexture(rm.getImage("backgroundGame.png"));
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
+    loadFromFile();
+
+    //loadFromFile(filename);
+    //thread.Launch();
+}
+
+Level::~Level()
+{
+    for(auto itr = entities.begin(); itr != entities.end(); itr++)
+        delete (*itr);
+    for(auto itr = coins.begin(); itr != coins.end(); itr++)
+        delete (*itr);
+
+    entities.clear();
+    coins.clear();
+    tiles.clear();
+    movingTiles.clear();
+    spikes.clear();
+    coins.clear();
+    entities.clear();
+    flyBlocks.clear();
+    platformBlocks.clear();
+}
+
+void Level::handle(const sf::Event& event)
+{
+
+}
+
+void Level::loadFromFile()
+{
     class propSet
     {
         public:
@@ -65,7 +96,7 @@ Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 7
     //Tileset image
     TiXmlElement *image;
     image = tilesetElement->FirstChildElement("image");
-    std::string imagepath = image->Attribute("source");
+    //std::string imagepath = image->Attribute("source");
 
     if (!tilesetImage.LoadFromFile("Data/Images/tileset.png"))//Load the tileset image
     {
@@ -244,27 +275,6 @@ Level::Level(const std::string& filename) : accumulator(0), lastCheckpoint(10, 7
     return;
 }
 
-Level::~Level()
-{
-    for(auto itr = entities.begin(); itr != entities.end(); itr++)
-        delete (*itr);
-    for(auto itr = coins.begin(); itr != coins.end(); itr++)
-        delete (*itr);
-
-    tiles.clear();
-    movingTiles.clear();
-    spikes.clear();
-    coins.clear();
-    entities.clear();
-    flyBlocks.clear();
-    platformBlocks.clear();
-}
-
-void Level::handle(const sf::Event& event)
-{
-
-}
-
 void Level::reset()
 {
     accumulator = 0;
@@ -278,7 +288,6 @@ void Level::reset()
     {
         coins[i]->taken = false;
     }
-    HUD::instance()->reset();
     points = 0;
     background.SetPosition(0, WIDTH-background.GetGlobalBounds().Height);
 }
@@ -313,7 +322,6 @@ sf::Vector2f Level::getLastCheckpoint()
 
 void Level::draw(sf::RenderWindow* window)
 {
-
     sf::View view = window->GetView();
     sf::FloatRect viewport(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2 + 16, view.GetSize().y/2)), sf::Vector2f(view.GetSize()) + sf::Vector2f(16, 0)); //-16 each time is because otherwise on the left side the sprite won't be drawn unless it's fully in
 

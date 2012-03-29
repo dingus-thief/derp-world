@@ -18,7 +18,7 @@ class Button
 
     private:
         sf::Sprite buttonSprite;
-        sf::Text text;
+        sf::Text* text;
         int x;
         int y;
 

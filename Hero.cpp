@@ -2,8 +2,9 @@
 #include <iostream>
 #define ch 48
 
-Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100), lives(3), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0)
+Hero::Hero(HUD* hud) : speed(1.7), accumulator(0), dx(0), dy(0), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0), hud(hud)
 {
+    load("Data/hero.txt");
     currentSpell = new FireSpell(0, 0, 0);
     oldState.falling = false;
     sprite.SetTexture(rm.getImage("char.png"));
@@ -11,6 +12,21 @@ Hero::Hero() : speed(1.7), accumulator(0), dx(0), dy(0), mana(100), maxMana(100)
     sprite.SetPosition(20, 50);
 
     initAnimation();
+}
+
+void Hero::load(const std::string& filePath)
+{
+    std::ifstream file(filePath.c_str());
+
+    file >> name;
+    file >> fireSkill;
+    file >> iceSkill;
+    file >> energySkill;
+    file >> heroLevel;
+    file >> xp;
+    file >> lives;
+    file >> mana;
+    maxMana = mana;
 }
 
 void Hero::reset(sf::Vector2f vec)
@@ -74,7 +90,10 @@ void Hero::initAnimation()
 
 Hero::~Hero()
 {
-
+    for(auto itr = spells.begin(); itr != spells.end(); itr++)
+    {
+        itr = spells.erase(itr);
+    }
 }
 
 void Hero::shoot()
@@ -195,9 +214,8 @@ void Hero::update(int frameTime, Level* level)
     spellCollisions(level);
     deleteDestroyedSpells();
 
-    HUD::instance()->setMana(mana);
-    HUD::instance()->setLives(lives);
-
+    hud->setMana(mana);
+    hud->setLives(lives);
 }
 
 void Hero::regenerateMana()
@@ -284,6 +302,8 @@ void Hero::spellCollisions(Level* level)
                 {
                     (*itr)->onHit();
                     level->entities[i]->onHit((*itr)->damage, (*itr)->type());
+                    if(level->entities[i]->dead) //they were killed by the spell, add xp
+                        hud->addXp(level->entities[i]->getXp());
                 }
             }
         }

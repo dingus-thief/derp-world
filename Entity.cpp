@@ -44,7 +44,6 @@ void Entity::onHit(unsigned damage, spell spellType)
     if(health <= 0)
     {
         xpText.SetPosition(sprite.GetGlobalBounds().Left, sprite.GetGlobalBounds().Top);
-        HUD::instance()->addXp(xp);
         dead = true;
     }
 }

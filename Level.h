@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include "Globals.h"
 #include "tinyxml/tinyxml.h"
 #include "Skeleton.h"
@@ -25,6 +26,7 @@ class Level
 
     public:
         Level(const std::string& filename);
+        void loadFromFile();
         void draw(sf::RenderWindow* window);
         void update(int frameTime, sf::FloatRect heroRect);
         void handle(const sf::Event& event);
@@ -36,8 +38,11 @@ class Level
 
 
     private:
+
         void shoot();
 
+        //sf::Thread thread;
+        std::string filename;
         int accumulator;
         int firstTileID;
         sf::Rect <float> drawingBounds;

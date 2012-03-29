@@ -11,6 +11,8 @@
 #include "FireBallSpell.h"
 #include "IceSpell.h"
 #include <Thor/Time/Timer.hpp>
+#include <fstream>
+#include "HUD.h"
 
 struct HeroState
 {
@@ -29,7 +31,7 @@ struct HeroState
 class Hero
 {
     public:
-        Hero();
+        Hero(HUD* hud);
         ~Hero();
         void draw(sf::RenderWindow* window);
         void update(int frameTime, Level* level);
@@ -42,6 +44,7 @@ class Hero
 
 
     private:
+        void load(const std::string& filePath);
         bool tryMove(Level* level, float x, float y);
         void handleAnimation(int frameTime);
         void deleteDestroyedSpells();
@@ -59,6 +62,7 @@ class Hero
         thor::Animator animator;
         std::list<Spell*> spells;
         Spell* currentSpell;
+        HUD* hud;
         sf::Clock shootClock;
         int lives;
         int maxLives;
@@ -70,7 +74,13 @@ class Hero
         float dy;
         float deathy;
         float speed;
+        int fireSkill;
+        int iceSkill;
+        int energySkill;
+        int heroLevel;
+        int xp;
         sf::Vector2f platformSpeed;
+        std::string name;
 };
 
 #endif // HERO_H

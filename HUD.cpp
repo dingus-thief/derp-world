@@ -1,7 +1,5 @@
 #include "HUD.h"
 
-HUD *HUD::m_instance = 0;
-
 HUD::HUD() : lastScore(0), spellRectX(0), maxMana(100), maxXp(100)
 {
     coinSprite.SetTexture(rm.getImage("coin.png"));
@@ -66,13 +64,6 @@ void HUD::reset()
 void HUD::pause()
 {
     timer.Stop();
-}
-
-HUD* HUD::instance()
-{
-    if (!m_instance)
-        m_instance = new HUD;
-    return m_instance;
 }
 
 void HUD::resume()
