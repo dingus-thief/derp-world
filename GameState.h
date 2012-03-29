@@ -1,6 +1,7 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 #include <SFML/Graphics.hpp>
+#include <SFML/System.hpp>
 #include <Thor/Animation.hpp>
 #include "Globals.h"
 #include "Hero.h"
@@ -30,17 +31,15 @@ class GameState : public State
 
         static GameState* Instance(sf::RenderWindow* window, StateManager* mgr, const std::string& levelFile)
         {
-            if(gameState == NULL)
-                gameState = new GameState(window, mgr);
-            gameState->levelPath = levelFile;
-            return gameState;
+            /*if(gameState == NULL)
+                gameState = new GameState(window, mgr);*/
+            GameState* newstate = new GameState(window, mgr);
+            newstate->levelPath = levelFile;
+            return newstate;
         }
 
 
     private:
-
-
-
         void reset();
         Level* level;
         Hero* hero;
