@@ -12,7 +12,6 @@
 #include <iostream>
 #include "Constants.h"
 
-
 class GameState : public State
 {
     public:
@@ -27,25 +26,30 @@ class GameState : public State
         void init();
         void cleanup();
 
-        static GameState* Instance(sf::RenderWindow* window, StateManager* mgr)
+        GameState(sf::RenderWindow* window, StateManager* mgr);
+
+        static GameState* Instance(sf::RenderWindow* window, StateManager* mgr, const std::string& levelFile)
         {
             if(gameState == NULL)
                 gameState = new GameState(window, mgr);
+            gameState->levelPath = levelFile;
             return gameState;
         }
 
 
     private:
 
-        GameState(sf::RenderWindow* window, StateManager* mgr);
+
 
         void reset();
-
         Level* level;
         Hero* hero;
+        HUD* hud;
         sf::View view;
         int currentLvl;
-        sf::Music music;
+        sf::Music* music;
+        std::string levelPath;
+        sf::Sprite loadingSprite;
 
         static GameState* gameState;
 

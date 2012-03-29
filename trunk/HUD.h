@@ -6,7 +6,7 @@
 class HUD
 {
     public:
-        static HUD* instance();
+        HUD();
         ~HUD();
         void update();
         void pause();
@@ -20,8 +20,6 @@ class HUD
         void addXp(int xp);
 
     private:
-        HUD();
-        static HUD* m_instance;
         sf::Text cointext;
         sf::Text timeText;
         sf::Sprite coinSprite;

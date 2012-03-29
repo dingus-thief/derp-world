@@ -18,6 +18,7 @@ class Entity
         void draw(sf::RenderWindow* window);
         void onHit(unsigned damage, spell spellType);
         void reset();
+        int getXp(){return xp;}
         sf::FloatRect getBounds();
         bool dead;
         bool flying;

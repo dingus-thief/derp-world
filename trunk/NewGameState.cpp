@@ -4,6 +4,7 @@ NewGameState* NewGameState::newGameState = NULL;
 
 NewGameState::NewGameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
+    background.SetTexture(rm.getImage("menuBackground.png"));
     fireIncrementer.SetTexture(rm.getImage("incrementer.png"));
     fireDecrementer.SetTexture(rm.getImage("decrementer.png"));
     iceIncrementer.SetTexture(rm.getImage("incrementer.png"));
@@ -19,7 +20,10 @@ NewGameState::NewGameState(sf::RenderWindow* window, StateManager* mgr) : State(
     firePointsText = rm.getText("1", 25);
     icePointsText = rm.getText("1", 25);
 
-    nameText.SetPosition(100, 75);
+    pointsLeftText = rm.getText("Points left: ", 25);
+    pointsLeftText.SetPosition(100, 150);
+
+    nameText.SetPosition(100, 50);
 
     fireSkillText.SetPosition(100, 200);
     firePointsText.SetPosition(350, 200);
@@ -63,7 +67,6 @@ void NewGameState::handle()
             default:
                 break;
         }
-
     }
 }
 
@@ -72,6 +75,7 @@ void NewGameState::update()
     firePointsText.SetString(sf::String(to_string(firePoints)));
     icePointsText.SetString(sf::String(to_string(icePoints)));
     energyPointsText.SetString(sf::String(to_string(energyPoints)));
+    pointsLeftText.SetString(sf::String("Points left:  " + to_string(pointsLeft)));
     //firePointsText.SetString(sf::String(to_string(pointsLeft)));
 }
 
@@ -82,8 +86,10 @@ void NewGameState::checkButtons(float x, float y)
 
 void NewGameState::clicked(float x, float y)
 {
-    if(startButton->isClicked(x, y))
-        stateManager->changeState(GameState::Instance(window, stateManager));
+    if(startButton->isClicked(x, y) && pointsLeft == 0 && !nameEdit->getText().empty())
+        stateManager->changeState(GameState::Instance(window, stateManager, "Data/Levels/coolio.tmx"));
+    else if(startButton->isClicked(x, y))
+        stateManager->changeState(GameState::Instance(window, stateManager, "Data/Levels/coolio2.tmx"));
 
     if(pointsLeft > 0)
     {
@@ -109,7 +115,9 @@ void NewGameState::clicked(float x, float y)
 
 void NewGameState::render()
 {
+    window->Draw(background);
     window->Draw(nameText);
+    window->Draw(pointsLeftText);
     window->Draw(iceSkillText);
     window->Draw(fireSkillText);
     window->Draw(energySkillText);
@@ -122,6 +130,7 @@ void NewGameState::render()
     window->Draw(iceDecrementer);
     window->Draw(energyIncrementer);
     window->Draw(energyDecrementer);
+
     startButton->draw(window);
     nameEdit->draw(window);
 }
@@ -132,7 +141,7 @@ void NewGameState::init()
     firePoints = 1;
     icePoints = 1;
     energyPoints = 1;
-    nameEdit = new TextEdit(300, 75, 175);
+    nameEdit = new TextEdit(300, 50, 175);
     startButton = new Button("Start!", 500, 400);
 }
 
