@@ -6,7 +6,7 @@ Bat::Bat(int x, int y) : Entity("bat.png", 30, 20, x, y)
     xpText = rm.getText("+10", 13);
 
     flying = true;
-    speed = 0.6;
+    speed = 0.6*tsAdjuster;
 
     for(int i = 0; i < 29*2; i+=29)
         rightRunAnim->AddFrame(1.f, sf::IntRect(i, 0, 28, 24));

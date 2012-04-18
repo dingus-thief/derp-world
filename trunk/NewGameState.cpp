@@ -29,19 +29,19 @@ NewGameState::NewGameState(sf::RenderWindow* window, StateManager* mgr) : State(
     nameText.SetPosition(100, 50);
 
     fireSkillText.SetPosition(100, 200);
-    firePointsText.SetPosition(350, 200);
-    fireIncrementer.SetPosition(375, 195);
-    fireDecrementer.SetPosition(375, 217);
+    firePointsText.SetPosition(375, 200);
+    fireIncrementer.SetPosition(400, 205);
+    fireDecrementer.SetPosition(350, 205);
 
     iceSkillText.SetPosition(100, 250);
-    icePointsText.SetPosition(350, 250);
-    iceIncrementer.SetPosition(375, 245);
-    iceDecrementer.SetPosition(375, 267);
+    icePointsText.SetPosition(375, 250);
+    iceIncrementer.SetPosition(400, 255);
+    iceDecrementer.SetPosition(350, 255);
 
     energySkillText.SetPosition(100, 300);
-    energyPointsText.SetPosition(350, 300);
-    energyIncrementer.SetPosition(375, 295);
-    energyDecrementer.SetPosition(375, 317);
+    energyPointsText.SetPosition(375, 300);
+    energyIncrementer.SetPosition(400, 305);
+    energyDecrementer.SetPosition(350, 305);
 }
 
 NewGameState::~NewGameState()

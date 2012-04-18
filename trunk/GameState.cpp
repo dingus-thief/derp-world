@@ -5,7 +5,6 @@ GameState* GameState::gameState = NULL;
 
 GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window, mgr)
 {
-    std::cout<<"GameState constructor called.\n";
     loadingSprite.SetTexture(rm.getImage("loading.png"));
 
     sf::Vector2f center(WIDTH/2, HEIGHT/2);
@@ -20,13 +19,13 @@ GameState::GameState(sf::RenderWindow* window, StateManager* mgr) : State(window
 
 void GameState::init()
 {
-    std::cout<<"GameState::init() called.\n";
     window->Clear();
     window->Draw(loadingSprite);
     window->Display();
     hud = new HUD;
     hero = new Hero(hud);
     level = new Level(levelPath);
+    Clock.Reset(true);
     //music->Play();
 }
 
@@ -48,6 +47,10 @@ void GameState::update()
     Clock.Reset(true);
 
 
+    if(frameTime > 50)
+        std::cout<<frameTime<<std::endl;
+
+
     level->update(frameTime, hero->getBounds());
     hero->update(frameTime, level);
     hud->update();
@@ -60,13 +63,6 @@ void GameState::update()
         level->reset();
         stateManager->pushState(LiveLostState::Instance(window, stateManager, hero->getLivesLeft()));
     }
-
-    /*if(gameover)
-    {
-        gameover = false;
-        std::cout<<"gameover\n";
-        stateManager->pushState(GameoverState::Instance(window, stateManager));
-    }*/
 }
 
 void GameState::resume()
@@ -74,13 +70,13 @@ void GameState::resume()
     hud->resume();
     sf::View view(sf::Vector2f(WIDTH/2, HEIGHT/2), sf::Vector2f(WIDTH, HEIGHT));
     window->SetView(view);
-    Clock.Start();
+    Clock.Reset(true);
 }
 
 void GameState::pause()
 {
     hud->pause();
-    Clock.Stop();
+    Clock.Reset(true);
 }
 
 void GameState::handle()

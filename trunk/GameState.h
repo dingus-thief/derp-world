@@ -31,11 +31,13 @@ class GameState : public State
 
         static GameState* Instance(sf::RenderWindow* window, StateManager* mgr, const std::string& levelFile)
         {
-            /*if(gameState == NULL)
-                gameState = new GameState(window, mgr);*/
-            GameState* newstate = new GameState(window, mgr);
-            newstate->levelPath = levelFile;
-            return newstate;
+            if(gameState == NULL)
+            {
+                std::cout<<"Creating new GameState\n";
+                gameState = new GameState(window, mgr);
+            }
+            gameState->levelPath = levelFile;
+            return gameState;
         }
 
 

@@ -24,11 +24,6 @@ std::string to_string(int number)
     ss << number;//add number to the stream
     return ss.str();//return a string with the contents of the stream
 }
-void setCenter(sf::Text& txt, int y)
-{
-    sf::FloatRect rect = txt.GetGlobalBounds();
-    txt.SetPosition((WIDTH)/2 - rect.Width/2 , y);
-}
 
 float abso(float i)
 {

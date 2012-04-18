@@ -25,7 +25,7 @@ IceSpell::IceSpell(int x, int y, float delta) : Spell(x, y, delta, 20, 9, spell:
 
 IceSpell::~IceSpell()
 {
-
+    delete system;
 }
 
 Spell* IceSpell::clone(int x, int y, float delta)

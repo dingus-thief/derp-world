@@ -16,7 +16,7 @@ GreenSpell::GreenSpell(int x, int y, float delta) : Spell(x, y, delta, 25, 23, s
 
 GreenSpell::~GreenSpell()
 {
-    //dtor
+    delete system;
 }
 
 Spell* GreenSpell::clone(int x, int y, float delta)

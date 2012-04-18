@@ -26,7 +26,7 @@ IcicleSpell::IcicleSpell(int x, int y, float delta) : Spell(x, y, delta, 35, 15,
 
 IcicleSpell::~IcicleSpell()
 {
-    //dtor
+    delete system;
 }
 
 Spell* IcicleSpell::clone(int x, int y, float delta)

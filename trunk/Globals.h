@@ -7,10 +7,7 @@
 #include <Thor/Time/StopWatch.hpp>
 #include <random>
 
-const int WIDTH = 640;
-const int HEIGHT = 480;
-const int TILESIZE = 32;
-const int timeStep = 5;
+
 
 //extern std::mt19937 rng;
 

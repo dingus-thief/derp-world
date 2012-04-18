@@ -79,6 +79,7 @@ class Hero
         int energySkill;
         int heroLevel;
         int xp;
+        int jumpPower;
         sf::Vector2f platformSpeed;
         std::string name;
 };
