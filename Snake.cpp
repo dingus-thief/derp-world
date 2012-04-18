@@ -5,7 +5,7 @@ Snake::Snake(int x, int y) : Entity("snake.png", 75, 10, x, y)
     xp = 5;
     xpText = rm.getText("+5", 13);
 
-    speed = 0.2;
+    speed = 0.2*tsAdjuster;
 
     for(int i = 0; i < 33*2; i+=33)
         leftRunAnim->AddFrame(1.f, sf::IntRect(i, 0, 32, 32));

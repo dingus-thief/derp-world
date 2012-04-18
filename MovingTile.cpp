@@ -1,6 +1,6 @@
 #include "MovingTile.h"
 
-MovingTile::MovingTile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill, float x, float y) : Tile(sprite,transparent,platform,kill), x(x), y(y)
+MovingTile::MovingTile(const sf::Sprite& sprite, bool transparent, bool platform, bool kill, float x, float y) : Tile(sprite,transparent,platform,kill), x(x*tsAdjuster), y(y*tsAdjuster)
 {
     //ctor
 }

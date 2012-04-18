@@ -5,6 +5,8 @@
 #include "Globals.h"
 #include "Constants.h"
 
+const float fsACCELL = 2*ACCEL/3;;
+
 class FallingSpike
 {
     public:

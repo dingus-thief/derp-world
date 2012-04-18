@@ -2,6 +2,7 @@
 #define BUTTON_H
 #include <string>
 #include "Globals.h"
+#include "Constants.h"
 
 class Button
 {
@@ -18,7 +19,7 @@ class Button
 
     private:
         sf::Sprite buttonSprite;
-        sf::Text* text;
+        sf::Text text;
         int x;
         int y;
 

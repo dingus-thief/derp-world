@@ -68,7 +68,6 @@ void Level::loadFromFile()
     tilesetElement = map->FirstChildElement("tileset");
     int spacing = atoi(tilesetElement->Attribute("spacing"));
     int margin = atoi(tilesetElement->Attribute("margin"));
-    std::cout<<margin<<" "<<spacing;
     firstTileID = atoi(tilesetElement->Attribute("firstgid"));
 
     TiXmlElement* tile = tilesetElement->FirstChildElement("tile");

@@ -17,7 +17,6 @@ class Coin
 
     private:
         sf::Sprite sprite;
-        sf::Clock aniClock;
         sf::Sound sound;
 };
 

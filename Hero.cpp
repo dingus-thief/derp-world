@@ -2,7 +2,7 @@
 #include <iostream>
 #define ch 48
 
-Hero::Hero(HUD* hud) : speed(1.7), accumulator(0), dx(0), dy(0), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0), hud(hud)
+Hero::Hero(HUD* hud) : speed(1.7*tsAdjuster), accumulator(0), dx(0), dy(0), platformSpeed(0, 0), onPlatform(false), dead(false), deathy(0), hud(hud), jumpPower(-4.f*tsAdjuster)
 {
     load("Data/hero.txt");
     currentSpell = new FireSpell(0, 0, 0);
@@ -10,6 +10,7 @@ Hero::Hero(HUD* hud) : speed(1.7), accumulator(0), dx(0), dy(0), platformSpeed(0
     sprite.SetTexture(rm.getImage("char.png"));
     sprite.SetTextureRect(sf::IntRect(5*42, 0, 42, 42));
     sprite.SetPosition(20, 50);
+    hud->setMaxLives(lives);
 
     initAnimation();
 }
@@ -18,7 +19,7 @@ void Hero::load(const std::string& filePath)
 {
     std::ifstream file(filePath.c_str());
 
-    file >> name;
+    getline(file, name);
     file >> fireSkill;
     file >> iceSkill;
     file >> energySkill;
@@ -47,7 +48,7 @@ int Hero::getLivesLeft()
 void Hero::onDead()
 {
     dead = true;
-    deathy = -2.5;
+    deathy = -2.5*tsAdjuster;
 }
 
 void Hero::initAnimation()
@@ -131,14 +132,14 @@ void Hero::execGravity(Level* level)
     //Gravity
     bool fell = false;
     if(!onPlatform)
-        if(tryMove(level, 0, 2/3 + dy))
+        if(tryMove(level, 0, gravity + dy))
         {
             currState.falling = true;
             fell = true;
         }
     if(!fell)
     {
-        if(2/3 + dy > 0) //we were going down
+        if(gravity + dy > 0) //we were going down
         {
             currState.jumping = false;
             currState.falling = false;
@@ -153,7 +154,7 @@ void Hero::execInput(Level* level)
     //KEYBOARD INPUT
     if(sf::Keyboard::IsKeyPressed(sf::Keyboard::Space) && !currState.falling)
     {
-        dy = -4.f;
+        dy = jumpPower;
         currState.jumping = true;
     }
 

@@ -7,6 +7,7 @@ HUD::HUD() : lastScore(0), spellRectX(0), maxMana(100), maxXp(100)
     cointext.SetCharacterSize(20);
     timeText.SetCharacterSize(20);
     heart.SetTexture(rm.getImage("heart.png"));
+    emptyheart.SetTexture(rm.getImage("emptyHeart.png"));
 
     spellMenu.SetTexture(rm.getImage("spellMenu.png"));
     spellRect.SetSize(sf::Vector2f(32, 32));
@@ -39,6 +40,11 @@ void HUD::setMaxMana(int mMana)
 void HUD::setMaxXp(int mXp)
 {
     maxXp = mXp;
+}
+
+void HUD::setMaxLives(int mLives)
+{
+    maxLives = mLives;
 }
 
 void HUD::setMana(int mMana)
@@ -96,7 +102,7 @@ void HUD::draw(sf::RenderWindow* window)
     sf::FloatRect rect(sf::Vector2f(view.GetCenter() - sf::Vector2f(view.GetSize().x/2, view.GetSize().y/2)), sf::Vector2f(view.GetSize()));
 
     cointext.SetPosition(rect.Left + 20, rect.Top +10);
-    timeText.SetPosition(rect.Left + rect.Width - 20, rect.Top + 10);
+    timeText.SetPosition(rect.Left + rect.Width - 30, rect.Top + 10);
     window->Draw(cointext);
     window->Draw(timeText);
 
@@ -104,10 +110,17 @@ void HUD::draw(sf::RenderWindow* window)
     xpBar.SetPosition(rect.Left + 10, rect.Top + 25);
     manaMaxBar.SetPosition(rect.Left + 10, rect.Top + 10);
     xpMaxBar.SetPosition(rect.Left + 10, rect.Top + 25);
-    for(int i = rect.Left + 10; i < rect.Left + 10 + 19*liveCount; i += 19)
+
+    int i = rect.Left + 10;
+    for(; i < rect.Left + 10 + 19*liveCount; i += 19)
     {
         heart.SetPosition(i, rect.Top + 40);
         window->Draw(heart);
+    }
+    for(; i < rect.Left + 10 + 19*(maxLives - liveCount); i += 19)
+    {
+        emptyheart.SetPosition(i, rect.Top + 40);
+        window->Draw(emptyheart);
     }
     spellMenu.SetPosition(rect.Left + 150, rect.Top + 10);
     spellRect.SetPosition(rect.Left + 150 + spellRectX, rect.Top + 10);

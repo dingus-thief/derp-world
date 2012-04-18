@@ -14,6 +14,7 @@ class HUD
         void reset();
         void setMaxMana(int maxMana);
         void setLives(int mLives);
+        void setMaxLives(int mLives);
         void setMaxXp(int mxp);
         void setMana(int mMana);
         void draw(sf::RenderWindow* window);
@@ -28,12 +29,14 @@ class HUD
         sf::RectangleShape manaMaxBar;
         sf::RectangleShape xpMaxBar;
         sf::Sprite heart;
+        sf::Sprite emptyheart;
         sf::RectangleShape spellRect;
         sf::Sprite spellMenu;
         int spellRectX;
         int maxMana;
         int maxXp;
         int liveCount;
+        int maxLives;
 
         int lastScore;
         int lastTime;

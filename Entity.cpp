@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-Entity::Entity(const std::string& name, int health, int damage, int x, int y) : originalX(x), originalY(y), dead(false), attacking(false), speed(0.3), damage(damage), health(health), maxHealth(health), flying(false), isHit(false)
+Entity::Entity(const std::string& name, int health, int damage, int x, int y) : originalX(x), originalY(y), dead(false), attacking(false), speed(0.3*tsAdjuster), damage(damage), health(health), maxHealth(health), flying(false), isHit(false)
 {
     sprite.SetTexture(rm.getImage(name));
     sprite.SetPosition(x, y);

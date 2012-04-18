@@ -10,9 +10,9 @@ GameoverState::GameoverState(sf::RenderWindow* window, StateManager* mgr) : Stat
 void GameoverState::init()
 {
     gameoverText = rm.getText("Game Over", 20);
-    setCenter(gameoverText, 60);
+    //setCenter(gameoverText, 60);
     scoreText = rm.getText("Your score: " + to_string(points), 20);
-    setCenter(scoreText, 100);
+    //setCenter(scoreText, 100);
     playAgainButton = new Button("Play again", 0, 150);
     quitButton = new Button("Quit", 0, 210);
 }

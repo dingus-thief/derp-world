@@ -25,7 +25,7 @@ void FallingSpike::update(sf::FloatRect heroRect, std::vector<Tile> tiles)
     if(falling)
     {
         sprite.Move(0, vely);
-        vely += 2*ACCEL/3;
+        vely += fsACCELL;
     }
 }
 
